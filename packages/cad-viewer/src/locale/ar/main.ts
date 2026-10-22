@@ -929,6 +929,8 @@ export default {
       tooltip: 'تصدير الصورة بصيغة PNG'
     },
 
+    modelTab: 'النموذج',
+
     moreLayouts: 'المزيد من المخططات'
   },
   toolPalette: {

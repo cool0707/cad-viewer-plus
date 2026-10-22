@@ -64,6 +64,7 @@ export const tr: Record<string, string> = {
   'toolbar.themeDark': 'Koyu',
   'toolbar.locale': 'Dil',
   'toolbar.localeEn': 'English',
+  'toolbar.localeJa': '日本語',
   'toolbar.localeZh': '中文',
   'toolbar.localeCs': 'Čeština',
   'toolbar.localeTr': 'Türkçe',

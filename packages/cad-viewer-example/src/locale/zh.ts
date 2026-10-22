@@ -15,7 +15,7 @@ export default {
       title: '选择要查看的 CAD 文件',
       subtitle: '将 DWG 或 DXF 图纸导入查看器',
       fontCdnNotice:
-        '如果您所在的国家或地区存在网络访问限制，请记得打开 VPN。默认字库文件托管在 GitHub 上，网络受限时访问字体会非常慢，可能导致打开图纸缓慢或图纸中的文字无法正常显示。',
+        '本查看器已内置日文字体（BIZ UD）。其他文字（中文、韩文、拉丁替代字体等）的字体会在图纸需要时从 Google Fonts 下载；如果无法访问 Google Fonts，这些文字可能无法正常显示。',
       newDrawing: '新建图纸',
       or: '或',
       dropFile: '拖放文件或',

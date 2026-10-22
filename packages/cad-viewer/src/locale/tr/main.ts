@@ -666,6 +666,7 @@ export default {
     export: {
       tooltip: 'Görüntüyü PNG olarak dışa aktar'
     },
+    modelTab: 'Model',
     moreLayouts: 'Diğer düzenler'
   },
   toolPalette: {

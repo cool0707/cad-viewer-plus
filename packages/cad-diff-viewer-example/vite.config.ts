@@ -46,6 +46,12 @@ export default defineConfig({
     viteStaticCopy({
       targets: [
         {
+          // Fonts and drawing templates (resources/cad-data) served as ./cad-data/
+          src: '../../resources/cad-data/**/*',
+          dest: 'cad-data',
+          rename: { stripBase: 2 }
+        },
+        {
           src: `./node_modules/@mlightcad/cad-simple-viewer/dist/${MTEXT_RENDERER_WORKER_FILE}`,
           dest: 'workers',
           rename: { stripBase: true }

@@ -16,7 +16,7 @@
         :aria-selected="layout.isActive"
         @click="handleSelectLayout(layout)"
       >
-        {{ layout.name }}
+        {{ layoutLabel(layout) }}
       </el-button>
       <el-dropdown
         v-show="overflowLayouts.length > 0"
@@ -43,7 +43,7 @@
               :command="layout.blockTableRecordId"
               :class="{ 'is-selected': layout.isActive }"
             >
-              {{ layout.name }}
+              {{ layoutLabel(layout) }}
             </el-dropdown-item>
           </el-dropdown-menu>
         </template>
@@ -88,6 +88,14 @@ const props = defineProps<{
 }>()
 
 const { t } = useI18n()
+
+/**
+ * Display label for a layout tab. The model-space layout (tab order 0) is
+ * stored as `Model` in DWG/DXF regardless of the authoring language, so it is
+ * shown with the localized name like desktop CAD does.
+ */
+const layoutLabel = (layout: LayoutInfo) =>
+  layout.tabOrder === 0 ? t('main.statusBar.modelTab') : layout.name
 const layouts = useLayouts(AcApDocManager.instance)
 
 const rootRef = ref<HTMLElement | null>(null)

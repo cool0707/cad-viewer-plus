@@ -1,4 +1,7 @@
 export default {
+  newDrawing: {
+    layoutPrefix: 'Layout'
+  },
   document: {
     untitled: 'Untitled'
   },

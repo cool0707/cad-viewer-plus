@@ -6,6 +6,7 @@ import { scriptCommandDescriptions } from './command'
 import { scriptCs } from './cs'
 import { scriptEn } from './en'
 import { scriptExampleCopyByLocale } from './exampleCopy'
+import { scriptJa } from './ja'
 import { scriptTr } from './tr'
 import { scriptZh } from './zh'
 
@@ -21,6 +22,7 @@ export type ScriptLabels = Record<ScriptLabelKey, string>
 /** Locale-specific flat message tables before nesting under `main.toolPalette.script`. */
 const scriptMessagesByLocale = {
   en: scriptEn,
+  ja: scriptJa,
   zh: scriptZh,
   tr: scriptTr,
   cs: scriptCs,
@@ -63,6 +65,7 @@ export function registerScriptI18n(): void {
   if (isRegistered) return
 
   AcApI18n.mergeLocaleMessage('en', buildVueMessages('en'))
+  AcApI18n.mergeLocaleMessage('ja', buildVueMessages('ja'))
   AcApI18n.mergeLocaleMessage('zh', buildVueMessages('zh'))
   AcApI18n.mergeLocaleMessage('tr', buildVueMessages('tr'))
   AcApI18n.mergeLocaleMessage('cs', buildVueMessages('cs'))
@@ -80,6 +83,7 @@ export function mergeScriptI18nIntoVueI18n(
 ): void {
   registerScriptI18n()
   mergeLocaleMessage('en', buildVueMessages('en'))
+  mergeLocaleMessage('ja', buildVueMessages('ja'))
   mergeLocaleMessage('zh', buildVueMessages('zh'))
   mergeLocaleMessage('tr', buildVueMessages('tr'))
   mergeLocaleMessage('cs', buildVueMessages('cs'))

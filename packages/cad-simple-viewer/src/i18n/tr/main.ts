@@ -1,4 +1,7 @@
 export default {
+  newDrawing: {
+    layoutPrefix: 'Düzen'
+  },
   document: {
     untitled: 'Adsız'
   },

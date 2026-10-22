@@ -912,7 +912,7 @@ class CadViewerApp {
         container: this.container,
         busyIndicatorHost: this.viewerPane,
         autoResize: true,
-        baseUrl: 'https://cdn.jsdelivr.net/gh/mlightcad/cad-data@main/',
+        baseUrl: './cad-data/',
         commandAliases: EXAMPLE_COMMAND_ALIASES,
         // Main-thread MTEXT uses less memory; worker mode is opt-in via ?worker=1.
         useMainThreadDraw: openProf ? !useWorkers : true,

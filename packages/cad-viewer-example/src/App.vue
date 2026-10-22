@@ -189,7 +189,8 @@ const initialize = () => {
   )
 }
 
-const BASE_URL = 'https://cdn.jsdelivr.net/gh/mlightcad/cad-data@main/'
+// Fonts and drawing templates are served from this app (resources/cad-data).
+const BASE_URL = './cad-data/'
 
 const showViewer = computed(
   () =>

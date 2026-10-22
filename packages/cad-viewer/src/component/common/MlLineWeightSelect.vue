@@ -124,7 +124,11 @@ function formatLabel(value: AcGiLineWeight): string {
     case AcGiLineWeight.ByBlock:
       return locale.value === 'ar' ? 'حسب الكتلة' : 'ByBlock'
     case AcGiLineWeight.ByLineWeightDefault:
-      return locale.value === 'ar' ? 'افتراضي' : 'Default'
+      return locale.value === 'ar'
+        ? 'افتراضي'
+        : locale.value === 'ja'
+          ? '既定'
+          : 'Default'
     default:
       return `${(value / 100).toFixed(2)} mm`
   }

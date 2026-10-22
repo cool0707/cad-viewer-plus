@@ -620,6 +620,7 @@ export default {
     export: {
       tooltip: '导出图片为 PNG'
     },
+    modelTab: '模型',
     moreLayouts: '更多布局'
   },
   toolPalette: {

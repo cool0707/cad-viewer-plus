@@ -11,6 +11,9 @@ export const scriptCommandDescriptions = {
     cadscript:
       'Opens the CAD script console to run a script on the current drawing'
   },
+  ja: {
+    cadscript: 'CAD スクリプトコンソールを開き、現在の図面でスクリプトを実行します'
+  },
   zh: {
     cadscript: '打开 CAD 脚本控制台，在当前图纸上运行脚本'
   },

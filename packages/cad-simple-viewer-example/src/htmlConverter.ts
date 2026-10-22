@@ -38,7 +38,7 @@ const SAMPLE_DRAWING_URL =
   'https://cdn.jsdelivr.net/gh/mlightcad/cad-data@main/data/canteen.dwg'
 const SAMPLE_DRAWING_NAME = 'canteen.dwg'
 const VIEWER_RUNTIME_URL = './viewer-runtime.iife.js'
-const CAD_DATA_BASE_URL = 'https://cdn.jsdelivr.net/gh/mlightcad/cad-data@main/'
+const CAD_DATA_BASE_URL = './cad-data/'
 
 const OPEN_OPTIONS: AcApOpenDatabaseOptions = {
   minimumChunkSize: 1000,

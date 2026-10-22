@@ -666,6 +666,7 @@ export default {
     export: {
       tooltip: 'Export image as PNG'
     },
+    modelTab: 'Model',
     moreLayouts: 'More layouts'
   },
   toolPalette: {

@@ -1,4 +1,7 @@
 export default {
+  newDrawing: {
+    layoutPrefix: 'Rozvržení'
+  },
   document: {
     untitled: 'Bez názvu'
   },

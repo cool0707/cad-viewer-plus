@@ -178,6 +178,12 @@ export default defineConfig(({ command, mode }) => {
     viteStaticCopy({
       targets: [
         {
+          // Fonts and drawing templates (resources/cad-data) served as ./cad-data/
+          src: '../../resources/cad-data/**/*',
+          dest: 'cad-data',
+          rename: { stripBase: 2 }
+        },
+        {
           src: mtextWorkerSrc,
           dest: 'assets',
           rename: { stripBase: true }

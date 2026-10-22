@@ -238,6 +238,7 @@ function resolveLocale(locale?: string): AcApLocale | undefined {
   const normalized = locale.trim().toLowerCase()
   if (
     normalized === 'en' ||
+    normalized === 'ja' ||
     normalized === 'zh' ||
     normalized === 'tr' ||
     normalized === 'cs'

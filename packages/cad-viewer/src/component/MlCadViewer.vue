@@ -145,7 +145,7 @@ const emit = defineEmits<{
 
 // Define component props with their purposes
 interface Props {
-  /** Language locale for internationalization ('en', 'zh', or 'default') */
+  /** Language locale for internationalization ('en', 'ja', 'zh', … or 'default') */
   locale?: LocaleProp
   /** Optional URL to automatically load a CAD file on component mount */
   url?: string
@@ -265,7 +265,29 @@ const { t } = useI18n()
 const { currentLocale, effectiveLocale, elementPlusLocale } = useLocale(
   props.locale
 )
-provideLocale(currentLocale)
+// @mlightcad/ui-components ships no Japanese pack; pass a partial locale so
+// its dock / overflow-tab chrome follows the Japanese UI.
+const UI_COMPONENTS_JA = {
+  toolPalette: {
+    moreMenu: 'ドッキング位置',
+    dock: {
+      float: '別ウィンドウに切り離す',
+      left: '左にドッキング',
+      top: '上にドッキング',
+      bottom: '下にドッキング',
+      right: '右にドッキング'
+    }
+  },
+  overflowTabs: {
+    moreTabs: 'その他のタブ',
+    closeTab: 'タブを閉じる'
+  }
+}
+provideLocale(
+  computed(() =>
+    currentLocale.value === 'ja' ? UI_COMPONENTS_JA : currentLocale.value
+  )
+)
 // Canvas element reference
 const containerRef = ref<HTMLDivElement>()
 const layoutRef = ref<HTMLDivElement>()

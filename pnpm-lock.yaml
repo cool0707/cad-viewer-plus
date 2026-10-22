@@ -21,6 +21,11 @@ overrides:
   vue: ^3.4.21
   vue-i18n: ^11.4.4
 
+patchedDependencies:
+  '@mlightcad/mtext-renderer@0.13.5':
+    hash: 0d988d98fc2da267cf496f084984c2e0401e53b13eeee61a5455f6343eb16c68
+    path: patches/@mlightcad__mtext-renderer@0.13.5.patch
+
 importers:
 
   .:
@@ -200,7 +205,7 @@ importers:
         version: 1.5.5
       '@mlightcad/mtext-renderer':
         specifier: 0.13.5
-        version: 0.13.5(@mlightcad/mtext-parser@1.5.5)(three@0.186.1)
+        version: 0.13.5(patch_hash=0d988d98fc2da267cf496f084984c2e0401e53b13eeee61a5455f6343eb16c68)(@mlightcad/mtext-parser@1.5.5)(three@0.186.1)
       '@mlightcad/three-renderer':
         specifier: workspace:*
         version: link:../three-renderer
@@ -264,7 +269,7 @@ importers:
         version: 0.8.2
       '@mlightcad/mtext-renderer':
         specifier: 0.13.5
-        version: 0.13.5(@mlightcad/mtext-parser@1.5.5)(three@0.186.1)
+        version: 0.13.5(patch_hash=0d988d98fc2da267cf496f084984c2e0401e53b13eeee61a5455f6343eb16c68)(@mlightcad/mtext-parser@1.5.5)(three@0.186.1)
       '@mlightcad/three-renderer':
         specifier: workspace:*
         version: link:../three-renderer
@@ -417,13 +422,13 @@ importers:
         version: 1.15.14
       '@mlightcad/mtext-input-box':
         specifier: 0.3.5
-        version: 0.3.5(@mlightcad/mtext-parser@1.5.5)(@mlightcad/mtext-renderer@0.13.5(@mlightcad/mtext-parser@1.5.5)(three@0.186.1))(three@0.186.1)
+        version: 0.3.5(@mlightcad/mtext-parser@1.5.5)(@mlightcad/mtext-renderer@0.13.5(patch_hash=0d988d98fc2da267cf496f084984c2e0401e53b13eeee61a5455f6343eb16c68)(@mlightcad/mtext-parser@1.5.5)(three@0.186.1))(three@0.186.1)
       '@mlightcad/mtext-parser':
         specifier: 1.5.5
         version: 1.5.5
       '@mlightcad/mtext-renderer':
         specifier: 0.13.5
-        version: 0.13.5(@mlightcad/mtext-parser@1.5.5)(three@0.186.1)
+        version: 0.13.5(patch_hash=0d988d98fc2da267cf496f084984c2e0401e53b13eeee61a5455f6343eb16c68)(@mlightcad/mtext-parser@1.5.5)(three@0.186.1)
       '@mlightcad/three-renderer':
         specifier: workspace:*
         version: link:../three-renderer
@@ -477,7 +482,7 @@ importers:
         version: 1.5.5
       '@mlightcad/mtext-renderer':
         specifier: 0.13.5
-        version: 0.13.5(@mlightcad/mtext-parser@1.5.5)(three@0.186.1)
+        version: 0.13.5(patch_hash=0d988d98fc2da267cf496f084984c2e0401e53b13eeee61a5455f6343eb16c68)(@mlightcad/mtext-parser@1.5.5)(three@0.186.1)
       '@mlightcad/pdf-renderer':
         specifier: workspace:*
         version: link:../pdf-renderer
@@ -544,7 +549,7 @@ importers:
         version: 1.5.5
       '@mlightcad/mtext-renderer':
         specifier: 0.13.5
-        version: 0.13.5(@mlightcad/mtext-parser@1.5.5)(three@0.186.1)
+        version: 0.13.5(patch_hash=0d988d98fc2da267cf496f084984c2e0401e53b13eeee61a5455f6343eb16c68)(@mlightcad/mtext-parser@1.5.5)(three@0.186.1)
       '@mlightcad/pdf-renderer':
         specifier: workspace:*
         version: link:../pdf-renderer
@@ -584,7 +589,7 @@ importers:
         version: 1.5.5
       '@mlightcad/mtext-renderer':
         specifier: 0.13.5
-        version: 0.13.5(@mlightcad/mtext-parser@1.5.5)(three@0.186.1)
+        version: 0.13.5(patch_hash=0d988d98fc2da267cf496f084984c2e0401e53b13eeee61a5455f6343eb16c68)(@mlightcad/mtext-parser@1.5.5)(three@0.186.1)
 
   packages/cad-viewer:
     devDependencies:
@@ -725,7 +730,7 @@ importers:
         version: 1.5.5
       '@mlightcad/mtext-renderer':
         specifier: 0.13.5
-        version: 0.13.5(@mlightcad/mtext-parser@1.5.5)(three@0.186.1)
+        version: 0.13.5(patch_hash=0d988d98fc2da267cf496f084984c2e0401e53b13eeee61a5455f6343eb16c68)(@mlightcad/mtext-parser@1.5.5)(three@0.186.1)
       '@mlightcad/pdf-renderer':
         specifier: workspace:*
         version: link:../pdf-renderer
@@ -830,7 +835,7 @@ importers:
         version: 1.5.5
       '@mlightcad/mtext-renderer':
         specifier: 0.13.5
-        version: 0.13.5(@mlightcad/mtext-parser@1.5.5)(three@0.186.1)
+        version: 0.13.5(patch_hash=0d988d98fc2da267cf496f084984c2e0401e53b13eeee61a5455f6343eb16c68)(@mlightcad/mtext-parser@1.5.5)(three@0.186.1)
       '@types/three':
         specifier: ^0.186.0
         version: 0.186.0
@@ -8480,16 +8485,16 @@ snapshots:
 
   '@mlightcad/libredwg-web@0.8.2': {}
 
-  '@mlightcad/mtext-input-box@0.3.5(@mlightcad/mtext-parser@1.5.5)(@mlightcad/mtext-renderer@0.13.5(@mlightcad/mtext-parser@1.5.5)(three@0.186.1))(three@0.186.1)':
+  '@mlightcad/mtext-input-box@0.3.5(@mlightcad/mtext-parser@1.5.5)(@mlightcad/mtext-renderer@0.13.5(patch_hash=0d988d98fc2da267cf496f084984c2e0401e53b13eeee61a5455f6343eb16c68)(@mlightcad/mtext-parser@1.5.5)(three@0.186.1))(three@0.186.1)':
     dependencies:
       '@mlightcad/mtext-parser': 1.5.5
-      '@mlightcad/mtext-renderer': 0.13.5(@mlightcad/mtext-parser@1.5.5)(three@0.186.1)
+      '@mlightcad/mtext-renderer': 0.13.5(patch_hash=0d988d98fc2da267cf496f084984c2e0401e53b13eeee61a5455f6343eb16c68)(@mlightcad/mtext-parser@1.5.5)(three@0.186.1)
       '@mlightcad/text-box-cursor': 0.1.1(three@0.186.1)
       three: 0.186.1
 
   '@mlightcad/mtext-parser@1.5.5': {}
 
-  '@mlightcad/mtext-renderer@0.13.5(@mlightcad/mtext-parser@1.5.5)(three@0.186.1)':
+  '@mlightcad/mtext-renderer@0.13.5(patch_hash=0d988d98fc2da267cf496f084984c2e0401e53b13eeee61a5455f6343eb16c68)(@mlightcad/mtext-parser@1.5.5)(three@0.186.1)':
     dependencies:
       '@mlightcad/mtext-parser': 1.5.5
       '@mlightcad/shx-parser': 1.4.5

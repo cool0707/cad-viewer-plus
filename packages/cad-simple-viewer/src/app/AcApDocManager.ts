@@ -89,6 +89,7 @@ import {
   AcEdOpenMode,
   eventBus
 } from '../editor'
+import { AcApI18n } from '../i18n/AcApI18n'
 import { AcApPluginManager } from '../plugin/AcApPluginManager'
 import {
   acapCollectPaperViewportsBox,
@@ -139,7 +140,12 @@ import {
 } from './notification'
 import { syncCurrentSpaceFromTileMode } from './syncCurrentSpaceFromTileMode'
 
-const DEFAULT_BASE_URL = 'https://cdn.jsdelivr.net/gh/mlightcad/cad-data'
+/**
+ * Default resource root (fonts, templates). Relative values are resolved
+ * against `document.baseURI`, so hosts serve `cad-data/` next to their app
+ * (see `resources/cad-data` in this repository) instead of a third-party CDN.
+ */
+const DEFAULT_BASE_URL = 'cad-data/'
 /** Default ISO drawing template loaded by {@link AcApDocManager.newDocument}. */
 const DEFAULT_NEW_DRAWING_TEMPLATE = 'templates/acadiso.dxf'
 /**
@@ -230,8 +236,15 @@ export interface AcApWebworkerFiles {
   mtextRender?: string | URL
 }
 
-/** AutoCAD-era default font fallback chain used when glyphs are missing. */
-const DEFAULT_FONTS_PRESET = 'modern' as const
+/**
+ * Default text-font fallback chain used when a drawing font is missing or a
+ * glyph is not covered. BIZ UDGothic (bundled under `cad-data/fonts`) covers
+ * Latin, kana and JIS kanji, so Japanese drawings never fall back to Chinese
+ * glyph shapes.
+ */
+const DEFAULT_FALLBACK_FONTS: readonly string[] = ['bizudgothic']
+/** Default symbol-font chain for `%%c` / `%%d` / `%%p` control codes. */
+const DEFAULT_SYMBOL_FONTS: readonly string[] = ['bizudgothic']
 
 /**
  * Options for creating AcApDocManager instance
@@ -254,9 +267,21 @@ export interface AcApDocManagerOptions {
    */
   autoResize?: boolean
   /**
-   * Base URL to load resources (such as fonts annd drawing templates) needed
+   * Base URL to load resources (such as fonts annd drawing templates) needed.
+   * Relative URLs are resolved against `document.baseURI`. Defaults to
+   * `cad-data/` (served by the host application).
    */
   baseUrl?: string
+  /**
+   * Text-font fallback chain (catalog font names) used for missing fonts and
+   * uncovered glyphs. Defaults to `['bizudgothic']`.
+   */
+  defaultFonts?: readonly string[]
+  /**
+   * Symbol-font chain used for AutoCAD `%%` control codes. Defaults to
+   * `['bizudgothic']`.
+   */
+  symbolFonts?: readonly string[]
   /**
    * The flag whether to use main thread or webwork to render drawing.
    * - true: use main thread to render drawing. This approach take less memory and take longer time to show
@@ -535,7 +560,9 @@ export class AcApDocManager {
    * @private
    */
   private constructor(options: AcApDocManagerOptions = {}) {
-    this._baseUrl = options.baseUrl ?? DEFAULT_BASE_URL
+    this._baseUrl = AcApDocManager.resolveBaseUrl(
+      options.baseUrl ?? DEFAULT_BASE_URL
+    )
     acapSetDocsBaseUrl(options.docsBaseUrl ?? ACAP_DEFAULT_DOCS_BASE_URL)
     this._commandAliasOverrides = this.normalizeCommandAliasConfig(
       options.commandAliases
@@ -547,7 +574,12 @@ export class AcApDocManager {
     } else {
       AcTrMTextRenderer.getInstance().setRenderMode('worker')
     }
-    FontManager.instance.setDefaultFonts(DEFAULT_FONTS_PRESET)
+    FontManager.instance.setDefaultFonts([
+      ...(options.defaultFonts ?? DEFAULT_FALLBACK_FONTS)
+    ])
+    FontManager.instance.setSymbolFonts([
+      ...(options.symbolFonts ?? DEFAULT_SYMBOL_FONTS)
+    ])
     FontManager.instance.lazyFontLoading = true
     FontManager.instance.awaitFontsBeforeDraw = true
     void AcTrMTextRenderer.getInstance().setLazyFontLoading(true)
@@ -1228,8 +1260,8 @@ export class AcApDocManager {
    * Loads default fonts for CAD text rendering.
    *
    * This method loads either the specified fonts or the configured default font
-   * fallback chains ({@link DEFAULT_FONTS_PRESET}, currently `modern`: text
-   * `simsun` → `hztxt`, symbol `amgdt`) if no fonts are provided. The loaded
+   * fallback chains ({@link AcApDocManagerOptions.defaultFonts}, by default
+   * `bizudgothic`) if no fonts are provided. The loaded
    * fonts are used for rendering CAD text entities like MText and Text in the viewer.
    *
    * It is better to load default fonts when viewer is initialized so that the viewer can
@@ -1685,7 +1717,14 @@ export class AcApDocManager {
     this.beginOpenProgress()
     this.onBeforeOpenDocument(openOptions, !created)
     await this._openFileProgress.beginOpen(this.context.doc.database)
-    const isSuccess = await this.context.doc.openUri(templateUrl, openOptions)
+    const templateContent = await this.fetchLocalizedTemplate(templateUrl)
+    const isSuccess = templateContent
+      ? await this.context.doc.openDocument(
+          DEFAULT_NEW_DRAWING_TEMPLATE.split('/').pop()!,
+          templateContent,
+          openOptions
+        )
+      : await this.context.doc.openUri(templateUrl, openOptions)
     if (isSuccess) {
       this.context.doc.resetNewDocumentIdentity()
     }
@@ -1694,6 +1733,49 @@ export class AcApDocManager {
       await this.closeFailedOpenSession()
     }
     return isSuccess
+  }
+
+  /**
+   * Downloads the DXF drawing template and renames its paper-space layouts
+   * (`Layout1`, `Layout2`, …) to the active UI locale (e.g. `レイアウト1`).
+   *
+   * @returns The localized template bytes, or `undefined` when the template
+   *   cannot be fetched (callers then fall back to {@link AcApDocument.openUri}).
+   */
+  private async fetchLocalizedTemplate(
+    templateUrl: string
+  ): Promise<ArrayBuffer | undefined> {
+    try {
+      const response = await fetch(templateUrl)
+      if (!response.ok) return undefined
+      const text = await response.text()
+      const prefix = AcApI18n.t('main.newDrawing.layoutPrefix', {
+        fallback: 'Layout'
+      })
+      const localized =
+        prefix === 'Layout'
+          ? text
+          : text.replace(/^Layout(\d+)(\r?)$/gm, `${prefix}$1$2`)
+      return new TextEncoder().encode(localized).buffer as ArrayBuffer
+    } catch {
+      return undefined
+    }
+  }
+
+  /**
+   * Resolves a possibly relative resource base URL to an absolute URL with a
+   * trailing slash. Absolute URLs are required because the same base is
+   * forwarded to Web Workers, where relative URLs resolve against the worker
+   * script instead of the page.
+   */
+  private static resolveBaseUrl(url: string): string {
+    const withSlash = url.endsWith('/') ? url : `${url}/`
+    if (typeof document === 'undefined') return withSlash
+    try {
+      return new URL(withSlash, document.baseURI).href
+    } catch {
+      return withSlash
+    }
   }
 
   /**

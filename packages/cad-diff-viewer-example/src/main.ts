@@ -11,6 +11,7 @@ import { registerLibreDwgConverter } from './registerLibreDwg'
 /** Picks an {@link AcApLocale} from `navigator.language`. */
 function detectLocale(): AcApLocale {
   const lang = navigator.language.toLowerCase()
+  if (lang.startsWith('ja')) return 'ja'
   if (lang.startsWith('zh')) return 'zh'
   if (lang.startsWith('tr')) return 'tr'
   if (lang.startsWith('cs')) return 'cs'
@@ -32,7 +33,7 @@ registerLibreDwgConverter(dwgParserUrl)
 
 new AcApDiffViewer({
   container: host,
-  baseUrl: 'https://cdn.jsdelivr.net/gh/mlightcad/cad-data@main/',
+  baseUrl: './cad-data/',
   webworkerFileUrls: {
     mtextRender: `./workers/${MTEXT_RENDERER_WORKER_FILE}`,
     dwgParser: dwgParserUrl

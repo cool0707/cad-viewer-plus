@@ -23,3 +23,5 @@ overrides:
   three: '^0.186.1'
   vue: '^3.4.21'
   vue-i18n: '^11.4.4'
+patchedDependencies:
+  '@mlightcad/mtext-renderer@0.13.5': patches/@mlightcad__mtext-renderer@0.13.5.patch

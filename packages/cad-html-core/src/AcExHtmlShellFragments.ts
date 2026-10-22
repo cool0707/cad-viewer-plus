@@ -17,12 +17,14 @@ export const ACEX_DEFAULT_POLAR_ANGLE = ACEX_ORTHO_POLAR_ANGLE
 const LOCALE_LABEL_KEYS: Record<
   AcExHtmlLocale,
   | 'toolbar.localeEn'
+  | 'toolbar.localeJa'
   | 'toolbar.localeZh'
   | 'toolbar.localeCs'
   | 'toolbar.localeTr'
   | 'toolbar.localeAr'
 > = {
   en: 'toolbar.localeEn',
+  ja: 'toolbar.localeJa',
   zh: 'toolbar.localeZh',
   cs: 'toolbar.localeCs',
   tr: 'toolbar.localeTr',
@@ -31,6 +33,7 @@ const LOCALE_LABEL_KEYS: Record<
 
 const LOCALE_FALLBACK_LABELS: Record<AcExHtmlLocale, string> = {
   en: 'English',
+  ja: '日本語',
   zh: '中文',
   cs: 'Čeština',
   tr: 'Türkçe',

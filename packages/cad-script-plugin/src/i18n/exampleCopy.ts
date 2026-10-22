@@ -69,6 +69,66 @@ export const scriptExampleCopyByLocale = {
         'Move the currently selected entities 10 units to the right. Select entities first.'
     }
   },
+  ja: {
+    countByType: {
+      title: '種類別にオブジェクトを数える',
+      description:
+        '図面内のすべてのオブジェクトを調べ、種類ごとの数と図面のタイトル、現在の画層を返します。'
+    },
+    circlesByLayer: {
+      title: '円が最も多い画層をハイライト',
+      description:
+        '各画層の円を数え、円が最も多い画層上のすべてのオブジェクトを選択します。'
+    },
+    drawingOverview: {
+      title: '図面の概要',
+      description:
+        'タイトル、単位、現在の画層、範囲、および各画層の表示・フリーズ・ロックの状態を返します。'
+    },
+    textContents: {
+      title: '文字の一覧',
+      description:
+        '文字、マルチテキスト、属性の文字列を、画層とオブジェクト ID と一緒に集めます。'
+    },
+    selectCurrentLayer: {
+      title: '現在の画層を選択',
+      description: '図面の現在の画層上にあるすべてのオブジェクトを選択します。'
+    },
+    longestLines: {
+      title: '最も長い線分',
+      description: '各線分の長さを計測し、長い順に 10 本を選択します。'
+    },
+    extentsBox: {
+      title: '範囲の一部にあるオブジェクト',
+      description:
+        '外接枠が図面範囲の左下半分に重なるオブジェクトを選択します。'
+    },
+    blockSummary: {
+      title: 'ブロック定義',
+      description:
+        '各ブロックの名前と、そのブロックに含まれるオブジェクトの数を一覧にします。'
+    },
+    layerTable: {
+      title: '画層テーブル',
+      description:
+        'cad.tables.layerTable を読み取り、各画層の名前と ID を返します。'
+    },
+    circleGrid: {
+      title: '円のグリッドを作成',
+      description:
+        '1 つの元に戻すグループ内で GRID 画層を作成し、4×3 の円のグリッドを作図して範囲にズームします。'
+    },
+    stampTitle: {
+      title: '図面のタイトルを記入',
+      description:
+        'NOTES 画層を作成し、原点に図面のタイトルを文字として配置します。'
+    },
+    moveSelection: {
+      title: '選択を移動',
+      description:
+        '現在選択しているオブジェクトを右に 10 単位移動します。先にオブジェクトを選択してください。'
+    }
+  },
   zh: {
     countByType: {
       title: '按类型统计实体',

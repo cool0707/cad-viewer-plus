@@ -1,4 +1,7 @@
 export default {
+  newDrawing: {
+    layoutPrefix: '布局'
+  },
   document: {
     untitled: '未命名'
   },

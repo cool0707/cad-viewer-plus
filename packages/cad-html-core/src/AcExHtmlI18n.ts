@@ -1,16 +1,24 @@
 /** Supported locales in the offline HTML viewer. */
-export type AcExHtmlLocale = 'en' | 'zh' | 'cs' | 'tr' | 'ar'
+export type AcExHtmlLocale = 'en' | 'ja' | 'zh' | 'cs' | 'tr' | 'ar'
 
 /**
  * All locales accepted by the offline viewer, in display order.
  * The language strip lists these options; add a locale here plus a
  * {@link ACEX_HTML_LOCALE_BADGES} entry and a `MESSAGES` tree to support it.
  */
-export const ACEX_HTML_LOCALES: AcExHtmlLocale[] = ['en', 'zh', 'cs', 'tr', 'ar']
+export const ACEX_HTML_LOCALES: AcExHtmlLocale[] = [
+  'en',
+  'ja',
+  'zh',
+  'cs',
+  'tr',
+  'ar'
+]
 
 /** Short button badge per locale (shown on the language parent and strip). */
 export const ACEX_HTML_LOCALE_BADGES: Record<AcExHtmlLocale, string> = {
   en: 'EN',
+  ja: '日',
   zh: '中',
   cs: 'CS',
   tr: 'TR',
@@ -76,6 +84,7 @@ export type AcExHtmlMessageKey =
   | 'toolbar.switchBg'
   | 'toolbar.language'
   | 'toolbar.localeEn'
+  | 'toolbar.localeJa'
   | 'toolbar.localeZh'
   | 'toolbar.localeCs'
   | 'toolbar.localeTr'
@@ -253,7 +262,10 @@ interface AcExMessageTree {
   [key: string]: string | AcExMessageTree
 }
 
-const BASE_MESSAGES: Record<Exclude<AcExHtmlLocale, 'ar'>, AcExMessageTree> = {
+const BASE_MESSAGES: Record<
+  Exclude<AcExHtmlLocale, 'ar' | 'ja'>,
+  AcExMessageTree
+> = {
   en: {
     toolbar: {
       viewerTools: 'Viewer tools',
@@ -304,6 +316,7 @@ const BASE_MESSAGES: Record<Exclude<AcExHtmlLocale, 'ar'>, AcExMessageTree> = {
       switchBg: 'Background',
       language: 'Language',
       localeEn: 'English',
+      localeJa: '日本語',
       localeZh: '中文',
       localeCs: 'Čeština',
       localeTr: 'Türkçe',
@@ -572,6 +585,7 @@ const BASE_MESSAGES: Record<Exclude<AcExHtmlLocale, 'ar'>, AcExMessageTree> = {
       switchBg: '背景',
       language: '语言',
       localeEn: 'English',
+      localeJa: '日本語',
       localeZh: '中文',
       localeCs: 'Čeština',
       localeTr: 'Türkçe',
@@ -828,6 +842,7 @@ const BASE_MESSAGES: Record<Exclude<AcExHtmlLocale, 'ar'>, AcExMessageTree> = {
       switchBg: 'Pozadí',
       language: 'Jazyk',
       localeEn: 'English',
+      localeJa: '日本語',
       localeZh: '中文',
       localeCs: 'Čeština',
       localeTr: 'Türkçe',
@@ -1095,6 +1110,7 @@ const BASE_MESSAGES: Record<Exclude<AcExHtmlLocale, 'ar'>, AcExMessageTree> = {
       switchBg: 'Arka plan',
       language: 'Dil',
       localeEn: 'English',
+      localeJa: '日本語',
       localeZh: '中文',
       localeCs: 'Čeština',
       localeTr: 'Türkçe',
@@ -1365,6 +1381,7 @@ const AR_MESSAGES: AcExMessageTree = {
     'switchBg': 'خلفية',
     'language': 'اللغة',
     'localeEn': 'English',
+    'localeJa': '日本語',
     'localeZh': '中文',
     'localeCs': 'Čeština',
     'localeTr': 'Türkçe',
@@ -1563,8 +1580,278 @@ const AR_MESSAGES: AcExMessageTree = {
   }
 }
 
+const JA_MESSAGES: AcExMessageTree = {
+  toolbar: {
+    viewerTools: 'ビューアツール',
+    select: '選択',
+    pan: '画面移動',
+    zoom: 'ズーム',
+    zoomExtents: '範囲',
+    zoomSmartExtents: 'スマート',
+    zoomWindow: '窓',
+    zoomSaved: '保存ビュー',
+    zoomOriginal: '保存ビュー',
+    measureDistance: '距離',
+    measureContinuous: '連続',
+    measureAngle: '角度',
+    measureArc: '円弧',
+    measureRadius: '半径',
+    measureArea: '面積',
+    measureCoordinate: 'XY',
+    clearMeasurements: 'クリア',
+    measureHide: '非表示',
+    measureShow: '表示',
+    measureImport: '読み込み',
+    measureExport: '書き出し',
+    measurementPanel: '結果',
+    measure: '計測',
+    annotation: 'レビュー',
+    markupCloud: '雲マーク',
+    markupCallout: '吹き出し',
+    markupText: '文字',
+    markupRect: '長方形',
+    markupCircle: '円',
+    markupArrow: '矢印',
+    markupStamp: 'スタンプ',
+    markupPanel: '結果',
+    markupHide: '非表示',
+    markupShow: '表示',
+    clearMarkups: 'クリア',
+    markupImport: '読み込み',
+    markupExport: '書き出し',
+    snap: 'スナップ',
+    layers: '画層',
+    layout: 'レイアウト',
+    settings: '設定',
+    simulatedMouseOn: 'マウス',
+    simulatedMouseOff: 'ルーペ',
+    themeLight: 'ライト',
+    themeDark: 'ダーク',
+    switchBg: '背景',
+    language: '言語',
+    localeEn: 'English',
+    localeJa: '日本語',
+    localeZh: '中文',
+    localeCs: 'Čeština',
+    localeTr: 'Türkçe',
+    localeAr: 'العربية',
+    collapse: 'ツールバーを折りたたむ',
+    expand: 'ツールバーを展開',
+    moreOverflow: 'その他のツール'
+  },
+  settings: {
+    ortho: '直交モードの切り替え',
+    polar: '極トラッキングの角度',
+    polarAngles: '極トラッキングの角度'
+  },
+  drawStyle: {
+    color: '色',
+    fontSize: '文字の高さ',
+    pickerTitle: '色を選択',
+    close: '閉じる',
+    ok: 'OK',
+    cancel: 'キャンセル',
+    index: 'インデックスカラー: ',
+    rgb: 'RGB: ',
+    input: '色',
+    inputPlaceholder: '1～255 または #RRGGBB'
+  },
+  shortCutToolbar: {
+    more: 'その他',
+    undo: '元に戻す',
+    redo: 'やり直し',
+    erase: '削除',
+    collapse: 'ツールバーを折りたたむ',
+    expand: 'ツールバーを展開'
+  },
+  textHeight: {
+    title: '文字の高さ',
+    close: '閉じる',
+    ok: 'OK',
+    cancel: 'キャンセル',
+    adaptive: '画面に合わせる',
+    custom: '文字の高さを指定',
+    customPlaceholder: '図面上の高さ',
+    fromScreen: '画面上のサイズから',
+    fromScreenHint:
+      '現在のズームで画面上に表示したい文字の大きさを入力します。図面上の固定の高さに変換されるため、後でズームしても変わりません。',
+    screenPxPlaceholder: 'フォントサイズ',
+    screenUnit: 'px',
+    convert: '変換'
+  },
+  entityPick: {
+    cancel: '選択をキャンセル'
+  },
+  layers: {
+    title: '画層',
+    close: '画層を閉じる',
+    showAll: 'すべて表示',
+    hideAll: 'すべて非表示',
+    zoomTo: '{name} にズーム'
+  },
+  review: {
+    title: 'レビュー',
+    close: 'レビューを閉じる',
+    searchPlaceholder: 'マークアップを検索',
+    empty: 'マークアップはまだありません',
+    type: '種類',
+    status: 'ステータス',
+    author: '作成者',
+    summary: '概要',
+    details: '詳細',
+    closeDetails: '詳細を閉じる',
+    label: 'ラベル',
+    comment: 'コメント',
+    zoomTo: 'ズーム',
+    delete: '削除',
+    clear: 'すべてクリア',
+    statusValues: {
+      open: '未対応',
+      question: '質問',
+      answered: '回答済み',
+      closed: '完了'
+    }
+  },
+  measurePanel: {
+    title: '計測',
+    close: '計測を閉じる',
+    filterGroup: '種類で絞り込み',
+    filterDistance: '距離',
+    filterArc: '円弧',
+    filterRadius: '半径',
+    filterAngle: '角度',
+    filterArea: '面積',
+    empty: '計測はまだありません',
+    type: '種類',
+    value: '値',
+    delete: '削除',
+    clear: 'すべてクリア'
+  },
+  session: {
+    length: '長さ',
+    angle: '角度',
+    dx: 'ΔX',
+    dy: 'ΔY',
+    x: 'X',
+    y: 'Y',
+    confirm: '確定',
+    cancel: 'キャンセル',
+    help: 'ヘルプ',
+    back: '戻る',
+    collapse: '折りたたむ',
+    expand: '展開',
+    undo: '元に戻す'
+  },
+  touchPointTutorial: {
+    title: '点を正確に指定するには',
+    description:
+      '画面を約 0.5 秒長押しします。指の上に十字カーソルが表示されて指の動きに追従し、図形にスナップするので、より正確に指定できます。',
+    snoozeToday: '今日は表示しない',
+    hideForever: '今後表示しない',
+    ok: 'わかりました'
+  },
+  status: {
+    ready: '準備完了',
+    zoomWindowHint: '2 つのコーナーをクリックすると、その窓にズームします。',
+    measureDistanceHint:
+      '2 点をクリックして距離を計測します (オブジェクトスナップ有効)。',
+    measureContinuousHint:
+      '点を順にタップして各区間を計測し、✓ で終了します。長押しで正確にスナップします。',
+    measureAreaHint:
+      '多角形の頂点をタップし、3 点以上指定したら ✓ で終了します。長押しで正確にスナップします。',
+    measureAngleHint:
+      '頂点をクリックし、続けて各辺上の点をクリックします (オブジェクトスナップ有効)。',
+    measureArcHint:
+      '円または円弧をクリックしてその長さを計測するか、始点、円弧上の点、終点の順にクリックします (オブジェクトスナップ有効)。Ctrl (Mac は ⌘) で優弧/劣弧を切り替えます。',
+    measureRadiusHint:
+      '円または円弧をクリックして半径を計測します (オブジェクトスナップ有効)。',
+    measureCoordinateHint:
+      '点をクリックして X/Y 座標を読み取ります (オブジェクトスナップ有効)。',
+    measureExported: '{count} 件の計測を書き出しました。',
+    measureImported: '{count} 件の計測を読み込みました。',
+    measureImportFailed: '計測を読み込めませんでした: {error}',
+    markupCloudHint: '2 つのコーナーをクリックして雲マークを作成します。',
+    markupCalloutHint:
+      '引出線の先端、または吹き出しのない雲マーク/長方形/円の輪郭をクリックし、次に文字の位置をクリックします。',
+    markupTextHint: '点をクリックして文字を配置します。',
+    markupRectHint: '2 つのコーナーをクリックして長方形を作成します。',
+    markupCircleHint: '中心をクリックし、次に円周上の点をクリックします。',
+    markupArrowHint: '始点をクリックし、次に矢印の先端をクリックします。',
+    markupStampHint:
+      'クリックしてスタンプを配置します (承認 / 却下 / … を順に切り替え)。',
+    markupArrowEndHint: '矢印の先端をクリックします。',
+    markupRectCornerHint: 'もう一方のコーナーをクリックします。',
+    markupCloudCornerHint: 'もう一方のコーナーをクリックします。',
+    markupCalloutAnchorHint: '吹き出しの位置をクリックします。',
+    markupCircleRadiusHint: '円周上の点をクリックします。',
+    markupTextPrompt: 'マークアップの文字を入力',
+    markupTextEditHint:
+      'キャンバス上で文字を入力します。Enter で確定、Esc でキャンセルします。',
+    markupShapeCalloutHint:
+      'クリックしてテキストボックスを配置します (引出線は図形に接続されます)。Esc で吹き出しをキャンセルします。',
+    markupDefaultLabel: 'メモ',
+    markupSelected: '選択中のマークアップ: {type}',
+    markupSelectedCount: '選択中のマークアップ: {count} 件',
+    markupCount: 'マークアップ: {count} 件',
+    markupExported: '{count} 件のマークアップを書き出しました。',
+    markupImported: '{count} 件のマークアップを読み込みました。',
+    markupImportFailed: 'マークアップを読み込めませんでした: {error}',
+    distance: '距離: {value}',
+    coordinates: 'X: {x} | Y: {y}',
+    angle: '角度: {value}',
+    arcLength:
+      '円弧の長さ: {length} | 半径: {radius} | 角度: {angle} | 弦: {chord}',
+    radius: '半径: {value}',
+    continuousTotal: '合計の長さ: {value}',
+    area: '面積: {value}',
+    lengthTotal: '長さの合計: {value}',
+    areaTotal: '面積の合計: {value}',
+    zoomLayer: 'ズーム: {name}',
+    loadFailed: '図面を読み込めませんでした: {error}',
+    noLayout: 'スナップショットにレイアウトのデータがありません。',
+    loadingChunks: '図形を読み込んでいます… {loaded}/{total}',
+    loadingOsnap: 'オブジェクトスナップを読み込んでいます… {loaded}/{total}',
+    buildingOsnap: 'オブジェクトスナップのインデックスを作成しています…'
+  },
+  package: {
+    title: '図面パッケージを開く',
+    hint: 'このページの隣に drawing.acex.json が見つかりませんでした。ローカルのパッケージフォルダを選択するか、マニフェストの URL を入力してください。',
+    hintUrlOnly:
+      'このページの隣に drawing.acex.json が見つかりませんでした。パッケージを開くにはマニフェストの URL を入力してください。',
+    chooseFolder: 'ローカルフォルダを選択',
+    urlPlaceholder: 'https://example.com/drawing.acex.json',
+    openUrl: 'URL を開く',
+    urlRequired: 'マニフェストの URL を入力してください。',
+    manifestNotFound: 'このページの隣に drawing.acex.json が見つかりませんでした。',
+    invalidManifest:
+      'パッケージのマニフェストが無効か、サポートされていないバージョンです: {error}',
+    folderMissingManifest:
+      '選択したフォルダには drawing.acex.json が含まれている必要があります。',
+    folderUnsupported:
+      'このブラウザではローカルのパッケージフォルダを開けません。代わりにマニフェストの URL を貼り付けてください。',
+    loadFailed: 'パッケージを開けませんでした: {error}'
+  },
+  access: {
+    title: '保護された図面',
+    passwordPrompt: 'このファイルを開くにはパスワードを入力してください。',
+    passwordPlaceholder: 'パスワード',
+    unlock: 'ロック解除',
+    passwordRequired: 'パスワードを入力してください。',
+    wrongPassword: 'パスワードが正しくありません。もう一度入力してください。',
+    expired: 'このファイルは有効期限が切れているため開けません。',
+    expiredTitle: '有効期限切れ',
+    expiredDetail: 'このファイルは {time} に有効期限が切れたため開けません。',
+    expiresAt: '有効期限: {time}',
+    badgeExpires: '{time} まで有効',
+    badgeCountdown: '残り {time}',
+    tooManyAttempts:
+      'パスワードの入力に何度も失敗しました。ページを再読み込みしてもう一度お試しください。'
+  }
+}
+
 const MESSAGES: Record<AcExHtmlLocale, AcExMessageTree> = {
   ...BASE_MESSAGES,
+  ja: JA_MESSAGES,
   ar: AR_MESSAGES
 }
 

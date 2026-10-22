@@ -512,6 +512,7 @@ describe('default toolbar items', () => {
     expect(locale?.selectedChildId).toBe('locale-cs')
     expect(locale?.children?.map(child => child.id)).toEqual([
       'locale-en',
+      'locale-ja',
       'locale-zh',
       'locale-cs',
       'locale-tr',
@@ -519,6 +520,7 @@ describe('default toolbar items', () => {
     ])
     expect(locale?.children?.[0]?.icon).toContain('ml-ex-ui-locale-badge')
     expect(locale?.children?.[0]?.icon).toContain('EN')
+    expect(locale?.children?.[1]?.icon).toContain('日')
   })
 })
 

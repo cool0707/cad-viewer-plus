@@ -4,6 +4,7 @@ import { agentAr } from './ar'
 import { agentCommandDescriptions } from './command'
 import { agentCs } from './cs'
 import { agentEn } from './en'
+import { agentJa } from './ja'
 import { agentTr } from './tr'
 import { agentZh } from './zh'
 
@@ -19,6 +20,7 @@ export type AgentChatLabels = Record<AgentChatLabelKey, string>
 /** Locale-specific flat message tables before nesting under `main.toolPalette.agent`. */
 const agentMessagesByLocale = {
   en: agentEn,
+  ja: agentJa,
   zh: agentZh,
   tr: agentTr,
   cs: agentCs,
@@ -58,6 +60,7 @@ export function registerAgentI18n(): void {
   if (isRegistered) return
 
   AcApI18n.mergeLocaleMessage('en', buildVueMessages('en'))
+  AcApI18n.mergeLocaleMessage('ja', buildVueMessages('ja'))
   AcApI18n.mergeLocaleMessage('zh', buildVueMessages('zh'))
   AcApI18n.mergeLocaleMessage('tr', buildVueMessages('tr'))
   AcApI18n.mergeLocaleMessage('cs', buildVueMessages('cs'))
@@ -75,6 +78,7 @@ export function mergeAgentI18nIntoVueI18n(
 ): void {
   registerAgentI18n()
   mergeLocaleMessage('en', buildVueMessages('en'))
+  mergeLocaleMessage('ja', buildVueMessages('ja'))
   mergeLocaleMessage('zh', buildVueMessages('zh'))
   mergeLocaleMessage('tr', buildVueMessages('tr'))
   mergeLocaleMessage('cs', buildVueMessages('cs'))

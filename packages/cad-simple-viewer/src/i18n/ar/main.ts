@@ -1,4 +1,7 @@
 export default {
+  newDrawing: {
+    layoutPrefix: 'تخطيط'
+  },
   document: {
     untitled: 'بلا عنوان'
   },

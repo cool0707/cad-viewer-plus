@@ -38,6 +38,7 @@ const IV_BYTES = 12
 
 const LOCALE_TO_BCP47: Record<string, string> = {
   en: 'en',
+  ja: 'ja',
   zh: 'zh-CN',
   cs: 'cs',
   tr: 'tr',

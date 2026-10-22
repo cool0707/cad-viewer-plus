@@ -10,6 +10,9 @@ export const agentCommandDescriptions = {
   en: {
     agent: 'Opens the CAD Agent chat panel'
   },
+  ja: {
+    agent: 'CAD エージェントのチャットパネルを開きます'
+  },
   zh: {
     agent: '打开 CAD 智能助手面板'
   },

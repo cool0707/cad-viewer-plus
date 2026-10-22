@@ -64,6 +64,7 @@ export const en: Record<string, string> = {
   'toolbar.themeDark': 'Dark',
   'toolbar.locale': 'Language',
   'toolbar.localeEn': 'English',
+  'toolbar.localeJa': '日本語',
   'toolbar.localeZh': '中文',
   'toolbar.localeCs': 'Čeština',
   'toolbar.localeTr': 'Türkçe',

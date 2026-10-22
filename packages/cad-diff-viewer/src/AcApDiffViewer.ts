@@ -176,6 +176,7 @@ const MARKUP_TOOLS: Array<{
 /** Language options shown in the toolbar select (same labels as cad-viewer ribbon). */
 const LOCALE_OPTIONS: Array<{ locale: AcApLocale; label: string }> = [
   { locale: 'en', label: 'English' },
+  { locale: 'ja', label: '日本語' },
   { locale: 'zh', label: '简体中文' },
   { locale: 'tr', label: 'Türkçe' },
   { locale: 'cs', label: 'Čeština' },

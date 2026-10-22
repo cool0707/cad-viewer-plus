@@ -359,8 +359,43 @@ describe('AcApDocManager font URL configuration', () => {
     AcApDocManager.createInstance({})
 
     expect(mockInitialize).toHaveBeenCalled()
-    expect(mockSetDefaultFonts).toHaveBeenCalledWith(['simsun', 'hztxt'])
+    expect(mockSetDefaultFonts).toHaveBeenCalledWith(['bizudgothic'])
     expect(mockSetFontUrl).toHaveBeenCalled()
+  })
+
+  it('uses custom default font chains when provided', () => {
+    AcApDocManager.createInstance({
+      defaultFonts: ['bizudmincho', 'notosanssc']
+    })
+
+    expect(mockSetDefaultFonts).toHaveBeenCalledWith([
+      'bizudmincho',
+      'notosanssc'
+    ])
+  })
+
+  it('resolves a relative base URL against the page so workers get an absolute URL', () => {
+    const resolveBaseUrl = (
+      AcApDocManager as unknown as { resolveBaseUrl: (url: string) => string }
+    ).resolveBaseUrl
+    const globalWithDocument = globalThis as { document?: unknown }
+    const previousDocument = globalWithDocument.document
+    globalWithDocument.document = {
+      baseURI: 'https://app.example.com/viewer/index.html'
+    }
+    try {
+      expect(resolveBaseUrl('static/cad-data')).toBe(
+        'https://app.example.com/viewer/static/cad-data/'
+      )
+      expect(resolveBaseUrl('./cad-data/')).toBe(
+        'https://app.example.com/viewer/cad-data/'
+      )
+      expect(resolveBaseUrl('https://cdn.example.com/data')).toBe(
+        'https://cdn.example.com/data/'
+      )
+    } finally {
+      globalWithDocument.document = previousDocument
+    }
   })
 
   it('configures main-thread mtext rendering before initializing workers', () => {
@@ -404,9 +439,7 @@ describe('AcApDocManager preset fonts for open', () => {
     const names = call[0]
     const options = call[1]
     expect(names.length).toBeGreaterThan(0)
-    expect(names).toEqual(
-      expect.arrayContaining(['simsun', 'hztxt', 'amgdt'])
-    )
+    expect(names).toEqual(expect.arrayContaining(['bizudgothic']))
     expect(options).toEqual({ scope: 'all' })
     expect(manager!.lastPresetFontsForOpen).toEqual(names)
   })

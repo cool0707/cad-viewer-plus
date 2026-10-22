@@ -653,6 +653,7 @@ export default {
     export: {
       tooltip: 'Exportovat obrázek jako PNG'
     },
+    modelTab: 'Model',
     moreLayouts: 'Další rozvržení'
   },
   toolPalette: {

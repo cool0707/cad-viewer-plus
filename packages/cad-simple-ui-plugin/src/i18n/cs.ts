@@ -64,6 +64,7 @@ export const cs: Record<string, string> = {
   'toolbar.themeDark': 'Tmavý',
   'toolbar.locale': 'Jazyk',
   'toolbar.localeEn': 'English',
+  'toolbar.localeJa': '日本語',
   'toolbar.localeZh': '中文',
   'toolbar.localeCs': 'Čeština',
   'toolbar.localeTr': 'Türkçe',
