@@ -1,3 +1,7 @@
+// UI font (self-hosted, unicode-range subsets): keeps Japanese UI text out of
+// Chinese system fonts. Drawing text uses the CAD font catalog instead.
+import '@fontsource-variable/noto-sans-jp'
+
 import { AcApDiffViewer } from '@mlightcad/cad-diff-viewer'
 import {
   AcApI18n,

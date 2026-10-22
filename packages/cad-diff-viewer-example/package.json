@@ -17,6 +17,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@fontsource-variable/noto-sans-jp": "5.3.1",
     "@mlightcad/cad-diff-viewer": "workspace:*",
     "@mlightcad/cad-simple-viewer": "workspace:*",
     "@mlightcad/data-model": "1.15.14",

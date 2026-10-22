@@ -80,7 +80,7 @@ export class AcTrHtmlCallout extends AcTrHtmlElement {
       `border:1px solid ${accent};border-left:4px solid ${accent};` +
       'border-radius:6px;padding:6px 10px;pointer-events:none;' +
       'transform:translate(-50%,-50%);box-shadow:var(--ml-ui-shadow, 0 1px 4px rgba(0,0,0,0.2));' +
-      'font-family:sans-serif;'
+      'font-family:"Noto Sans JP Variable","Noto Sans JP",sans-serif;'
 
     const textEl = document.createElement('div')
     textEl.className = 'ml-html-callout-text'

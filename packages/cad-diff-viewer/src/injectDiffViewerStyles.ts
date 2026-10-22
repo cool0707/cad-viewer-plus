@@ -24,7 +24,7 @@ const CSS = `
   overflow: hidden;
   color: var(--ml-diff-text);
   background: var(--ml-diff-bg);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: "Noto Sans JP Variable", "Noto Sans JP", -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 .ml-diff-root *,

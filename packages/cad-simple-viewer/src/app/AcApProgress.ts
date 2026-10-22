@@ -319,7 +319,7 @@ export class AcApProgress {
     align-items: center;
     z-index: 9999;
     pointer-events: auto;
-    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial;
+    font-family: "Noto Sans JP Variable", "Noto Sans JP", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial;
   }
   
   .ml-ccl-wrapper {

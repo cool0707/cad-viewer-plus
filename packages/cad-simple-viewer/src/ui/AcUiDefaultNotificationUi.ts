@@ -665,7 +665,7 @@ function ensureStyles() {
   position: absolute;
   inset: 0;
   z-index: ${ML_UI_Z_NOTIFICATION};
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  font-family: "Noto Sans JP Variable", "Noto Sans JP", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
   font-size: 13px;
   color: var(--ml-ui-text);
   pointer-events: none;

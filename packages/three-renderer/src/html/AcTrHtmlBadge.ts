@@ -86,7 +86,7 @@ export class AcTrHtmlBadge extends AcTrHtmlElement {
     el.style.cssText =
       `background:var(--ml-ui-bg, rgba(255,255,255,0.95));color:${css};` +
       `border:${border}em solid ${css};box-sizing:border-box;` +
-      `font-size:${size}px;font-family:sans-serif;font-weight:500;` +
+      `font-size:${size}px;font-family:"Noto Sans JP Variable","Noto Sans JP",sans-serif;font-weight:500;` +
       `padding:${padY}em ${padX}em;border-radius:${radius}em;pointer-events:none;` +
       `transform:${transform ?? 'translate(-50%,-50%)'};white-space:nowrap;` +
       'box-shadow:var(--ml-ui-shadow, 0 1px 4px rgba(0,0,0,0.2));'

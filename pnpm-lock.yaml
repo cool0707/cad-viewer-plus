@@ -188,6 +188,9 @@ importers:
 
   packages/cad-diff-viewer-example:
     dependencies:
+      '@fontsource-variable/noto-sans-jp':
+        specifier: 5.3.1
+        version: 5.3.1
       '@mlightcad/cad-diff-viewer':
         specifier: workspace:*
         version: link:../cad-diff-viewer
@@ -508,6 +511,9 @@ importers:
 
   packages/cad-simple-viewer-example:
     dependencies:
+      '@fontsource-variable/noto-sans-jp':
+        specifier: 5.3.1
+        version: 5.3.1
       '@mlightcad/cad-agent-core':
         specifier: workspace:*
         version: link:../cad-agent-core
@@ -692,6 +698,9 @@ importers:
       '@element-plus/icons-vue':
         specifier: ^2.3.1
         version: 2.3.2(vue@3.5.31(typescript@5.9.3))
+      '@fontsource-variable/noto-sans-jp':
+        specifier: 5.3.1
+        version: 5.3.1
       '@mlightcad/cad-agent-core':
         specifier: workspace:*
         version: link:../cad-agent-core
@@ -2174,6 +2183,9 @@ packages:
 
   '@floating-ui/utils@0.2.11':
     resolution: {integrity: sha512-RiB/yIh78pcIxl6lLMG0CgBXAZ2Y0eVHqMPYugu+9U0AeT6YBeiJpf7lbdJNIugFP5SIjwNRgo4DhR1Qxi26Gg==}
+
+  '@fontsource-variable/noto-sans-jp@5.3.1':
+    resolution: {integrity: sha512-/anGvJFc5y36f8DJ+3TSh2+KAvaRLA9PaLUMvneeY5s4j8m+8X4F3lE/sjTuG9YI5BX4sykvCk4TuJMG7ecMRQ==}
 
   '@gerrit0/mini-shiki@3.23.0':
     resolution: {integrity: sha512-bEMORlG0cqdjVyCEuU0cDQbORWX+kYCeo0kV1lbxF5bt4r7SID2l9bqsxJEM0zndaxpOUT7riCyIVEuqq/Ynxg==}
@@ -8039,6 +8051,8 @@ snapshots:
       '@floating-ui/utils': 0.2.11
 
   '@floating-ui/utils@0.2.11': {}
+
+  '@fontsource-variable/noto-sans-jp@5.3.1': {}
 
   '@gerrit0/mini-shiki@3.23.0':
     dependencies:

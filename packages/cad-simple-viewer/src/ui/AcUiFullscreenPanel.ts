@@ -265,7 +265,7 @@ const FULLSCREEN_PANEL_CSS = `
     flex-direction: column;
     background: var(--ml-ui-bg, var(--mlcad-ui-bg, #1c1e22));
     color: var(--ml-ui-text, var(--mlcad-ui-text, #e8eaed));
-    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-family: "Noto Sans JP Variable", "Noto Sans JP", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   }
   .ml-ui-fullscreen-panel[hidden] {
     display: none !important;

@@ -59,7 +59,7 @@ export const ACEX_HTML_SHELL_CSS = `
   html, body {
     margin: 0; height: 100%; overflow: hidden;
     background: #121418;
-    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    font-family: "Noto Sans JP Variable", "Noto Sans JP", "Segoe UI", system-ui, -apple-system, sans-serif;
     color: var(--mlcad-ui-text);
   }
   #mlcad-root { position: relative; width: 100%; height: 100%; }

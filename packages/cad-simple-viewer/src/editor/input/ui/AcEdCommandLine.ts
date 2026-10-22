@@ -312,7 +312,7 @@ export class AcEdCommandLine {
         bottom: 10px;
         left: 50%;
         transform: translateX(-50%);
-        font-family: "Segoe UI", Arial, sans-serif;
+        font-family: "Noto Sans JP Variable", "Noto Sans JP", "Segoe UI", Arial, sans-serif;
         font-size: 13px;
         box-sizing: border-box;
         user-select: none;
@@ -414,7 +414,7 @@ export class AcEdCommandLine {
         user-select: none;
         margin-right: 4px;
         line-height: 1;
-        font-family: "Microsoft YaHei", "PingFang SC", "Segoe UI", Arial, sans-serif;
+        font-family: "Noto Sans JP Variable", "Noto Sans JP", "Segoe UI", Arial, sans-serif;
         font-size: 12px;
         letter-spacing: 0;
         word-spacing: 0;
@@ -428,7 +428,7 @@ export class AcEdCommandLine {
         outline: none;
         background: transparent;
 
-        font-family: "Microsoft YaHei", "PingFang SC", "Segoe UI", Arial, sans-serif;
+        font-family: "Noto Sans JP Variable", "Noto Sans JP", "Segoe UI", Arial, sans-serif;
         font-size: 13px;
         line-height: 1;
         letter-spacing: 0;
@@ -498,7 +498,7 @@ export class AcEdCommandLine {
         box-shadow: var(--ml-ui-shadow, 0 6px 18px rgba(0, 0, 0, 0.35));
         border-radius: 4px;
         padding: 6px 0;
-        font-family: "Microsoft YaHei", Arial, sans-serif;
+        font-family: "Noto Sans JP Variable", "Noto Sans JP", Arial, sans-serif;
         color: var(--ml-ui-text, #fff);
         font-size: 14px;
         white-space: pre-wrap;
@@ -542,7 +542,7 @@ export class AcEdCommandLine {
         background: rgba(45, 48, 54, 0.88);
         border-radius: 4px;
         padding: 4px 8px;
-        font-family: "Microsoft YaHei", "PingFang SC", "Segoe UI", Arial, sans-serif;
+        font-family: "Noto Sans JP Variable", "Noto Sans JP", "Segoe UI", Arial, sans-serif;
         font-size: 12px;
         line-height: 1.25;
         letter-spacing: 0;

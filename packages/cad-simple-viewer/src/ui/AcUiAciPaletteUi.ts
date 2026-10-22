@@ -46,7 +46,7 @@ const ACI_PALETTE_CSS = `
 .ml-aci-picker,
 .ml-aci-stacks {
   font-size: 12px;
-  font-family: Arial, sans-serif;
+  font-family: "Noto Sans JP Variable", "Noto Sans JP", Arial, sans-serif;
   touch-action: manipulation;
 }
 .ml-aci-picker {
@@ -225,7 +225,7 @@ const ACI_PALETTE_CSS = `
   background: var(--ml-ui-bg, #ffffff);
   color: var(--ml-ui-text, #303133);
   font-size: 12px;
-  font-family: Arial, sans-serif;
+  font-family: "Noto Sans JP Variable", "Noto Sans JP", Arial, sans-serif;
 }
 .ml-aci-preview-box {
   width: 32px;
@@ -247,7 +247,7 @@ const ACI_PALETTE_CSS = `
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(0, 0, 0, 0.45);
   background: #1a1a1a;
   color: #fff;
-  font-family: Arial, sans-serif;
+  font-family: "Noto Sans JP Variable", "Noto Sans JP", Arial, sans-serif;
   transform: translate(-50%, -100%);
 }
 .ml-aci-loupe.is-visible {

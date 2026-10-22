@@ -196,7 +196,7 @@ export function acuiEnsureUiStyles() {
       box-shadow: var(--ml-ui-shadow, 0 6px 18px rgba(0, 0, 0, 0.35));
       padding: 12px;
       color: var(--ml-ui-text, #303133);
-      font-family: Arial, sans-serif;
+      font-family: "Noto Sans JP Variable", "Noto Sans JP", Arial, sans-serif;
       font-size: 12px;
     }
 

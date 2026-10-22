@@ -339,7 +339,7 @@ export class AcUiDialog {
   align-items: center;
   justify-content: center;
   background: var(--ml-ui-overlay, rgba(0, 0, 0, 0.45));
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-family: "Noto Sans JP Variable", "Noto Sans JP", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
 .ml-ui-dialog {

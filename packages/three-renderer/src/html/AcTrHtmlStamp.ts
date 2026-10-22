@@ -57,7 +57,7 @@ export class AcTrHtmlStamp extends AcTrHtmlElement {
     el.style.cssText =
       'display:flex;flex-direction:column;align-items:center;gap:4px;' +
       'pointer-events:none;transform:translate(-50%,-50%);' +
-      'font-family:sans-serif;'
+      'font-family:"Noto Sans JP Variable","Noto Sans JP",sans-serif;'
 
     if (options.imageUrl) {
       const img = document.createElement('img')

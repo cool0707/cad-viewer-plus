@@ -6,14 +6,36 @@
 }
 
 html,
+:root {
+  /*
+   * UI font stack. "Noto Sans JP" is provided by the host app (the examples
+   * bundle @fontsource-variable/noto-sans-jp) so Japanese UI text never falls
+   * back to Chinese system fonts.
+   */
+  --ml-ui-font-family: "Noto Sans JP Variable", "Noto Sans JP", Inter, system-ui,
+    Avenir, "Helvetica Neue", Helvetica, "Hiragino Sans", "Yu Gothic UI", Meiryo,
+    "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial,
+    sans-serif;
+  --el-font-family: var(--ml-ui-font-family);
+}
+
+// Form controls do not inherit `font-family` by default (browsers fall back to
+// a system font such as Arial), which made ribbon buttons and layout tabs
+// render Japanese with a different face than the rest of the UI.
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+
 body {
   // Teleported tooltips (e.g. right-docked toolbar) must not grow page width.
   overflow-x: hidden;
 }
 
 body {
-  font-family: Inter, system-ui, Avenir, "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",
-    "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+  font-family: var(--ml-ui-font-family);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   margin: 0;

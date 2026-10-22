@@ -754,7 +754,7 @@ export class AcUiFileOpenPanel {
   gap: 0;
   width: 100%;
   box-sizing: border-box;
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-family: "Noto Sans JP Variable", "Noto Sans JP", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   color: var(--ml-ui-text, #303133);
 }
 .ml-ui-file-open-header { margin-bottom: 12px; }
