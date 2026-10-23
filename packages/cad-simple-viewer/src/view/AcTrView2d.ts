@@ -869,7 +869,7 @@ export class AcTrView2d extends AcEdBaseView {
         updateSelectionPreview(
           e.clientX,
           e.clientY,
-          this.getPointerSelectionAction(e)
+          this.getPointerSelectionAction(e, false)
         )
       },
       { signal: viewDomSignal }
@@ -891,13 +891,9 @@ export class AcTrView2d extends AcEdBaseView {
           x: e.clientX,
           y: e.clientY
         })
-        const action = this.getPointerSelectionAction(e)
-        finishSelection(
-          e.clientX,
-          e.clientY,
-          action,
-          this.isSelectionClick(selectionStartCanvas, endCanvas)
-        )
+        const isClick = this.isSelectionClick(selectionStartCanvas, endCanvas)
+        const action = this.getPointerSelectionAction(e, isClick)
+        finishSelection(e.clientX, e.clientY, action, isClick)
       },
       { signal: viewDomSignal }
     )
@@ -1042,8 +1038,12 @@ export class AcTrView2d extends AcEdBaseView {
     this.resetDeferredGeometryQueue()
   }
 
-  private getPointerSelectionAction(e: MouseEvent) {
-    return resolvePointerSelectionAction(e)
+  private getPointerSelectionAction(e: MouseEvent, isClick: boolean) {
+    return resolvePointerSelectionAction(
+      e,
+      AcApSettingManager.instance.selectionStyle,
+      isClick
+    )
   }
 
   /**

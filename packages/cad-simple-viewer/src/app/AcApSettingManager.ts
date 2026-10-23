@@ -4,6 +4,8 @@ import {
   acdbOsnapModesToMask
 } from '@mlightcad/data-model'
 
+import type { AcEdSelectionStyle } from '../editor/view/AcEdSelectionAction'
+
 /**
  * Font mappings for CAD text rendering.
  *
@@ -49,6 +51,11 @@ export interface AcApSettings {
   fontMapping: AcApFontMapping
   /** Object snap modes */
   osnapModes: number
+  /**
+   * How plain clicks on the canvas update the selection set: `'cad'` adds on
+   * every click, `'simple'` replaces (Shift + click toggles).
+   */
+  selectionStyle: AcEdSelectionStyle
   /** When true, never show the mobile precise point-pick tutorial again. */
   hideTouchPointTutorial: boolean
   /**
@@ -110,6 +117,7 @@ const DEFAULT_VALUES: AcApSettings = {
     AcDbOsnapMode.Intersection,
     AcDbOsnapMode.Nearest
   ]),
+  selectionStyle: 'cad',
   hideTouchPointTutorial: false,
   touchPointTutorialSnoozeDate: null,
   useSimulatedMouseOnTouch: true
@@ -650,6 +658,24 @@ export class AcApSettingManager<T extends AcApSettings = AcApSettings> {
    */
   set osnapModes(value: number) {
     this.set('osnapModes', value)
+  }
+
+  /**
+   * Gets how plain clicks on the canvas update the selection set.
+   *
+   * @returns `'cad'` (every click adds) or `'simple'` (a click replaces).
+   */
+  get selectionStyle() {
+    return this.get('selectionStyle')
+  }
+
+  /**
+   * Sets how plain clicks on the canvas update the selection set.
+   *
+   * @param value - The new selection style.
+   */
+  set selectionStyle(value: AcEdSelectionStyle) {
+    this.set('selectionStyle', value)
   }
 
   /**

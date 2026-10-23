@@ -31,6 +31,9 @@ takže výkresy nikdy neopustí zařízení uživatele.
   blok → symbol, atribut bloku → vlastnost symbolu, modelový prostor → plátno,
   rozvržení → tisková stránka, šrafování → vzorová výplň, externí reference → propojený výkres,
   rychlý výběr → výběr podle kritérií atd. Popisky nástrojů uvádějí CAD pojem v závorce (všechna národní prostředí).
+- **Přepínání způsobu výběru** — tlačítko ve stavovém řádku přepíná mezi stylem CAD
+  (každé kliknutí přidá) a nahrazením kliknutím (Shift + kliknutí přidá nebo odebere,
+  kliknutí do prázdna výběr zruší). Výchozí je zatím styl CAD.
 - **Import JWW (Jw_cad)** — ukázková aplikace otevírá soubory `.jww` pomocí
   `@mlightcad/cad-jww-converter` (MIT; parser [ezjww](https://github.com/monozukuri-ai/ezjww),
   Rust → WebAssembly, ve Web Workeru). Souřadnice se převádějí z milimetrů na papíře na skutečné

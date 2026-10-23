@@ -32,6 +32,9 @@ drawings never leave the user's device.
   block attribute → symbol property, Model space → Canvas, Layout → Print page,
   Hatch → Pattern fill, Xref → Linked drawing, Quick Select → Select by Criteria, and so on.
   Tooltips keep the CAD term in parentheses (all locales).
+- **Selection style switch** — a status bar button switches clicks between
+  CAD style (every click adds) and replace on click (Shift + click adds or removes,
+  clicking empty space clears the selection). CAD style stays the default for now.
 - **JWW (Jw_cad) import** — `.jww` files open in the example app through
   `@mlightcad/cad-jww-converter` (MIT; parser: [ezjww](https://github.com/monozukuri-ai/ezjww),
   Rust → WebAssembly, in a Web Worker). Coordinates are converted from paper

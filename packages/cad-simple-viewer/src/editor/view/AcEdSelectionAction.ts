@@ -5,11 +5,26 @@
  * - `'replace'`: clear the current selection set, then add the new ids.
  * - `'add'`: keep the current selection set and append any new ids.
  * - `'remove'`: remove matching ids from the current selection set.
+ * - `'toggle'`: remove ids that are already selected and add the others.
  *
  * This type is used by the view layer to unify click selection, box
  * selection, and command-driven selection behavior.
  */
-export type AcEdSelectionAction = 'replace' | 'add' | 'remove'
+export type AcEdSelectionAction = 'replace' | 'add' | 'remove' | 'toggle'
+
+/**
+ * How plain pointer clicks on the canvas update the selection set.
+ *
+ * - `'cad'`: AutoCAD style. Every click adds to the selection set,
+ *   Shift + click removes and Ctrl/Cmd + click adds.
+ * - `'simple'`: Figma / Illustrator style. A click replaces the selection
+ *   set, Shift + click toggles the picked entity (Shift + drag adds) and
+ *   Ctrl/Cmd + click adds.
+ *
+ * In both styles clicking empty space without modifiers clears the
+ * selection set only when the resolved action is `'replace'`.
+ */
+export type AcEdSelectionStyle = 'cad' | 'simple'
 
 /**
  * Minimal modifier-key snapshot needed to resolve selection behavior from a
@@ -92,18 +107,21 @@ export function resolveSelectionActionFromEvent(
 }
 
 /**
- * Resolves the default action for direct pointer-based selection in the 2D
- * viewer.
+ * Resolves the action for direct pointer-based selection in the 2D viewer
+ * when no command is waiting for a selection.
  *
- * Unlike the generic resolver, pointer selection without modifiers defaults to
- * `'add'` so repeated clicks or drag selections preserve the existing
- * selection set instead of replacing it.
- *
- * Modifier precedence remains the same as
- * {@link resolveSelectionActionFromEvent}:
- * `Shift` removes, while `Ctrl`/`Meta` adds.
+ * - `'cad'` style: pointer selection without modifiers defaults to `'add'` so
+ *   repeated clicks or drag selections preserve the existing selection set.
+ *   Modifier precedence is the same as {@link resolveSelectionActionFromEvent}:
+ *   `Shift` removes, while `Ctrl`/`Meta` adds.
+ * - `'simple'` style: no modifier replaces the selection set. `Shift` toggles
+ *   the clicked entity, or adds when the gesture is a drag box (toggling a
+ *   whole box is hard to predict). `Ctrl`/`Meta` adds.
  *
  * @param e - Modifier-key state captured from the pointer event.
+ * @param style - Selection style chosen by the user. Defaults to `'cad'`.
+ * @param isClick - Whether the gesture is a click rather than a drag box.
+ * Only affects `Shift` in the `'simple'` style. Defaults to `true`.
  * @returns The selection action that should be used for pointer selection.
  *
  * @example
@@ -115,9 +133,25 @@ export function resolveSelectionActionFromEvent(
  * })
  * // => 'add'
  * ```
+ *
+ * @example
+ * ```ts
+ * resolvePointerSelectionAction(
+ *   { shiftKey: true, ctrlKey: false, metaKey: false },
+ *   'simple'
+ * )
+ * // => 'toggle'
+ * ```
  */
 export function resolvePointerSelectionAction(
-  e: AcEdSelectionModifierState
+  e: AcEdSelectionModifierState,
+  style: AcEdSelectionStyle = 'cad',
+  isClick: boolean = true
 ): AcEdSelectionAction {
+  if (style === 'simple') {
+    if (e.shiftKey) return isClick ? 'toggle' : 'add'
+    if (e.ctrlKey || e.metaKey) return 'add'
+    return 'replace'
+  }
   return resolveSelectionActionFromEvent(e, 'add')
 }

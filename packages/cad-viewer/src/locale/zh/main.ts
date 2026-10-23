@@ -595,6 +595,10 @@ export default {
       on: '隐藏线宽',
       off: '显示线宽'
     },
+    selectionStyle: {
+      simple: '单击替换选择 (Shift+单击添加或取消)。点击切换为 CAD 方式',
+      cad: 'CAD 方式：每次单击都添加到选择。点击切换为单击替换'
+    },
     orthoMode: {
       on: '关闭正交模式',
       off: '打开正交模式'

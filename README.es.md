@@ -33,6 +33,9 @@ del dispositivo del usuario.
   atributo de bloque → propiedad del símbolo, espacio modelo → lienzo, presentación → página de impresión,
   sombreado → relleno de patrón, referencia externa → plano vinculado, selección rápida → seleccionar por criterios, etc.
   Las descripciones emergentes mantienen el término CAD entre paréntesis (todos los idiomas).
+- **Cambio del modo de selección** — un botón de la barra de estado alterna entre el estilo CAD
+  (cada clic añade) y reemplazar al hacer clic (Mayús + clic añade o quita, un clic en vacío
+  borra la selección). Por ahora el estilo CAD sigue siendo el predeterminado.
 - **Importación de JWW (Jw_cad)** — la app de ejemplo abre archivos `.jww` con
   `@mlightcad/cad-jww-converter` (MIT; analizador [ezjww](https://github.com/monozukuri-ai/ezjww),
   Rust → WebAssembly, en un Web Worker). Las coordenadas pasan de milímetros de papel a
