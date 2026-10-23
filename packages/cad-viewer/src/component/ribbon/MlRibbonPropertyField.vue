@@ -106,7 +106,7 @@ const fieldStyle = computed(() =>
   .ml-ribbon-property-field__icon
   :deep(rect) {
   fill: currentColor;
-  stroke: currentColor;
+  stroke: none;
 }
 
 .ml-ribbon-property-field__control {
