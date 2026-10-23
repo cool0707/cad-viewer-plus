@@ -439,12 +439,16 @@ export default {
       description: '将测量标注导出为 sidecar JSON 文件'
     },
     annotation: {
-      text: '批注',
+      text: '审阅',
       description: '审阅工具'
     },
     layer: {
       text: '图层',
       description: '管理图层'
+    },
+    text: {
+      text: '文字 (多行文字)',
+      description: '在图纸中创建多行文字注释'
     },
     pan: {
       text: '移动',

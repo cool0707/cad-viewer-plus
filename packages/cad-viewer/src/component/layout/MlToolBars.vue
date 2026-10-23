@@ -38,6 +38,7 @@ import {
   ICON_REV_RECT,
   ICON_SELECT,
   ICON_SWITCH_BG,
+  ICON_TEXT,
   ICON_ZOOM_EXTENT,
   ICON_ZOOM_ORIGINAL,
   ICON_ZOOM_SMART,
@@ -155,6 +156,13 @@ const buildItems = (): AcUiToolbarItem[] => {
       label: 'main.verticalToolbar.pan.text',
       icon: ICON_PAN,
       command: 'pan'
+    },
+    {
+      id: 'text',
+      label: 'main.verticalToolbar.text.text',
+      icon: ICON_TEXT,
+      command: 'mtext',
+      minOpenMode: AcEdOpenMode.Write
     },
     {
       id: 'zoom',

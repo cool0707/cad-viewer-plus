@@ -458,12 +458,16 @@ export default {
       description: '計測をサイドカー JSON ファイルに書き出します'
     },
     annotation: {
-      text: '注釈',
+      text: 'レビュー',
       description: 'レビューツール'
     },
     layer: {
       text: 'レイヤー',
       description: 'レイヤー (画層) を管理します'
+    },
+    text: {
+      text: '文字 (マルチテキスト)',
+      description: '図面に文字の注釈を作成します'
     },
     pan: {
       text: '画面移動',

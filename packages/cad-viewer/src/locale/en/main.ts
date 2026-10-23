@@ -475,12 +475,16 @@ export default {
       description: 'Export measurements to a sidecar JSON file'
     },
     annotation: {
-      text: 'Annotation',
+      text: 'Review',
       description: 'Review tools'
     },
     layer: {
       text: 'Layer',
       description: 'Manages layers'
+    },
+    text: {
+      text: 'Text (MText)',
+      description: 'Create a multiline text annotation in the drawing'
     },
     pan: {
       text: 'Pan',

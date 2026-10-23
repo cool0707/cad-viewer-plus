@@ -664,7 +664,7 @@ export default {
 
     annotation: {
       ...enMain.verticalToolbar.annotation,
-      text: 'تعليقات',
+      text: 'مراجعة',
       description: 'أدوات المراجعة'
     },
 
@@ -674,6 +674,11 @@ export default {
       description: 'إدارة الطبقات'
     },
 
+
+    text: {
+      text: 'نص (MText)',
+      description: 'إنشاء تعليق نصي متعدد الأسطر في الرسم'
+    },
     pan: {
       ...enMain.verticalToolbar.pan,
       text: 'تحريك',

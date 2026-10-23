@@ -478,12 +478,16 @@ export default {
       description: 'Ölçümleri sidecar JSON dosyasına dışa aktarır'
     },
     annotation: {
-      text: 'Açıklama',
+      text: 'İnceleme',
       description: 'İnceleme araçları'
     },
     layer: {
       text: 'Katman',
       description: 'Katmanları yönetir'
+    },
+    text: {
+      text: 'Metin (MText)',
+      description: 'Çizimde çok satırlı bir metin notu oluşturur'
     },
     pan: {
       text: 'Kaydır',
