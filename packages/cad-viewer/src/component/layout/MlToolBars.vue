@@ -53,6 +53,8 @@ import {
 } from 'vue'
 
 import { useDocument, useSettings } from '../../composable'
+import { ML_TOOLBAR_EDGE_OFFSET } from '../../composable/toolbarSide'
+import { usePaletteToolbarAvoidance } from '../../composable/usePaletteToolbarAvoidance'
 
 const features = useSettings()
 const { isDocumentOpening, openMode: docOpenMode } = useDocument()
@@ -60,6 +62,12 @@ const { isDocumentOpening, openMode: docOpenMode } = useDocument()
 const hostRef = ref<HTMLElement | null>(null)
 let toolbar: AcUiToolbar | undefined
 let unbindDoc: (() => void) | undefined
+
+// Flip to the left edge while the tool palette would cover the toolbar.
+const { refresh: refreshToolbarSide } = usePaletteToolbarAvoidance(
+  hostRef,
+  () => toolbar
+)
 
 const markupVisible = ref(isMarkupVisible())
 const measurementVisible = ref(isMeasurementVisible())
@@ -370,7 +378,7 @@ const ensureToolbar = () => {
     host,
     placement: 'right',
     // Match AcUiShortCutToolbar shell `right: 12px`.
-    edgeOffset: 12,
+    edgeOffset: ML_TOOLBAR_EDGE_OFFSET,
     items: buildItems(),
     i18n,
     collapsible: true,
@@ -384,6 +392,7 @@ const ensureToolbar = () => {
   // Re-measure after the host has a real canvas-sized box (see host CSS note).
   void nextTick(() => {
     toolbar?.refresh()
+    refreshToolbarSide()
   })
 }
 
