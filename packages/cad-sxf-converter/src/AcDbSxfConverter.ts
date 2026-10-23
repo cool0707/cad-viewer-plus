@@ -24,7 +24,8 @@ export interface AcDbSxfConverterConfig extends AcDbDatabaseConverterConfig {
 
 /**
  * Reads SXF drawings (the Japanese CAD data exchange standard used for
- * public works deliverables): SFC feature files and P21 (AP202) files.
+ * public works deliverables): SFC feature files, P21 (AP202) files and their
+ * ZIP forms SFZ / P2Z.
  *
  * The file is parsed in TypeScript (no WebAssembly), flattened into lines,
  * curves, text and fills, written as DXF and loaded by the registered DXF

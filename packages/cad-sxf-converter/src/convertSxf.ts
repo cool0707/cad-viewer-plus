@@ -1,3 +1,5 @@
+import { unzipSync } from 'fflate'
+
 import { readP21Drawing } from './p21'
 import { readSfcDrawing } from './sfc'
 import { decodeSxfBytes } from './step'
@@ -23,12 +25,32 @@ export function detectSxfFormat(text: string): 'sfc' | 'p21' | undefined {
   return 'p21'
 }
 
-/** Converts SXF file bytes (SFC or P21) to DXF text. */
+/** Whether the bytes are a ZIP archive (SFZ / P2Z). */
+export function isZip(data: Uint8Array) {
+  return data[0] === 0x50 && data[1] === 0x4b && data[2] === 0x03 && data[3] === 0x04
+}
+
+/**
+ * Extracts the drawing from an SFZ / P2Z archive: the first `.sfc` / `.p21`
+ * entry. Attribute (SAF) and image files bundled with it are ignored.
+ */
+export function unzipSxf(data: Uint8Array): Uint8Array {
+  const entries = unzipSync(data, {
+    filter: file => /\.(sfc|p21)$/i.test(file.name)
+  })
+  const names = Object.keys(entries).sort()
+  if (names.length === 0) {
+    throw new Error('The archive contains no SXF (.sfc / .p21) file')
+  }
+  return entries[names[0]]
+}
+
+/** Converts SXF file bytes (SFC, P21 or their ZIP forms SFZ / P2Z) to DXF text. */
 export function convertSxfToDxf(
   data: Uint8Array,
   options: SxfDxfOptions = {}
 ): SxfConversionResult {
-  const text = decodeSxfBytes(data)
+  const text = decodeSxfBytes(isZip(data) ? unzipSxf(data) : data)
   const format = detectSxfFormat(text)
   if (format === 'sfc') {
     const drawing = readSfcDrawing(text)

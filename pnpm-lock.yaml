@@ -620,6 +620,10 @@ importers:
         version: 0.13.5(patch_hash=0d988d98fc2da267cf496f084984c2e0401e53b13eeee61a5455f6343eb16c68)(@mlightcad/mtext-parser@1.5.5)(three@0.186.1)
 
   packages/cad-sxf-converter:
+    dependencies:
+      fflate:
+        specifier: 0.8.2
+        version: 0.8.2
     devDependencies:
       '@mlightcad/data-model':
         specifier: 1.15.14

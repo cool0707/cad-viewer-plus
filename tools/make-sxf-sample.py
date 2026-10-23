@@ -6,10 +6,11 @@
 A small A3 floor plan: a 1/100 partial drawing (部分図) with grid lines,
 walls, a door swing, a table, a rug, a column fill, a hatched area, room
 names and a dimension, plus a 1/1 sheet border and title. Writes
-sxf-sample.sfc and sxf-sample.p21 (same content). ezsxf is MIT licensed;
+sxf-sample.sfc / .p21 and their ZIP forms .sfz / .p2z (same content). ezsxf is MIT licensed;
 the drawing itself is original.
 """
 
+import zipfile
 from pathlib import Path
 
 import ezsxf
@@ -109,7 +110,14 @@ def main():
     doc = build()
     doc.save(OUT / "sxf-sample.sfc")
     doc.save_p21(OUT / "sxf-sample.p21")
-    print("wrote", OUT / "sxf-sample.sfc", OUT / "sxf-sample.p21")
+    doc.save_p2z(OUT / "sxf-sample.p2z")
+    # SFZ is the SFC file in a ZIP archive (fixed timestamp: reproducible).
+    with zipfile.ZipFile(OUT / "sxf-sample.sfz", "w", zipfile.ZIP_DEFLATED) as archive:
+        info = zipfile.ZipInfo("SXF-SAMPLE.SFC", date_time=(2026, 10, 23, 0, 0, 0))
+        info.compress_type = zipfile.ZIP_DEFLATED
+        archive.writestr(info, (OUT / "sxf-sample.sfc").read_bytes())
+    for name in ("sfc", "p21", "p2z", "sfz"):
+        print("wrote", OUT / f"sxf-sample.{name}")
 
 
 if __name__ == "__main__":
