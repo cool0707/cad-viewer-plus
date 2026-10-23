@@ -181,19 +181,20 @@ export function acuiEnsureToolbarStyles(): void {
 
 .ml-ex-ui-toolbar.is-vertical .ml-ex-ui-toolbar-handle {
   flex-direction: row;
-  height: 16px;
+  height: 14px;
   margin-top: -2px;
 }
 
 .ml-ex-ui-toolbar.is-horizontal .ml-ex-ui-toolbar-handle {
   flex-direction: column;
-  width: 16px;
+  width: 14px;
   align-self: stretch;
   margin-left: -2px;
 }
 
+/* Grip : menu = 2 : 1 along the handle. */
 .ml-ex-ui-toolbar-handle .ml-ex-ui-toolbar-grip {
-  flex: 1 1 auto;
+  flex: 2 1 0;
   min-width: 0;
   min-height: 0;
 }
@@ -202,7 +203,10 @@ export function acuiEnsureToolbarStyles(): void {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  flex: 0 0 16px;
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 0;
+  overflow: visible;
   box-sizing: border-box;
   padding: 0;
   border: none;
@@ -225,6 +229,9 @@ export function acuiEnsureToolbarStyles(): void {
 
 .ml-ex-ui-toolbar-layout-btn .ml-ex-ui-icon {
   display: inline-flex;
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
 }
 
 .ml-ex-ui-toolbar-layout-btn .ml-ex-ui-icon svg {
@@ -232,7 +239,8 @@ export function acuiEnsureToolbarStyles(): void {
   height: 14px;
 }
 
-.ml-ex-ui-toolbar.is-horizontal .ml-ex-ui-toolbar-layout-btn .ml-ex-ui-icon svg {
+/* Dots run along the bar: ⋮ on a vertical bar, ⋯ on a horizontal one. */
+.ml-ex-ui-toolbar.is-vertical .ml-ex-ui-toolbar-layout-btn .ml-ex-ui-icon svg {
   transform: rotate(90deg);
 }
 

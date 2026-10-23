@@ -55,6 +55,17 @@ import {
 } from 'vue'
 
 import { useDocument, useSettings } from '../../composable'
+// Raw markup: AcUiToolbar takes SVG strings. (Rendering Vue icon components
+// while it builds buttons would flush pending watchers and re-enter it.)
+import arcThreePoints from '../../svg/arc/arcThreePoints.svg?raw'
+import circleCenterRadius from '../../svg/circle/circleCenterRadius.svg?raw'
+import ellipseCenter from '../../svg/ellipse/ellipseCenter.svg?raw'
+import hatch from '../../svg/hatch/hatch.svg?raw'
+import line from '../../svg/line.svg?raw'
+import move from '../../svg/move.svg?raw'
+import offset from '../../svg/offset.svg?raw'
+import polyline from '../../svg/polyline.svg?raw'
+import rect from '../../svg/rect.svg?raw'
 
 const features = useSettings()
 const { isDocumentOpening, openMode: docOpenMode } = useDocument()
@@ -137,6 +148,21 @@ const handleLocaleChanged = () => {
   toolbar?.refreshLocale()
 }
 
+/** Element Plus glyph (1024 viewBox) as markup, matching the ribbon icons. */
+const epIcon = (d: string) =>
+  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024"><path fill="currentColor" d="${d}"/></svg>`
+
+/** Element Plus RefreshRight / DocumentCopy / Delete, as used by the ribbon. */
+const ICON_ROTATE = epIcon(
+  'M784.512 230.272v-50.56a32 32 0 1 1 64 0v149.056a32 32 0 0 1-32 32H667.52a32 32 0 1 1 0-64h92.992A320 320 0 1 0 524.8 833.152a320 320 0 0 0 320-320h64a384 384 0 0 1-384 384 384 384 0 0 1-384-384 384 384 0 0 1 643.712-282.88'
+)
+const ICON_COPY = epIcon(
+  'M128 320v576h576V320zm-32-64h640a32 32 0 0 1 32 32v640a32 32 0 0 1-32 32H96a32 32 0 0 1-32-32V288a32 32 0 0 1 32-32M960 96v704a32 32 0 0 1-32 32h-96v-64h64V128H384v64h-64V96a32 32 0 0 1 32-32h576a32 32 0 0 1 32 32M256 672h320v64H256zm0-192h320v64H256z'
+)
+const ICON_DELETE = epIcon(
+  'M160 256H96a32 32 0 0 1 0-64h256V95.936a32 32 0 0 1 32-32h256a32 32 0 0 1 32 32V192h256a32 32 0 1 1 0 64h-64v672a32 32 0 0 1-32 32H192a32 32 0 0 1-32-32zm448-64v-64H416v64zM224 896h576V256H224zm192-128a32 32 0 0 1-32-32V416a32 32 0 0 1 64 0v320a32 32 0 0 1-32 32m192 0a32 32 0 0 1-32-32V416a32 32 0 0 1 64 0v320a32 32 0 0 1-32 32'
+)
+
 const toolbarSeparator = (): AcUiToolbarItem => ({
   id: `separator-${Math.random().toString(36).slice(2, 8)}`,
   type: 'separator'
@@ -156,6 +182,96 @@ const buildItems = (): AcUiToolbarItem[] => {
       label: 'main.verticalToolbar.pan.text',
       icon: ICON_PAN,
       command: 'pan'
+    },
+    {
+      id: 'draw',
+      label: 'main.ribbon.group.draw',
+      icon: line,
+      childrenUi: 'toolbar',
+      minOpenMode: AcEdOpenMode.Write,
+      children: [
+        {
+          id: 'draw-line',
+          label: 'main.ribbon.command.line',
+          icon: line,
+          command: 'line'
+        },
+        {
+          id: 'draw-polyline',
+          label: 'main.ribbon.command.polyline',
+          icon: polyline,
+          command: 'pline'
+        },
+        {
+          id: 'draw-circle',
+          label: 'main.ribbon.command.circle',
+          icon: circleCenterRadius,
+          command: 'circle'
+        },
+        {
+          id: 'draw-arc',
+          label: 'main.ribbon.command.arc',
+          icon: arcThreePoints,
+          command: 'arc'
+        },
+        {
+          id: 'draw-rect',
+          label: 'main.ribbon.command.rect',
+          icon: rect,
+          command: 'rectang'
+        },
+        {
+          id: 'draw-ellipse',
+          label: 'main.ribbon.command.ellipse',
+          icon: ellipseCenter,
+          command: 'ellipse'
+        },
+        {
+          id: 'draw-hatch',
+          label: 'main.ribbon.command.hatch',
+          icon: hatch,
+          command: 'hatch'
+        }
+      ]
+    },
+    {
+      id: 'modify',
+      label: 'main.ribbon.group.modify',
+      icon: move,
+      childrenUi: 'toolbar',
+      minOpenMode: AcEdOpenMode.Write,
+      children: [
+        {
+          id: 'modify-move',
+          label: 'main.ribbon.command.move',
+          icon: move,
+          command: 'move'
+        },
+        {
+          id: 'modify-rotate',
+          label: 'main.ribbon.command.rotate',
+          icon: ICON_ROTATE,
+          command: 'rotate'
+        },
+        {
+          id: 'modify-copy',
+          label: 'main.ribbon.command.copy',
+          icon: ICON_COPY,
+          command: 'copy'
+        },
+        {
+          id: 'modify-erase',
+          label: 'main.ribbon.command.erase',
+          icon: ICON_DELETE,
+          command: 'erase'
+        },
+        {
+          id: 'modify-offset',
+          label: 'main.ribbon.command.offset',
+          icon: offset,
+          command: 'offset'
+        }
+      ]
     },
     {
       id: 'text',
