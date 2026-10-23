@@ -412,8 +412,8 @@ const ensureToolbar = () => {
   if (!host || toolbar) return
   toolbar = new AcUiToolbar({
     host,
-    placement: 'right',
-    // Match AcUiShortCutToolbar shell `right: 12px`.
+    placement: 'left',
+    // Same inset as the AcUiShortCutToolbar shell (`right: 12px`).
     edgeOffset: 12,
     items: buildItems(),
     i18n,
@@ -512,7 +512,7 @@ watch(isDocumentOpening, opening => {
 <style>
 /*
  * Keep the overlay host filling the canvas main area so syncPosition can
- * vertically center the bar on the right edge (or place a dragged bar).
+ * vertically center the bar on the left edge (or place a dragged bar).
  */
 .ml-vertical-toolbar-host,
 .ml-vertical-toolbar-host.ml-ex-ui-toolbar-host {

@@ -35,7 +35,7 @@ del dispositivo del usuario.
   Las descripciones emergentes mantienen el término CAD entre paréntesis (todos los idiomas).
 - **Barra de herramientas movible** — arrastra el asa (⠿) para moverla a cualquier lugar y cambiarla entre
   vertical y horizontal. Los submenús se abren hacia el centro de la pantalla; la posición se recuerda
-  y un doble clic en el asa la devuelve al borde derecho.
+  y un doble clic en el asa la devuelve al borde izquierdo.
 - **Importación de JWW (Jw_cad)** — la app de ejemplo abre archivos `.jww` con
   `@mlightcad/cad-jww-converter` (MIT; analizador [ezjww](https://github.com/monozukuri-ai/ezjww),
   Rust → WebAssembly, en un Web Worker). Las coordenadas pasan de milímetros de papel a

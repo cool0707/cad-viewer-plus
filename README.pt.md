@@ -34,7 +34,7 @@ acontecem no cliente, então os desenhos nunca saem do dispositivo do usuário.
   As dicas de ferramenta mantêm o termo CAD entre parênteses (todos os idiomas).
 - **Barra de ferramentas móvel** — arraste a alça (⠿) para movê-la para qualquer lugar e alterne entre
   vertical e horizontal. Os submenus abrem em direção ao centro da tela; a posição é lembrada
-  e um clique duplo na alça a devolve à borda direita.
+  e um clique duplo na alça a devolve à borda esquerda.
 - **Importação de JWW (Jw_cad)** — o app de exemplo abre arquivos `.jww` com
   `@mlightcad/cad-jww-converter` (MIT; analisador [ezjww](https://github.com/monozukuri-ai/ezjww),
   Rust → WebAssembly, em um Web Worker). As coordenadas passam de milímetros de papel para
