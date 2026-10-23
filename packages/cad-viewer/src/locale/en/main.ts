@@ -236,12 +236,10 @@ export default {
       select: 'Layer',
       off: 'Turn Off Layer',
       isolate: 'Isolate',
-      freeze: 'Freeze Layer',
       lock: 'Lock Layer',
       current: 'Set Current',
       allOn: 'Layer On',
       unisolate: 'Unisolate',
-      thaw: 'Thaw Layer',
       unlock: 'Unlock Layer',
       restore: 'Layer Restore'
     },
@@ -321,19 +319,15 @@ export default {
       propertyLineWeight:
         'Set the line weight for newly created objects or selected entities.',
       layerAction: {
-        off: 'Turns off the selected layer so its objects are hidden without freezing the layer.',
+        off: 'Turns off the selected layer so its objects are hidden.',
         isolate:
           'Shows only the selected layer and hides the others so you can focus on related objects.',
-        freeze:
-          'Freezes the selected layer so its objects are hidden and skipped when the display is refreshed (regen).',
         lock: 'Locks the selected layer so its objects stay visible but cannot be edited.',
         current:
           'Makes the selected layer current so new objects are created on that layer.',
-        allOn:
-          'Turns on every layer that is currently off. Layers that are frozen remain frozen.',
+        allOn: 'Shows every hidden layer.',
         unisolate:
           'Restores layers hidden or locked by Layer Isolate while keeping later layer changes.',
-        thaw: 'Thaws the selected layer so its objects are visible and included when the display is refreshed (regen) again.',
         unlock:
           'Unlocks the selected layer so its objects can be selected and modified again.',
         restore:
@@ -726,7 +720,6 @@ export default {
       layerList: {
         name: 'Name',
         on: 'On',
-        freeze: 'Freeze',
         lock: 'Lock',
         plot: 'Plot',
         color: 'Color',
@@ -1026,14 +1019,11 @@ export default {
     tooltip: {
       layer: 'Layer',
       visibility: 'Visibility',
-      freeze: 'Freeze',
       lock: 'Lock',
       lineType: 'Line type',
       color: 'Color',
       visible: 'Visible',
       hidden: 'Hidden',
-      frozen: 'Frozen',
-      thawed: 'Thawed',
       locked: 'Locked',
       unlocked: 'Unlocked'
     }

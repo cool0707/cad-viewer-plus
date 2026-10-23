@@ -4,24 +4,35 @@ name: Demo
 # to the `gh-pages` branch. Enable GitHub Pages once in the repository
 # settings: Settings → Pages → Source: "Deploy from a branch", branch
 # `gh-pages`, folder `/ (root)`.
+#
+#   main          → https://<owner>.github.io/<repo>/
+#   other branch  → https://<owner>.github.io/<repo>/preview/<branch>/
+#                   (`/` and other unsafe characters in the name become `-`)
+#
+# Deleting a branch removes its preview. The `delete` event always runs the
+# workflow file of the default branch, so cleanup works once this file is on
+# `main`.
 
 on:
   push:
-    branches:
-      - main
-      - ja-localization
+    branches-ignore:
+      - gh-pages
+      - 'dependabot/**'
+  delete:
   workflow_dispatch:
 
 permissions:
   contents: write
 
-concurrency:
-  group: demo-pages
-  cancel-in-progress: true
-
 jobs:
   deploy:
+    if: github.event_name != 'delete'
     runs-on: ubuntu-latest
+    concurrency:
+      # One build per branch; a newer push cancels the older build. Pushes to
+      # gh-pages from different branches are retried in publish-pages.sh.
+      group: demo-pages-${{ github.ref }}
+      cancel-in-progress: true
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -48,9 +59,37 @@ jobs:
         run: node tools/build-demo.mjs
 
       - name: Publish to gh-pages
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./demo-dist
-          publish_branch: gh-pages
-          force_orphan: true
+        env:
+          BRANCH: ${{ github.ref_name }}
+        run: |
+          base_url="https://${GITHUB_REPOSITORY_OWNER,,}.github.io/${GITHUB_REPOSITORY#*/}"
+          if [ "$BRANCH" = main ]; then
+            bash tools/publish-pages.sh main demo-dist
+            url="$base_url/"
+          else
+            slug="$(printf '%s' "$BRANCH" | tr -c 'A-Za-z0-9._-' '-')"
+            bash tools/publish-pages.sh preview "$slug" demo-dist
+            url="$base_url/preview/$slug/"
+          fi
+          echo "Demo: $url"
+          echo "### Demo: $url" >> "$GITHUB_STEP_SUMMARY"
+
+  remove-preview:
+    if: github.event_name == 'delete' && github.event.ref_type == 'branch'
+    runs-on: ubuntu-latest
+    concurrency:
+      group: demo-pages-refs/heads/${{ github.event.ref }}
+      cancel-in-progress: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Remove preview from gh-pages
+        env:
+          BRANCH: ${{ github.event.ref }}
+        run: |
+          if [ "$BRANCH" = main ]; then
+            exit 0
+          fi
+          slug="$(printf '%s' "$BRANCH" | tr -c 'A-Za-z0-9._-' '-')"
+          bash tools/publish-pages.sh remove "$slug"

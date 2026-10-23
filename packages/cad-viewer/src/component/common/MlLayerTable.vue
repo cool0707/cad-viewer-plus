@@ -77,44 +77,14 @@
               :disabled="readonly || scope.row.isDraft"
               :title="t('main.toolPalette.layerManager.layerList.on')"
               :aria-label="t('main.toolPalette.layerManager.layerList.on')"
-              @click.stop="emitChange(scope.row, 'on', !scope.row.isOn)"
+              @click.stop="emitChange(scope.row, 'on', !isLayerShown(scope.row))"
             >
               <span
                 class="ml-layer-table-state-icon"
-                :class="scope.row.isOn ? 'is-on' : 'is-off'"
+                :class="isLayerShown(scope.row) ? 'is-on' : 'is-off'"
                 aria-hidden="true"
               >
                 <component :is="layerLight" />
-              </span>
-            </button>
-          </div>
-        </template>
-      </el-table-column>
-
-      <el-table-column
-        property="isFrozen"
-        :label="t('main.toolPalette.layerManager.layerList.freeze')"
-        width="48"
-        resizable
-        align="center"
-      >
-        <template #default="scope">
-          <div class="ml-layer-table-cell">
-            <button
-              type="button"
-              class="ml-layer-table-state-button"
-              :disabled="readonly || scope.row.isDraft"
-              :title="t('main.toolPalette.layerManager.layerList.freeze')"
-              :aria-label="t('main.toolPalette.layerManager.layerList.freeze')"
-              @click.stop="emitChange(scope.row, 'frozen', !scope.row.isFrozen)"
-            >
-              <span
-                class="ml-layer-table-state-icon"
-                :class="scope.row.isFrozen ? 'is-frozen' : 'is-unfrozen'"
-                aria-hidden="true"
-              >
-                <component :is="layerSnow" v-if="scope.row.isFrozen" />
-                <component :is="layerThawed" v-else />
               </span>
             </button>
           </div>
@@ -373,12 +343,14 @@ import {
   layerLocker,
   layerNoPlot,
   layerPlot,
-  layerSnow,
-  layerThawed,
   layerUnlocked
 } from '../../svg'
 import { MlColorPickerDlg } from '../dialog'
-import type { MlLayerTableChangeField, MlLayerTableRow } from './MlLayerTable'
+import {
+  isLayerShown,
+  type MlLayerTableChangeField,
+  type MlLayerTableRow
+} from './MlLayerTable'
 import MlLineTypeSelect from './MlLineTypeSelect.vue'
 import MlLineWeightSelect from './MlLineWeightSelect.vue'
 
@@ -454,13 +426,13 @@ const editableLayers = computed(() =>
 const isAllOn = computed(() => {
   const rows = editableLayers.value
   if (!rows.length) return false
-  return rows.every(layer => layer.isOn)
+  return rows.every(isLayerShown)
 })
 
 const isSomeOn = computed(() => {
   const rows = editableLayers.value
   if (!rows.length) return false
-  const anyOn = rows.some(layer => layer.isOn)
+  const anyOn = rows.some(isLayerShown)
   return anyOn && !isAllOn.value
 })
 
@@ -717,12 +689,10 @@ defineExpose({
   color: var(--el-text-color-disabled);
 }
 
-.ml-layer-table-state-icon.is-frozen,
 .ml-layer-table-state-icon.is-locked {
   color: var(--el-text-color-primary);
 }
 
-.ml-layer-table-state-icon.is-unfrozen,
 .ml-layer-table-state-icon.is-unlocked {
   color: var(--el-text-color-regular);
 }

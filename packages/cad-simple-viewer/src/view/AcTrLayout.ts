@@ -136,9 +136,7 @@ export class AcTrLayout {
    * layers created after {@link setCompareDisplay} so late layer groups
    * still receive role tints.
    */
-  private _compareDisplayOptions?: Parameters<
-    AcTrLayer['setCompareDisplay']
-  >[0]
+  private _compareDisplayOptions?: Parameters<AcTrLayer['setCompareDisplay']>[0]
 
   /**
    * Creates a new layout instance.
@@ -422,6 +420,19 @@ export class AcTrLayout {
 
   hasVisibleEntity(objectId: AcDbObjectId) {
     return this.getLayersByObjectId(objectId).some(layer => layer.visible)
+  }
+
+  /**
+   * Whether any fragment of the entity is drawn: its layer bucket is visible
+   * (not off / frozen) and the fragment itself is not hidden (for example by
+   * INSERT-layer freeze). Used to keep hidden geometry out of extents.
+   *
+   * @param objectId - Entity object id.
+   */
+  isEntityShown(objectId: AcDbObjectId) {
+    return this.getLayersByObjectId(objectId).some(
+      layer => layer.visible && layer.getEntityVisible(objectId) !== false
+    )
   }
 
   /**
@@ -960,7 +971,25 @@ export class AcTrLayout {
    * @returns Flat list of finite world XY boxes.
    */
   collectSpatialExtentBoxes(): AcEdSpatialQueryResultItem[] {
-    return this._spatialIndex.all().filter(isFiniteSpatialBBox)
+    return this._spatialIndex
+      .all(this.createExtentVisibilityFilter())
+      .filter(isFiniteSpatialBBox)
+  }
+
+  /**
+   * Returns a predicate that keeps entities drawn in this layout (see
+   * {@link isEntityShown}), or `undefined` while every layer is visible:
+   * nothing is hidden by layer state then, so the per-entity lookup is skipped.
+   */
+  private createExtentVisibilityFilter():
+    | ((objectId: AcDbObjectId) => boolean)
+    | undefined {
+    for (const layer of this._layers.values()) {
+      if (!layer.visible) {
+        return objectId => this.isEntityShown(objectId)
+      }
+    }
+    return undefined
   }
 
   /**
@@ -972,7 +1001,10 @@ export class AcTrLayout {
   async collectSpatialExtentBoxesAsync(work: {
     maybeYield(): Promise<void>
   }): Promise<AcEdSpatialQueryResultItem[]> {
-    const all = await this._spatialIndex.allAsync(work)
+    const all = await this._spatialIndex.allAsync(
+      work,
+      this.createExtentVisibilityFilter()
+    )
     const result: AcEdSpatialQueryResultItem[] = []
     for (let i = 0; i < all.length; i++) {
       const item = all[i]!

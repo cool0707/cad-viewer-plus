@@ -279,12 +279,17 @@ export class AcTrHierarchicalSpatialIndex implements AcTrSpatialIndex {
    * - if a child index exists, all child items are appended;
    * - otherwise the root-level item itself is appended.
    *
+   * @param includeRoot - Optional predicate on root-level ids. Rejected roots
+   *   are skipped together with their child items.
    * @returns Flattened list of all available items across both levels.
    */
-  all(): AcEdSpatialQueryResultItem[] {
+  all(
+    includeRoot?: (id: AcDbObjectId) => boolean
+  ): AcEdSpatialQueryResultItem[] {
     const result: AcEdSpatialQueryResultItem[] = []
 
     for (const hit of this.rootIndex.all()) {
+      if (includeRoot && !includeRoot(hit.id)) continue
       const child = this.childIndexes.get(hit.id)
       if (child) result.push(...child.all())
       else result.push(hit as AcEdSpatialQueryResultItem)
@@ -300,16 +305,21 @@ export class AcTrHierarchicalSpatialIndex implements AcTrSpatialIndex {
    * Produces the same ordered list as {@link all} for the same index contents.
    *
    * @param work - Cooperative yield helper (optional).
+   * @param includeRoot - Optional predicate on root-level ids (see {@link all}).
    */
-  async allAsync(work?: {
-    maybeYield(): Promise<void>
-  }): Promise<AcEdSpatialQueryResultItem[]> {
+  async allAsync(
+    work?: {
+      maybeYield(): Promise<void>
+    },
+    includeRoot?: (id: AcDbObjectId) => boolean
+  ): Promise<AcEdSpatialQueryResultItem[]> {
     const result: AcEdSpatialQueryResultItem[] = []
     let sinceYield = 0
     const roots = this.rootIndex.all()
 
     for (let r = 0; r < roots.length; r++) {
       const hit = roots[r]!
+      if (includeRoot && !includeRoot(hit.id)) continue
       const child = this.childIndexes.get(hit.id)
       if (child) {
         const children = child.all()

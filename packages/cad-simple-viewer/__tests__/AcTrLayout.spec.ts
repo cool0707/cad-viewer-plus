@@ -713,3 +713,72 @@ describe('AcTrLayout insert layer freeze', () => {
     expect(mockSetCompareDisplay).toHaveBeenCalledWith(options)
   })
 })
+
+describe('AcTrLayout smart extents visibility', () => {
+  beforeEach(() => {
+    jest.clearAllMocks()
+    mockRemoveEntity.mockReturnValue(false)
+  })
+
+  function createTwoLayerLayout() {
+    const layout = new AcTrLayout()
+    layout.addLayer(createLayerInfo('Shown'))
+    layout.addLayer(createLayerInfo('Hidden'))
+    const shownEntity = createEntity('shown-1', 'Shown')
+    const hiddenEntity = createEntity('hidden-1', 'Hidden')
+    hiddenEntity.wcsBbox = new THREE.Box3(
+      new THREE.Vector3(1000, 1000, 0),
+      new THREE.Vector3(1001, 1001, 0)
+    )
+    layout.addEntity(shownEntity)
+    layout.addEntity(hiddenEntity)
+
+    const shown = layout.getLayer('Shown')!
+    const hidden = layout.getLayer('Hidden')!
+    jest
+      .spyOn(shown, 'hasEntity')
+      .mockImplementation((id: string) => id === 'shown-1')
+    jest
+      .spyOn(hidden, 'hasEntity')
+      .mockImplementation((id: string) => id === 'hidden-1')
+    return { layout, shown, hidden }
+  }
+
+  const ids = (items: { id: string }[]) => items.map(item => item.id).sort()
+
+  it('keeps every entity while all layers are visible', () => {
+    const { layout } = createTwoLayerLayout()
+
+    expect(ids(layout.collectSpatialExtentBoxes())).toEqual([
+      'hidden-1',
+      'shown-1'
+    ])
+  })
+
+  it('skips entities on off or frozen layers', async () => {
+    const { layout } = createTwoLayerLayout()
+
+    layout.updateLayer({ ...createLayerInfo('Hidden'), isOff: true })
+    expect(ids(layout.collectSpatialExtentBoxes())).toEqual(['shown-1'])
+
+    layout.updateLayer({
+      ...createLayerInfo('Hidden'),
+      isOff: false,
+      isFrozen: true
+    })
+    const work = { maybeYield: () => Promise.resolve() }
+    expect(ids(await layout.collectSpatialExtentBoxesAsync(work))).toEqual([
+      'shown-1'
+    ])
+  })
+
+  it('skips fragments hidden by INSERT-layer freeze', () => {
+    const { layout, shown } = createTwoLayerLayout()
+    layout.updateLayer({ ...createLayerInfo('Hidden'), isOff: true })
+    jest
+      .spyOn(shown, 'getEntityVisible')
+      .mockImplementation((id: string) => (id === 'shown-1' ? false : undefined))
+
+    expect(layout.collectSpatialExtentBoxes()).toEqual([])
+  })
+})

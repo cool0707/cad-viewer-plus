@@ -3,10 +3,11 @@ import {
   AcDbBlockTableRecord,
   AcDbDatabase,
   AcDbHatch,
+  acdbHostApplicationServices,
+  AcDbLayerTableRecord,
   AcDbLayout,
   AcDbLine,
   AcDbMText,
-  acdbHostApplicationServices,
   AcGePoint3d,
   AcGePolyline2d
 } from '@mlightcad/data-model'
@@ -372,5 +373,52 @@ describe('exportDatabaseToPdf', () => {
     const doc = await PDFDocument.load(bytes)
     // Model + the alias share one block; the empty paper layout stays.
     expect(doc.getPageCount()).toBe(2)
+  })
+  describe('hidden layers', () => {
+    async function exportWithFarLineOn(
+      configure: (layer: AcDbLayerTableRecord) => void,
+      includeHiddenLayers?: boolean
+    ) {
+      const db = createDb()
+      const layer = new AcDbLayerTableRecord({ name: 'Hidden' })
+      db.tables.layerTable.add(layer)
+      configure(layer)
+
+      db.tables.blockTable.modelSpace.appendEntity(
+        new AcDbLine(new AcGePoint3d(0, 0, 0), new AcGePoint3d(100, 50, 0))
+      )
+      const far = new AcDbLine(
+        new AcGePoint3d(5000, 0, 0),
+        new AcGePoint3d(5100, 50, 0)
+      )
+      far.layer = 'Hidden'
+      db.tables.blockTable.modelSpace.appendEntity(far)
+
+      const bytes = await exportDatabaseToPdf(db, { includeHiddenLayers })
+      const doc = await PDFDocument.load(bytes)
+      return doc.getPages()[0].getSize().width
+    }
+
+    // INSUNITS=mm (~2.83pt/unit): the visible line alone is ~290pt wide.
+    it('leaves off layers out of the page extents', async () => {
+      const width = await exportWithFarLineOn(layer => {
+        layer.isOff = true
+      })
+      expect(width).toBeLessThan(400)
+    })
+
+    it('leaves frozen layers out of the page extents', async () => {
+      const width = await exportWithFarLineOn(layer => {
+        layer.standardFlags = (layer.standardFlags ?? 0) | 0x01
+      })
+      expect(width).toBeLessThan(400)
+    })
+
+    it('frames hidden layers when includeHiddenLayers is set', async () => {
+      const width = await exportWithFarLineOn(layer => {
+        layer.isOff = true
+      }, true)
+      expect(width).toBeGreaterThan(1000)
+    })
   })
 })

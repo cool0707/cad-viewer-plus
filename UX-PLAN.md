@@ -160,7 +160,35 @@ Figma / Illustrator 風の「先に選ぶ → ドラッグ / 右サイドバー�
 - クイック選択の文字列: `dialog.quickSelectDlg.*` と `main.ts` のリボン・コマンド名 (ja では「クイック\n選択」など)。コマンドは `packages/cad-viewer/src/command/AcApQSelectCmd.ts`。
 - README は 8 言語あるので、用語が出てくる箇所を合わせて直す。
 
-### ステップ 2: フリーズを UI から無くす + 全体表示から非表示を除外
+### ステップ 2: フリーズを UI から無くす + 全体表示から非表示を除外 (済)
+- **実施内容 (結果)**:
+  - 調べた結果: `scene.box` (= `AcTrLayout.box`) は**もともと非表示・フリーズのレイヤーを除外していた**。
+    レイヤーの `computeBatchBoundingBox()` が非表示のレイヤーで空を返し、バッチ側も
+    `unionActiveVisibleBoundingBoxInto()` で図形単位の非表示 (INSERT のレイヤーのフリーズ) を除外する。
+    ZOOM 全体表示・ファイルを開いたときの初期表示 (`resolveFirstVisitFrameBox()`) はこれを使うので変更不要だった。
+  - 除外していなかったもの (直した):
+    - **ZOOM スマート範囲** (`AcTrLayout.collectSpatialExtentBoxes[Async]()`): 空間インデックスは非表示の図形も持っている。
+      `AcTrHierarchicalSpatialIndex.all()` / `allAsync()` にルート ID の絞り込みを足し、`AcTrLayout.isEntityShown()` で除外。
+      全レイヤーが表示中なら絞り込み自体をしない。
+    - **PDF 書き出し** (`pdf-renderer`): 非表示・フリーズのレイヤーも描画し、ページ範囲にも含めていた
+      (`includeHiddenLayers` オプションは定義だけで未使用だった)。`viewport/AcPdfHiddenLayers.ts` で
+      非表示のレイヤーの図形を `visible = false` にし、描画とページ範囲の両方から外す。
+      INSERT は AutoCAD と同じ扱い (INSERT のレイヤーがフリーズ = 全体を隠す / オフ = そのレイヤーに属する部分だけ隠す)。
+      一部だけ隠れた INSERT はノードの範囲がそのまま残る (全部隠れたときだけ範囲から外れる)。
+    - **HTML 書き出しのビューアの全体表示** (`cad-html-plugin` の `fit()`): 書き出したすべてのレイヤーで範囲を計算していた。
+      `cad-html-core` に `computeVisibleLayoutExtents()` を追加し、表示中のレイヤーだけで計算する。
+      「非表示のレイヤーも書き出す」オプション自体はそのまま。
+  - フリーズの UI を削除: レイヤー一覧 (`MlLayerTable.vue` のフリーズ列)、リボンのレイヤー選択 (`MlLayerSelect.vue` の雪アイコン)、
+    リボンの「レイヤーフリーズ」「フリーズ解除」ボタン。不要になった文言キーも 6 ロケールから削除した。
+  - 表示の扱い: UI の「表示」は `isOn && !isFrozen` (`MlLayerTable.ts` の `isLayerShown()`)。
+    表示にするときは `AcApLayerService.setLayerVisible()` でオンとフリーズ解除を 1 回の Undo にまとめて行う。
+    非表示にするときはオフにするだけ (フリーズのビットは触らない)。
+    レイヤー一覧の「すべて表示」チェックボックスとリボンの「全レイヤー表示」も `setAllLayersVisible()` でフリーズを解除する
+    (リボンは `LAYON` コマンドを呼ばずに直接処理する)。
+  - 残したもの: コマンド (`LAYFRZ` / `LAYTHW` / `LAYON` など) は AutoCAD 互換のまま。`useLayers` の `setLayerFrozen()` など API も残した。
+    VP フリーズ (`AcDbViewport.frozenLayerIds`) を編集する UI はもともと無いので、「このビューポートで隠す」はまだ無い
+    (描画では守っている)。
+- 以下は着手前の調査メモ:
 - フリーズの UI があるファイル: `packages/cad-viewer/src/component/common/MlLayerTable.vue`, `MlLayerSelect.vue`, `component/palette/MlLayerList.vue`, `component/ribbon/MlRibbonCommands.vue`, `composable/useLayers.ts`。
 - 全体表示の計算: `packages/cad-simple-viewer/src/view/AcTrView2d.ts` の `getDrawingExtents()` が `this._scene.box` を返し、`src/util/AcApDrawingExtents.ts` の `resolveDrawingExtents()` がそれを使う。
   **scene.box が非表示のレイヤーを含むかは未確認。** 最初に確かめること。
@@ -201,4 +229,5 @@ Figma / Illustrator 風の「先に選ぶ → ドラッグ / 右サイドバー�
 2. `main` から作業ブランチを切る。
 3. 「ステップ N をやって」と指示する。ステップ内で決めることがあれば、着手時にユーザーに確認する。
 4. 確認: `npx jest` (ルートで)、`pnpm --filter @mlightcad/cad-viewer-example test:e2e`、`pnpm dev` で実際に操作する。
+   push すれば https://cool0707.github.io/cad-viewer-plus/preview/<ブランチ名>/ でも確認できる (数分後)。
 5. 終わったら、このファイルのステップに「(済)」と、分かったこと (未確認だった点の結果など) を追記する。

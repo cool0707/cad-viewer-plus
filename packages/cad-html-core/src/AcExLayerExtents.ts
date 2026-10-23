@@ -169,6 +169,31 @@ export function computeLayoutViewExtents(
 }
 
 /**
+ * Unions per-layer extents of the displayed layers with viewport paper frames.
+ *
+ * Zoom extents must not frame geometry the viewer does not draw, so layers
+ * that are off or frozen ({@link isLayerVisible} returns `false`) are left out.
+ *
+ * @param layerExtents - Per-layer extents from {@link computeLayerExtentsMap}.
+ * @param isLayerVisible - Whether a layer is currently displayed.
+ * @param viewports - Exported viewports of the layout (paper frames).
+ * @returns Visible extents, or `null` when nothing visible has geometry.
+ */
+export function computeVisibleLayoutExtents(
+  layerExtents: ReadonlyMap<string, AcExExtents | null>,
+  isLayerVisible: (layerName: string) => boolean,
+  viewports?: ReadonlyArray<{ paper: AcExExtents }>
+): AcExExtents | null {
+  let result: AcExExtents | null = null
+  for (const [layerName, extents] of layerExtents) {
+    if (isLayerVisible(layerName)) {
+      result = unionExtents(result, extents)
+    }
+  }
+  return unionExtents(result, computeViewportPaperExtents(viewports))
+}
+
+/**
  * Resolves zoom-to-fit extents for one layout snapshot.
  *
  * Prefers live batch geometry unioned with viewport paper frames, then

@@ -236,12 +236,10 @@ export default {
       select: 'Hladina',
       off: 'Vypnout hladinu',
       isolate: 'Izolovat',
-      freeze: 'Zmrazit hladinu',
       lock: 'Uzamknout hladinu',
       current: 'Nastavit aktuální',
       allOn: 'Zapnout hladiny',
       unisolate: 'Zrušit izolaci',
-      thaw: 'Rozmrazit hladinu',
       unlock: 'Odemknout hladinu',
       restore: 'Obnovit hladiny'
     },
@@ -318,19 +316,15 @@ export default {
       propertyLineWeight:
         'Nastaví tloušťku čáry nových nebo vybraných objektů.',
       layerAction: {
-        off: 'Vypne vybranou hladinu, takže se její objekty skryjí bez zmrazení hladiny.',
+        off: 'Vypne vybranou hladinu, takže se její objekty skryjí.',
         isolate:
           'Zobrazí pouze vybranou hladinu a ostatní skryje, abyste se mohli soustředit na související objekty.',
-        freeze:
-          'Zmrazí vybranou hladinu, takže se její objekty skryjí a přeskočí při obnovení zobrazení (regeneraci).',
         lock: 'Uzamkne vybranou hladinu, její objekty zůstanou viditelné, ale nelze je upravovat.',
         current:
           'Nastaví vybranou hladinu jako aktuální, nové objekty vzniknou na ní.',
-        allOn:
-          'Zapne všechny vypnuté hladiny. Zmrazené hladiny zůstanou zmrazené.',
+        allOn: 'Zobrazí všechny skryté hladiny.',
         unisolate:
           'Obnoví hladiny skryté nebo uzamčené funkcí Izolovat a zachová pozdější změny hladin.',
-        thaw: 'Rozmrazí vybranou hladinu, její objekty budou opět viditelné a zahrnuté v obnovení zobrazení (regeneraci).',
         unlock:
           'Odemkne vybranou hladinu, její objekty lze opět vybírat a upravovat.',
         restore:
@@ -713,7 +707,6 @@ export default {
       layerList: {
         name: 'Název',
         on: 'Zapnuto',
-        freeze: 'Zmrazit',
         lock: 'Zamknout',
         plot: 'Tisk',
         color: 'Barva',
@@ -1013,14 +1006,11 @@ export default {
     tooltip: {
       layer: 'Hladina',
       visibility: 'Viditelnost',
-      freeze: 'Zmrazit',
       lock: 'Uzamknout',
       lineType: 'Typ čáry',
       color: 'Barva',
       visible: 'Viditelná',
       hidden: 'Skrytá',
-      frozen: 'Zmrazená',
-      thawed: 'Rozmrazená',
       locked: 'Uzamčená',
       unlocked: 'Odemčená'
     }

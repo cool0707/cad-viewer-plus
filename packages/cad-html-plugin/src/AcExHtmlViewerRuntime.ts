@@ -35,6 +35,7 @@ import {
   collectLayoutBatchExtentEntries,
   computeIntelligentExtentsFromBatchEntries,
   computeLayerExtentsMap,
+  computeVisibleLayoutExtents,
   resolveLayoutViewExtents} from '@mlightcad/cad-html-core'
 import {
   ACEX_GEOMETRY_CHUNK_FETCH_CONCURRENCY,
@@ -1385,8 +1386,15 @@ async function startViewer(): Promise<void> {
   }
 
   const fit = () => {
-    // Initial open and toolbar "Zoom extents" both use batch-derived layout bounds.
-    zoomToExtents(layoutExtents)
+    // Initial open and toolbar "Zoom extents" both use batch-derived layout
+    // bounds of the displayed layers only (hidden layers are not framed).
+    zoomToExtents(
+      computeVisibleLayoutExtents(
+        layerExtents,
+        layerName => layerVisible.get(layerName) !== false,
+        layout.viewports
+      ) ?? layoutExtents
+    )
   }
 
   const fitSmart = () => {

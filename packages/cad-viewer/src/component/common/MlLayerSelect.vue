@@ -20,7 +20,7 @@
             type="button"
             class="ml-layer-select-state-button"
             :title="
-              selectedOption.isOn
+              isShown(selectedOption)
                 ? t('main.layerSelect.tooltip.hidden')
                 : t('main.layerSelect.tooltip.visible')
             "
@@ -29,30 +29,10 @@
           >
             <span
               class="ml-layer-select-state-icon"
-              :class="selectedOption.isOn ? 'is-on' : 'is-off'"
+              :class="isShown(selectedOption) ? 'is-on' : 'is-off'"
               aria-hidden="true"
             >
               <component :is="layerLight" />
-            </span>
-          </button>
-          <button
-            type="button"
-            class="ml-layer-select-state-button"
-            :title="
-              selectedOption.isFrozen
-                ? t('main.layerSelect.tooltip.thawed')
-                : t('main.layerSelect.tooltip.frozen')
-            "
-            @mousedown.stop.prevent
-            @click.stop="onStateIconClick(selectedOption, 'frozen')"
-          >
-            <span
-              class="ml-layer-select-state-icon"
-              :class="selectedOption.isFrozen ? 'is-frozen' : 'is-unfrozen'"
-              aria-hidden="true"
-            >
-              <component :is="layerSnow" v-if="selectedOption.isFrozen" />
-              <component :is="layerThawed" v-else />
             </span>
           </button>
           <button
@@ -115,7 +95,7 @@
             type="button"
             class="ml-layer-select-state-button"
             :title="
-              item.isOn
+              isShown(item)
                 ? t('main.layerSelect.tooltip.hidden')
                 : t('main.layerSelect.tooltip.visible')
             "
@@ -124,30 +104,10 @@
           >
             <span
               class="ml-layer-select-state-icon"
-              :class="item.isOn ? 'is-on' : 'is-off'"
+              :class="isShown(item) ? 'is-on' : 'is-off'"
               aria-hidden="true"
             >
               <component :is="layerLight" />
-            </span>
-          </button>
-          <button
-            type="button"
-            class="ml-layer-select-state-button"
-            :title="
-              item.isFrozen
-                ? t('main.layerSelect.tooltip.thawed')
-                : t('main.layerSelect.tooltip.frozen')
-            "
-            @mousedown.stop.prevent
-            @click.stop="onStateIconClick(item, 'frozen')"
-          >
-            <span
-              class="ml-layer-select-state-icon"
-              :class="item.isFrozen ? 'is-frozen' : 'is-unfrozen'"
-              aria-hidden="true"
-            >
-              <component :is="layerSnow" v-if="item.isFrozen" />
-              <component :is="layerThawed" v-else />
             </span>
           </button>
           <button
@@ -197,7 +157,7 @@ import { ElIcon, ElInput, ElOption, ElSelect, useGlobalConfig } from 'element-pl
 import { computed, nextTick, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import { layerLight, layerLocker, layerSnow, layerThawed, layerUnlocked } from '../../svg'
+import { layerLight, layerLocker, layerUnlocked } from '../../svg'
 
 defineOptions({
   inheritAttrs: false
@@ -215,7 +175,7 @@ interface LayerSelectOption {
   isFrozen: boolean
   lineType?: string
 }
-type LayerStateKey = 'on' | 'frozen' | 'locked'
+type LayerStateKey = 'on' | 'locked'
 
 interface LayerSelectProps {
   modelValue?: string
@@ -298,15 +258,20 @@ function resolvePreviewStyle(item: LayerSelectOption) {
   return { backgroundColor: color }
 }
 
+/**
+ * A frozen layer is presented as hidden (the UI has no freeze control); the
+ * visibility button shows and thaws it in one click.
+ */
+function isShown(item: LayerSelectOption) {
+  return item.isOn && !item.isFrozen
+}
+
 function buildLayerTooltip(item: LayerSelectOption) {
   const lineType = item.lineType || t('main.ribbonProperty.lineType')
   const color = item.cssColor || '#8a8a8a'
-  const visibility = item.isOn
+  const visibility = isShown(item)
     ? t('main.layerSelect.tooltip.visible')
     : t('main.layerSelect.tooltip.hidden')
-  const frozen = item.isFrozen
-    ? t('main.layerSelect.tooltip.frozen')
-    : t('main.layerSelect.tooltip.thawed')
   const locked = item.isLocked
     ? t('main.layerSelect.tooltip.locked')
     : t('main.layerSelect.tooltip.unlocked')
@@ -314,7 +279,6 @@ function buildLayerTooltip(item: LayerSelectOption) {
   return [
     `${t('main.layerSelect.tooltip.layer')}: ${item.name}`,
     `${t('main.layerSelect.tooltip.visibility')}: ${visibility}`,
-    `${t('main.layerSelect.tooltip.freeze')}: ${frozen}`,
     `${t('main.layerSelect.tooltip.lock')}: ${locked}`,
     `${t('main.layerSelect.tooltip.lineType')}: ${lineType}`,
     `${t('main.layerSelect.tooltip.color')}: ${color}`
@@ -435,12 +399,10 @@ function onStateIconClick(item: LayerSelectOption, state: LayerStateKey) {
   color: var(--el-text-color-disabled);
 }
 
-.ml-layer-select-state-icon.is-frozen,
 .ml-layer-select-state-icon.is-locked {
   color: var(--el-text-color-primary);
 }
 
-.ml-layer-select-state-icon.is-unfrozen,
 .ml-layer-select-state-icon.is-unlocked {
   color: var(--el-text-color-regular);
 }
