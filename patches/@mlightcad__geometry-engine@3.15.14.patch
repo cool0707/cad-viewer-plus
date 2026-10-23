@@ -1,0 +1,188 @@
+diff --git a/lib/geometry/AcGeNurbsCurve.js b/lib/geometry/AcGeNurbsCurve.js
+index e1cec42cef5a890e3f41054c02b32ceeb494faee..9dc57c8585c9f1fdf64862190ae493260bae02cc 100644
+--- a/lib/geometry/AcGeNurbsCurve.js
++++ b/lib/geometry/AcGeNurbsCurve.js
+@@ -113,8 +113,12 @@ var AcGeNurbsCurve = /** @class */ (function () {
+      * @returns Position `point`, first derivative `deriv1`, and second derivative `deriv2`
+      */
+     AcGeNurbsCurve.prototype.evaluate = function (u) {
+-        var controlPointsArray = this._controlPoints.map(function (p) { return [p.x, p.y, p.z]; });
+-        return acgeEvaluateNurbsDerivatives(u, this._degree, this._knots, controlPointsArray, this._weights);
++        // Control points are copied in the constructor and never mutated, so
++        // the array form is built once instead of on every evaluation.
++        if (!this._controlPointsArray) {
++            this._controlPointsArray = this._controlPoints.map(function (p) { return [p.x, p.y, p.z]; });
++        }
++        return acgeEvaluateNurbsDerivatives(u, this._degree, this._knots, this._controlPointsArray, this._weights);
+     };
+     /**
+      * Signed curvature in the XY plane at parameter `u`.
+diff --git a/lib/util/AcGeNurbsUtil.js b/lib/util/AcGeNurbsUtil.js
+index 8298c7f58e223b75786ea8af614dd4d73e339918..fa1ec07f665b5e9d87f80cf98764f98f5beccce3 100644
+--- a/lib/util/AcGeNurbsUtil.js
++++ b/lib/util/AcGeNurbsUtil.js
+@@ -396,6 +396,107 @@ function findKnotSpan(u, degree, knots) {
+     }
+     return degree;
+ }
++/**
++ * Scratch buffers for {@link nonZeroBasisDerivs}, reused across calls to
++ * avoid per-evaluation allocations (callers consume the result immediately).
++ */
++var basisScratch = { p: -1, ndu: null, left: null, right: null, a: null, ders: null };
++function basisScratchFor(p) {
++    if (basisScratch.p !== p) {
++        var size = p + 1;
++        basisScratch.p = p;
++        basisScratch.ndu = new Float64Array(size * size);
++        basisScratch.left = new Float64Array(size + 1);
++        basisScratch.right = new Float64Array(size + 1);
++        basisScratch.a = new Float64Array(2 * (size + 1));
++        basisScratch.ders = [new Float64Array(size), new Float64Array(size), new Float64Array(size)];
++    }
++    return basisScratch;
++}
++/**
++ * Non-zero B-spline basis functions N_{span-p..span, p}(u) and their first
++ * and second derivatives (Piegl & Tiller, "The NURBS Book", A2.3).
++ * Only the p + 1 functions that are non-zero on the knot span are computed,
++ * so evaluation is O(p^2) instead of O(n * 2^p).
++ *
++ * The returned arrays are shared scratch buffers: read them before the next call.
++ *
++ * @returns ders[k][j] = k-th derivative of N_{span-p+j, p}(u), k = 0..order
++ */
++function nonZeroBasisDerivs(span, u, p, knots, order) {
++    var s = basisScratchFor(p);
++    var w = p + 1;
++    var ndu = s.ndu, left = s.left, right = s.right, a = s.a, ders = s.ders;
++    var j, r, k;
++    // ndu[row * w + col]
++    ndu[0] = 1.0;
++    for (j = 1; j <= p; j++) {
++        left[j] = u - knots[span + 1 - j];
++        right[j] = knots[span + j] - u;
++        var saved = 0.0;
++        for (r = 0; r < j; r++) {
++            ndu[j * w + r] = right[r + 1] + left[j - r];
++            var temp = ndu[r * w + j - 1] / ndu[j * w + r];
++            ndu[r * w + j] = saved + right[r + 1] * temp;
++            saved = left[j - r] * temp;
++        }
++        ndu[j * w + j] = saved;
++    }
++    for (j = 0; j <= p; j++) {
++        ders[0][j] = ndu[j * w + p];
++    }
++    if (order === 0) {
++        return ders;
++    }
++    for (k = 1; k <= order; k++) {
++        ders[k].fill(0);
++    }
++    // a[s * (w + 1) + j], two rows
++    var aw = w + 1;
++    for (r = 0; r <= p; r++) {
++        var s1 = 0;
++        var s2 = 1;
++        a[0] = 1.0;
++        for (k = 1; k <= order; k++) {
++            var d = 0.0;
++            var rk = r - k;
++            var pk = p - k;
++            if (r >= k) {
++                a[s2 * aw] = a[s1 * aw] / ndu[(pk + 1) * w + rk];
++                d = a[s2 * aw] * ndu[rk * w + pk];
++            }
++            var j1 = rk >= -1 ? 1 : -rk;
++            var j2 = r - 1 <= pk ? k - 1 : p - r;
++            for (j = j1; j <= j2; j++) {
++                a[s2 * aw + j] = (a[s1 * aw + j] - a[s1 * aw + j - 1]) / ndu[(pk + 1) * w + rk + j];
++                d += a[s2 * aw + j] * ndu[(rk + j) * w + pk];
++            }
++            if (r <= pk) {
++                a[s2 * aw + k] = -a[s1 * aw + k - 1] / ndu[(pk + 1) * w + r];
++                d += a[s2 * aw + k] * ndu[r * w + pk];
++            }
++            ders[k][r] = d;
++            var tmp = s1;
++            s1 = s2;
++            s2 = tmp;
++        }
++    }
++    var f = p;
++    for (k = 1; k <= order; k++) {
++        for (j = 0; j <= p; j++) {
++            ders[k][j] *= f;
++        }
++        f *= p - k;
++    }
++    return ders;
++}
++/**
++ * Whether the knot vector has the size expected for `controlPoints` and
++ * `degree` (`n + p + 2`), which the span-based fast path relies on.
++ */
++function hasConsistentKnots(n, p, knots) {
++    return p >= 1 && knots.length === n + p + 2;
++}
+ /**
+  * Interpolate a NURBS curve from fit points with optional end tangents
+  */
+@@ -524,6 +625,21 @@ export function acgeEvaluateNurbsPoint(u, degree, knots, controlPoints, weights)
+     }
+     var point = [0, 0, 0];
+     var weight = 0;
++    if (hasConsistentKnots(n, p, knots)) {
++        // Fast path: only the p + 1 basis functions that are non-zero on the
++        // knot span contribute (same result as the full sum below).
++        var span = findKnotSpan(u, p, knots);
++        var basisValues = nonZeroBasisDerivs(span, u, p, knots, 0)[0];
++        for (var j = 0; j <= p; j++) {
++            var idx = span - p + j;
++            var wj = weights[idx] * basisValues[j];
++            point[0] += controlPoints[idx][0] * wj;
++            point[1] += controlPoints[idx][1] * wj;
++            point[2] += controlPoints[idx][2] * wj;
++            weight += wj;
++        }
++    }
++    else
+     for (var i = 0; i <= n; i++) {
+         var basis = acgeBasisFunction(i, p, u, knots);
+         var w = weights[i] * basis;
+@@ -601,6 +717,34 @@ export function acgeEvaluateNurbsDerivatives(u, degree, knots, controlPoints, we
+     var w = 0;
+     var dw = 0;
+     var d2w = 0;
++    if (hasConsistentKnots(n, p, knots) && u < endParam) {
++        // Fast path (Piegl & Tiller A2.3): basis functions and derivatives
++        // are evaluated only on the knot span, O(p^2) instead of O(n * 2^p).
++        // `u === endParam` keeps the original full-sum behaviour below.
++        var span = findKnotSpan(u, p, knots);
++        var ders = nonZeroBasisDerivs(span, u, p, knots, 2);
++        for (var j = 0; j <= p; j++) {
++            var idx = span - p + j;
++            var wt = weights[idx];
++            var b0 = wt * ders[0][j];
++            var b1 = wt * ders[1][j];
++            var b2 = wt * ders[2][j];
++            var cpj = controlPoints[idx];
++            aw[0] += b0 * cpj[0];
++            aw[1] += b0 * cpj[1];
++            aw[2] += b0 * cpj[2];
++            daw[0] += b1 * cpj[0];
++            daw[1] += b1 * cpj[1];
++            daw[2] += b1 * cpj[2];
++            d2aw[0] += b2 * cpj[0];
++            d2aw[1] += b2 * cpj[1];
++            d2aw[2] += b2 * cpj[2];
++            w += b0;
++            dw += b1;
++            d2w += b2;
++        }
++    }
++    else
+     for (var i = 0; i <= n; i++) {
+         var basis = acgeBasisFunction(i, p, u, knots);
+         var dbasis = basisFunctionDeriv1(i, p, u, knots);

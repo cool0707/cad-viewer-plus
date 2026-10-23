@@ -24,4 +24,5 @@ overrides:
   vue: '^3.4.21'
   vue-i18n: '^11.4.4'
 patchedDependencies:
+  '@mlightcad/geometry-engine@3.15.14': patches/@mlightcad__geometry-engine@3.15.14.patch
   '@mlightcad/mtext-renderer@0.13.5': patches/@mlightcad__mtext-renderer@0.13.5.patch

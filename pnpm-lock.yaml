@@ -22,6 +22,9 @@ overrides:
   vue-i18n: ^11.4.4
 
 patchedDependencies:
+  '@mlightcad/geometry-engine@3.15.14':
+    hash: 1508b868aeb420986b9c32cd37a40653cdf969d914d6b0e9adcc7712ad1e97ae
+    path: patches/@mlightcad__geometry-engine@3.15.14.patch
   '@mlightcad/mtext-renderer@0.13.5':
     hash: 0d988d98fc2da267cf496f084984c2e0401e53b13eeee61a5455f6343eb16c68
     path: patches/@mlightcad__mtext-renderer@0.13.5.patch
@@ -8477,20 +8480,20 @@ snapshots:
     dependencies:
       '@mlightcad/common': 1.15.14
       '@mlightcad/emf-converter': 1.15.14
-      '@mlightcad/geometry-engine': 3.15.14(@mlightcad/common@1.15.14)
-      '@mlightcad/graphic-interface': 3.15.14(@mlightcad/common@1.15.14)(@mlightcad/geometry-engine@3.15.14(@mlightcad/common@1.15.14))
+      '@mlightcad/geometry-engine': 3.15.14(patch_hash=1508b868aeb420986b9c32cd37a40653cdf969d914d6b0e9adcc7712ad1e97ae)(@mlightcad/common@1.15.14)
+      '@mlightcad/graphic-interface': 3.15.14(@mlightcad/common@1.15.14)(@mlightcad/geometry-engine@3.15.14(patch_hash=1508b868aeb420986b9c32cd37a40653cdf969d914d6b0e9adcc7712ad1e97ae)(@mlightcad/common@1.15.14))
       uid: 2.0.2
 
   '@mlightcad/emf-converter@1.15.14': {}
 
-  '@mlightcad/geometry-engine@3.15.14(@mlightcad/common@1.15.14)':
+  '@mlightcad/geometry-engine@3.15.14(patch_hash=1508b868aeb420986b9c32cd37a40653cdf969d914d6b0e9adcc7712ad1e97ae)(@mlightcad/common@1.15.14)':
     dependencies:
       '@mlightcad/common': 1.15.14
 
-  '@mlightcad/graphic-interface@3.15.14(@mlightcad/common@1.15.14)(@mlightcad/geometry-engine@3.15.14(@mlightcad/common@1.15.14))':
+  '@mlightcad/graphic-interface@3.15.14(@mlightcad/common@1.15.14)(@mlightcad/geometry-engine@3.15.14(patch_hash=1508b868aeb420986b9c32cd37a40653cdf969d914d6b0e9adcc7712ad1e97ae)(@mlightcad/common@1.15.14))':
     dependencies:
       '@mlightcad/common': 1.15.14
-      '@mlightcad/geometry-engine': 3.15.14(@mlightcad/common@1.15.14)
+      '@mlightcad/geometry-engine': 3.15.14(patch_hash=1508b868aeb420986b9c32cd37a40653cdf969d914d6b0e9adcc7712ad1e97ae)(@mlightcad/common@1.15.14)
 
   '@mlightcad/libredwg-converter@3.15.14(@mlightcad/data-model@1.15.14)':
     dependencies:
