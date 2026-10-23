@@ -2,6 +2,7 @@ import {
   computeLayerExtentsMap,
   computeLayoutExtents,
   computeLayoutViewExtents,
+  computeVisibleLayoutExtents,
   resolveLayoutViewExtents
 } from '@mlightcad/cad-html-core'
 
@@ -137,5 +138,26 @@ describe('AcExLayerExtents', () => {
       maxX: 14,
       maxY: 12
     })
+  })
+  it('frames only displayed layers plus viewport paper frames', () => {
+    const layerExtents = new Map([
+      ['Shown', { minX: 0, minY: 0, maxX: 10, maxY: 5 }],
+      ['Hidden', { minX: 1000, minY: 1000, maxX: 1010, maxY: 1005 }],
+      ['Empty', null]
+    ])
+    const isLayerVisible = (name: string) => name !== 'Hidden'
+
+    expect(computeVisibleLayoutExtents(layerExtents, isLayerVisible)).toEqual({
+      minX: 0,
+      minY: 0,
+      maxX: 10,
+      maxY: 5
+    })
+    expect(
+      computeVisibleLayoutExtents(layerExtents, isLayerVisible, [
+        { paper: { minX: -5, minY: -5, maxX: 2, maxY: 2 } }
+      ])
+    ).toEqual({ minX: -5, minY: -5, maxX: 10, maxY: 5 })
+    expect(computeVisibleLayoutExtents(layerExtents, () => false)).toBeNull()
   })
 })

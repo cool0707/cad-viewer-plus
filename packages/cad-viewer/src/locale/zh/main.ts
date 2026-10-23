@@ -233,12 +233,10 @@ export default {
       select: '图层',
       off: '关闭图层',
       isolate: '隔离',
-      freeze: '冻结图层',
       lock: '锁定图层',
       current: '置为当前',
       allOn: '图层全开',
       unisolate: '取消隔离',
-      thaw: '解冻图层',
       unlock: '解锁图层',
       restore: '图层恢复'
     },
@@ -305,16 +303,14 @@ export default {
       propertyLineType: '设置新建对象或当前选中对象使用的线条类型（线型）。',
       propertyLineWeight: '设置新建对象或当前选中对象使用的线宽。',
       layerAction: {
-        off: '关闭当前选中的图层，使该图层上的对象隐藏，但不会冻结该图层。',
+        off: '关闭当前选中的图层，使该图层上的对象隐藏。',
         isolate: '仅显示当前选中的图层，并隐藏其他图层，方便专注处理相关对象。',
-        freeze: '冻结当前选中的图层，使其对象隐藏，并在刷新显示（重生成）时跳过该图层。',
         lock: '锁定当前选中的图层，使其对象保持可见，但不能被编辑。',
         current:
           '将当前选中的图层设为当前图层，之后新建对象会默认放在该图层上。',
-        allOn: '打开所有已关闭的图层；已冻结的图层会继续保持冻结状态。',
+        allOn: '显示所有已隐藏的图层。',
         unisolate:
           '恢复被图层隔离隐藏或锁定的图层，同时保留隔离之后的其他图层更改。',
-        thaw: '解冻当前选中的图层，使其对象重新显示并重新参与刷新显示（重生成）。',
         unlock: '解锁当前选中的图层，使其对象可以再次被选择和编辑。',
         restore: '恢复此 Ribbon 中最近一次图层操作之前的图层状态。'
       },
@@ -680,7 +676,6 @@ export default {
       layerList: {
         name: '名称',
         on: '开',
-        freeze: '冻结',
         lock: '锁定',
         plot: '打印',
         color: '颜色',
@@ -979,14 +974,11 @@ export default {
     tooltip: {
       layer: '图层',
       visibility: '可见性',
-      freeze: '冻结',
       lock: '锁定',
       lineType: '线条类型',
       color: '颜色',
       visible: '显示',
       hidden: '隐藏',
-      frozen: '已冻结',
-      thawed: '未冻结',
       locked: '已锁定',
       unlocked: '未锁定'
     }

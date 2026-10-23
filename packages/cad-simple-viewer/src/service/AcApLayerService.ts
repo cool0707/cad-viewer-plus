@@ -566,6 +566,45 @@ export class AcApLayerService {
   }
 
   /**
+   * Shows or hides a single layer as one visibility switch.
+   *
+   * Simplified UIs expose no freeze control, so a frozen layer is presented
+   * as hidden. Showing a layer therefore turns it on **and** thaws it in one
+   * undo step, so it never stays invisible after the user asked to show it.
+   * Hiding only turns the layer off and leaves the frozen bit untouched.
+   *
+   * @param layerName - Target layer name.
+   * @param visible - Desired visibility (`true` = on and thawed).
+   * @param options - Optional behavior when hiding the current layer.
+   * @returns `true` when the layer exists and was updated.
+   */
+  setLayerVisible(
+    layerName: string,
+    visible: boolean,
+    options: AcApSetLayerOnOptions = {}
+  ): boolean {
+    if (!visible) {
+      return this.setLayerOn(layerName, false, options)
+    }
+    if (!layerName || !this.db.tables.layerTable.getAt(layerName)) {
+      return false
+    }
+
+    return acapRunServiceEdit(this.db, LAYER_EDIT_LABEL, () => {
+      const layer = AcApLayerService.openLayerForWrite(this.db, layerName)
+      if (!layer) return false
+
+      layer.isOff = false
+      AcApLayerService.setLayerFrozenState(layer, false)
+      AcApLayerService.syncLayerModifiedEvent(this.db, layer, {
+        isOff: layer.isOff,
+        standardFlags: layer.standardFlags
+      })
+      return true
+    })
+  }
+
+  /**
    * Freezes or thaws a single layer.
    *
    * UI callers should pass `{ switchCurrentLayer: true }` when freezing the
@@ -790,6 +829,30 @@ export class AcApLayerService {
         turnedOn++
       }
       return turnedOn
+    })
+  }
+
+  /**
+   * Turns on and thaws every layer (see {@link setLayerVisible}).
+   *
+   * @returns Number of layers that became visible.
+   */
+  setAllLayersVisible(): number {
+    return acapRunServiceEdit(this.db, LAYER_EDIT_LABEL, () => {
+      let changed = 0
+      for (const layer of this.db.tables.layerTable.newIterator()) {
+        if (!layer.isOff && !layer.isFrozen) continue
+        const opened = AcApLayerService.openLayerForWrite(this.db, layer)
+        if (!opened) continue
+        opened.isOff = false
+        AcApLayerService.setLayerFrozenState(opened, false)
+        AcApLayerService.syncLayerModifiedEvent(this.db, opened, {
+          isOff: opened.isOff,
+          standardFlags: opened.standardFlags
+        })
+        changed++
+      }
+      return changed
     })
   }
 

@@ -109,6 +109,30 @@ export class AcApLayerStore {
   }
 
   /**
+   * Shows or hides a layer as one visibility switch. Showing also thaws a
+   * frozen layer (see {@link AcApLayerService.setLayerVisible}); hiding the
+   * current layer switches `CLAYER` first.
+   *
+   * @param layerName - Target layer name.
+   * @param visible - Desired visibility (`true` = on and thawed).
+   * @returns `true` when the layer exists and was updated.
+   */
+  setLayerVisible(layerName: string, visible: boolean): boolean {
+    return this.getLayerService().setLayerVisible(layerName, visible, {
+      switchCurrentLayer: true
+    })
+  }
+
+  /**
+   * Turns on and thaws every layer in this document.
+   *
+   * @returns `true` when at least one layer became visible.
+   */
+  setAllLayersVisible(): boolean {
+    return this.getLayerService().setAllLayersVisible() > 0
+  }
+
+  /**
    * Turns on every layer in this document.
    *
    * @returns `true` when at least one layer was turned on.

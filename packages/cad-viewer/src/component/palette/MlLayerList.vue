@@ -172,9 +172,10 @@ import {
   useLayers
 } from '../../composable'
 import { layerDelete, layerNew, layerSetCurrent } from '../../svg'
-import type {
-  MlLayerTableChangeField,
-  MlLayerTableRow
+import {
+  isLayerShown,
+  type MlLayerTableChangeField,
+  type MlLayerTableRow
 } from '../common/MlLayerTable'
 import MlLayerTable from '../common/MlLayerTable.vue'
 
@@ -204,8 +205,7 @@ const props = defineProps<Props>()
 const {
   layers,
   currentLayerName,
-  setLayerOn,
-  setLayerFrozen,
+  setLayerVisible,
   setLayerLocked,
   setLayerPlottable,
   setLayerColor,
@@ -369,8 +369,9 @@ const handleRowDbClick = (row: MlLayerTableRow) => {
 const handleToggleAll = (isOn: boolean) => {
   displayedLayers.value.forEach(row => {
     if (row.isDraft) return
-    if (row.isOn === isOn) return
-    setLayerOn(row.name, isOn)
+    // A frozen layer counts as hidden (the UI has no freeze control).
+    if (isLayerShown(row) === isOn) return
+    setLayerVisible(row.name, isOn)
   })
 }
 
@@ -382,10 +383,7 @@ const handleLayerChange = (payload: {
   const { layerName, field, value } = payload
   switch (field) {
     case 'on':
-      setLayerOn(layerName, Boolean(value))
-      break
-    case 'frozen':
-      setLayerFrozen(layerName, Boolean(value))
+      setLayerVisible(layerName, Boolean(value))
       break
     case 'locked':
       setLayerLocked(layerName, Boolean(value))

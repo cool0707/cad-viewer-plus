@@ -22,6 +22,7 @@ import {
   acapGetMeasurementCustomTextHeightWcs,
   acapGetMeasurementFontSize,
   acapGetMeasurementTextHeightMode,
+  AcApI18n,
   AcApLayerService,
   AcApOpenCmd,
   AcApQNewCmd,
@@ -40,6 +41,7 @@ import {
   applyMeasurementStyleToSelection,
   cssToMarkupColor,
   defaultMarkupColor,
+  eventBus,
   getActiveMeasurementStyle,
   getEffectiveMeasurementUnits,
   getMarkupCustomTextHeightWcs,
@@ -121,13 +123,11 @@ import {
   find,
   hatch,
   layerCurrent,
-  layerFreeze,
   layerIsolate,
   layerLock,
   layerOff,
   layerOn,
   layerPrevious,
-  layerUnfreeze,
   layerUnisolate,
   layerUnlock,
   line,
@@ -268,6 +268,7 @@ const {
   currentLayerName: ribbonStoreCurrentLayerName,
   setCurrentLayer: setRibbonCurrentLayer,
   toggleLayerState: toggleRibbonLayerState,
+  setAllLayersVisible: setAllRibbonLayersVisible,
   captureLayerSnapshot: captureRibbonLayerSnapshot
 } = useLayers(AcApDocManager.instance)
 const { selectedFilterId, matchesSelectedFilter } = useLayerFilters(
@@ -1138,6 +1139,27 @@ const handleRibbonSetCurrentLayer = () => {
   syncRibbonProperties(db)
 }
 
+/**
+ * "Turn all layers on" also thaws frozen layers: the UI has no freeze control,
+ * so a frozen layer looks hidden and must come back with the others.
+ */
+const handleRibbonShowAllLayers = () => {
+  const db = getCurrentDatabase()
+  if (!db) return
+
+  const previousSnapshot = captureRibbonLayerSnapshot(db)
+  if (!previousSnapshot) return
+  if (!setAllRibbonLayersVisible()) {
+    eventBus.emit('message', {
+      message: AcApI18n.t('jig.layon.alreadyOn'),
+      type: 'info'
+    })
+    return
+  }
+  ribbonLayerPreviousSnapshot.value = previousSnapshot
+  syncRibbonProperties(db)
+}
+
 const handleRibbonLayerStateToggle = (payload: {
   layerName: string
   state: LayerStateToggleKey
@@ -1243,12 +1265,10 @@ const buildBaseTabs = (
   const ribbonLayerActionTooltips = {
     off: t('main.ribbon.tooltip.layerAction.off'),
     isolate: t('main.ribbon.tooltip.layerAction.isolate'),
-    freeze: t('main.ribbon.tooltip.layerAction.freeze'),
     lock: t('main.ribbon.tooltip.layerAction.lock'),
     current: t('main.ribbon.tooltip.layerAction.current'),
     allOn: t('main.ribbon.tooltip.layerAction.allOn'),
     unisolate: t('main.ribbon.tooltip.layerAction.unisolate'),
-    thaw: t('main.ribbon.tooltip.layerAction.thaw'),
     unlock: t('main.ribbon.tooltip.layerAction.unlock'),
     restore: t('main.ribbon.tooltip.layerAction.restore')
   }
@@ -2178,12 +2198,6 @@ const buildBaseTabs = (
                       },
                       {
                         label: '',
-                        value: 'layer-action-freeze',
-                        icon: layerFreeze,
-                        tooltip: ribbonLayerActionTooltips.freeze
-                      },
-                      {
-                        label: '',
                         value: 'layer-action-lock',
                         icon: layerLock,
                         tooltip: ribbonLayerActionTooltips.lock
@@ -2218,12 +2232,6 @@ const buildBaseTabs = (
                         value: 'layer-action-unisolate',
                         icon: layerUnisolate,
                         tooltip: ribbonLayerActionTooltips.unisolate
-                      },
-                      {
-                        label: '',
-                        value: 'layer-action-thaw',
-                        icon: layerUnfreeze,
-                        tooltip: ribbonLayerActionTooltips.thaw
                       },
                       {
                         label: '',
@@ -2636,11 +2644,9 @@ const ribbonData = computed(() => {
   // Layer actions
   commandByItemId.set('layer-action-off', 'layoff')
   commandByItemId.set('layer-action-isolate', 'layiso')
-  commandByItemId.set('layer-action-freeze', 'layfrz')
   commandByItemId.set('layer-action-lock', 'laylck')
   commandByItemId.set('layer-action-all-on', 'layon')
   commandByItemId.set('layer-action-unisolate', 'layuniso')
-  commandByItemId.set('layer-action-thaw', 'laythw')
   commandByItemId.set('layer-action-unlock', 'layulk')
   commandByItemId.set('layer-action-restore', 'layerp')
 
@@ -2765,6 +2771,10 @@ const handleRibbonItemClick = (payload: {
   }
   if (payload.itemId === 'layer-action-current') {
     handleRibbonSetCurrentLayer()
+    return
+  }
+  if (payload.itemId === 'layer-action-all-on') {
+    handleRibbonShowAllLayers()
     return
   }
   const command = ribbonData.value.commandByItemId.get(payload.itemId)

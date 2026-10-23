@@ -248,7 +248,19 @@ export function useLayers(editor: AcApDocManager) {
   }
 
   /**
-   * Toggles a layer between on and off based on its current database state.
+   * Shows or hides a layer. The UI has no separate freeze control, so a frozen
+   * layer is shown as hidden and showing it also thaws it.
+   *
+   * @param layerName - Layer table record name.
+   * @param visible - `true` to turn the layer on and thaw it; `false` to turn it off.
+   * @returns `true` when the layer store accepts the change.
+   */
+  function setLayerVisible(layerName: string, visible: boolean) {
+    return getLayerStore()?.setLayerVisible(layerName, visible) ?? false
+  }
+
+  /**
+   * Toggles a layer between shown and hidden. A frozen layer counts as hidden.
    *
    * @param layerName - Layer table record name.
    * @returns `true` when the toggle succeeds; `false` if the layer is missing.
@@ -258,7 +270,7 @@ export function useLayers(editor: AcApDocManager) {
     if (!db || !layerName) return false
     const layer = db.tables.layerTable.getAt(layerName)
     if (!layer) return false
-    return setLayerOn(layer.name, layer.isOff)
+    return setLayerVisible(layer.name, layer.isOff || layer.isFrozen)
   }
 
   /**
@@ -348,6 +360,15 @@ export function useLayers(editor: AcApDocManager) {
    */
   function setAllLayersOn() {
     return getLayerStore()?.setAllLayersOn() ?? false
+  }
+
+  /**
+   * Turns every layer on and thaws it, so that every layer becomes visible.
+   *
+   * @returns `true` when at least one layer changed.
+   */
+  function setAllLayersVisible() {
+    return getLayerStore()?.setAllLayersVisible() ?? false
   }
 
   /**
@@ -472,11 +493,13 @@ export function useLayers(editor: AcApDocManager) {
     setCurrentLayer,
     /** Turns a layer on or off. See {@link setLayerOn}. */
     setLayerOn,
+    /** Shows (on + thaw) or hides a layer. See {@link setLayerVisible}. */
+    setLayerVisible,
     /** Freezes or thaws a layer. See {@link setLayerFrozen}. */
     setLayerFrozen,
     /** Locks or unlocks a layer. See {@link setLayerLocked}. */
     setLayerLocked,
-    /** Toggles layer on/off. See {@link toggleLayerOn}. */
+    /** Toggles layer shown/hidden. See {@link toggleLayerOn}. */
     toggleLayerOn,
     /** Toggles layer frozen/thawed. See {@link toggleLayerFrozen}. */
     toggleLayerFrozen,
@@ -488,6 +511,8 @@ export function useLayers(editor: AcApDocManager) {
     isolateLayer,
     /** Turns all layers on. See {@link setAllLayersOn}. */
     setAllLayersOn,
+    /** Turns all layers on and thaws them. See {@link setAllLayersVisible}. */
+    setAllLayersVisible,
     /** Captures current layer states for undo/previous. See {@link captureLayerSnapshot}. */
     captureLayerSnapshot,
     /** Restores a captured layer snapshot. See {@link applyLayerSnapshot}. */

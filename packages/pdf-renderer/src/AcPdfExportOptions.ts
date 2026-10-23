@@ -34,8 +34,8 @@ export interface AcPdfExportOptions {
   /** Font name substitutions passed to the glyph provider. */
   fontMapping?: AcGiFontMapping
   /**
-   * When true, frozen/off layers are still walked if the database policy
-   * allows it. Defaults to false.
+   * When true, geometry on off / frozen layers is exported as well. By default
+   * those layers are left out of both the page content and the page extents.
    */
   includeHiddenLayers?: boolean
   /** Wrap exploded text with PDF `/ActualText`. Defaults to true. */

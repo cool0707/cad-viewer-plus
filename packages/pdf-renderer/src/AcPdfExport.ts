@@ -15,6 +15,11 @@ import { AcPdfOcgManager } from './pdf/AcPdfOcgManager'
 import { AcPdfEntity } from './renderer/AcPdfEntity'
 import { AcPdfRenderer } from './renderer/AcPdfRenderer'
 import {
+  type AcPdfHiddenLayers,
+  hidePdfHiddenLayerGeometry,
+  resolvePdfHiddenLayers
+} from './viewport/AcPdfHiddenLayers'
+import {
   buildViewportModelContent,
   collectBlockRoots,
   collectModelSpaceRoots,
@@ -48,7 +53,12 @@ export async function exportDatabaseToPdf(
         `Block '${options.blockName}' was not found in the drawing database`
       )
     }
-    const roots = await collectLayoutRoots(db, renderer, block, {})
+    const roots = await collectLayoutRoots(
+      db,
+      renderer,
+      block,
+      createModelRootCache(db, options)
+    )
     const bytes = await renderer.exportAsync(roots)
     return bytes
   } finally {
@@ -156,9 +166,28 @@ function resolveLayoutBlock(
   return db.tables.blockTable.getIdAt(layout.blockTableRecordId)
 }
 
-/** Lazily populated, export-scoped model-space drawable tree. */
+/**
+ * Export-scoped state shared by every layout: the lazily populated
+ * model-space drawable tree and the layers to leave out.
+ */
 interface ModelRootCache {
   roots?: AcPdfEntity[]
+  /** Off / frozen layers; `undefined` exports every layer. */
+  hiddenLayers?: AcPdfHiddenLayers
+}
+
+/**
+ * Creates the export-scoped cache. Unless `includeHiddenLayers` is set, off
+ * and frozen layers are left out of both the painted content and the page
+ * extents, matching what the viewer shows.
+ */
+function createModelRootCache(
+  db: AcDbDatabase,
+  options: AcPdfExportOptions
+): ModelRootCache {
+  return options.includeHiddenLayers
+    ? {}
+    : { hiddenLayers: resolvePdfHiddenLayers(db) }
 }
 
 async function getModelRoots(
@@ -168,6 +197,9 @@ async function getModelRoots(
 ): Promise<AcPdfEntity[]> {
   if (!cache.roots) {
     cache.roots = await collectModelSpaceRoots(db, renderer)
+    if (cache.hiddenLayers) {
+      hidePdfHiddenLayerGeometry(cache.roots, cache.hiddenLayers)
+    }
   }
   return cache.roots
 }
@@ -219,6 +251,11 @@ async function collectLayoutRoots(
     }
   }
 
+  // Viewport borders were appended above, so they follow their layer too.
+  if (modelCache.hiddenLayers) {
+    hidePdfHiddenLayerGeometry(paperRoots, modelCache.hiddenLayers)
+  }
+
   // Viewport model content sits under paper-space annotations / borders.
   return [...viewportContents, ...paperRoots]
 }
@@ -249,7 +286,7 @@ async function exportLayoutsToPdf(
   // One document-scoped Form XObject registry: identical glyph/geometry
   // forms are embedded once per document instead of once per page.
   const formRegistry = createPdfFormRegistry()
-  const modelCache: ModelRootCache = {}
+  const modelCache = createModelRootCache(db, options)
   const modelSpaceId = db.tables.blockTable.modelSpace.objectId
   // `resolveLayoutBlock` can map distinct layout handles onto one block
   // (model space, when the paper handle is missing from the registry).

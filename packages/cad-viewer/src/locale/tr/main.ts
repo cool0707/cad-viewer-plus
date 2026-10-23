@@ -237,12 +237,10 @@ export default {
       select: 'Katman',
       off: 'Katmanı Kapat',
       isolate: 'İzole Et',
-      freeze: 'Katmanı Dondur',
       lock: 'Katmanı Kilitle',
       current: 'Geçerli Yap',
       allOn: 'Katmanı Aç',
       unisolate: 'İzolasyonu Kaldır',
-      thaw: 'Katmanı Çöz',
       unlock: 'Katman Kilidini Aç',
       restore: 'Katmanı Geri Yükle'
     },
@@ -327,19 +325,15 @@ export default {
       propertyLineWeight:
         'Yeni oluşturulan nesneler veya seçili varlıklar için çizgi kalınlığını ayarlayın.',
       layerAction: {
-        off: 'Seçili katmanı kapatarak katmanı dondurmadan nesnelerini gizler.',
+        off: 'Seçili katmanı kapatarak nesnelerini gizler.',
         isolate:
           'Yalnızca seçili katmanı gösterir ve diğerlerini gizleyerek ilgili nesnelere odaklanmanızı sağlar.',
-        freeze:
-          'Seçili katmanı dondurarak nesnelerini gizler ve ekran yenilenirken (yeniden oluşturma) atlanmasını sağlar.',
         lock: 'Seçili katmanı kilitleyerek nesnelerinin görünür kalmasını ancak düzenlenememesini sağlar.',
         current:
           'Seçili katmanı geçerli yaparak yeni nesnelerin o katmanda oluşturulmasını sağlar.',
-        allOn:
-          'Şu anda kapalı olan tüm katmanları açar. Donmuş katmanlar donmuş kalır.',
+        allOn: 'Gizlenmiş tüm katmanları gösterir.',
         unisolate:
           'Katman İzole tarafından gizlenen veya kilitlenen katmanları, sonraki katman değişikliklerini koruyarak geri yükler.',
-        thaw: 'Seçili katmanı çözerek nesnelerinin tekrar görünür ve ekran yenilemeye (yeniden oluşturma) dahil olmasını sağlar.',
         unlock:
           'Seçili katmanın kilidini açarak nesnelerinin tekrar seçilip değiştirilebilmesini sağlar.',
         restore:
@@ -726,7 +720,6 @@ export default {
       layerList: {
         name: 'Ad',
         on: 'Açık',
-        freeze: 'Dondur',
         lock: 'Kilitle',
         plot: 'Çizdir',
         color: 'Renk',
@@ -1027,14 +1020,11 @@ export default {
     tooltip: {
       layer: 'Katman',
       visibility: 'Görünürlük',
-      freeze: 'Dondur',
       lock: 'Kilitle',
       lineType: 'Çizgi Türü',
       color: 'Renk',
       visible: 'Görünür',
       hidden: 'Gizli',
-      frozen: 'Donmuş',
-      thawed: 'Çözülmüş',
       locked: 'Kilitli',
       unlocked: 'Kilidi Açık'
     }

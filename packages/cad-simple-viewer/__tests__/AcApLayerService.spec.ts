@@ -148,6 +148,43 @@ describe('AcApLayerService', () => {
     expect(db.layers.get('A')?.isOff).toBe(false)
   })
 
+  test('setLayerVisible shows a frozen and off layer in one step', () => {
+    const db = createMockDatabase()
+    const layer = db.layers.get('A')!
+    layer.standardFlags = 0x01
+    const service = new AcApLayerService(db as never)
+
+    expect(service.setLayerVisible('A', true)).toBe(true)
+
+    expect(layer.isOff).toBe(false)
+    expect(layer.standardFlags & 0x01).toBe(0)
+  })
+
+  test('setLayerVisible(false) only turns the layer off', () => {
+    const db = createMockDatabase()
+    db.clayer = '0'
+    const layer = db.layers.get('A')!
+    layer.isOff = false
+    const service = new AcApLayerService(db as never)
+
+    expect(service.setLayerVisible('A', false)).toBe(true)
+
+    expect(layer.isOff).toBe(true)
+    expect(layer.standardFlags & 0x01).toBe(0)
+  })
+
+  test('setAllLayersVisible turns on and thaws every hidden layer', () => {
+    const db = createMockDatabase()
+    db.layers.get('0')!.standardFlags = 0x01
+    db.layers.get('0')!.isFrozen = true
+    const service = new AcApLayerService(db as never)
+
+    expect(service.setAllLayersVisible()).toBe(2)
+
+    expect(db.layers.get('0')!.standardFlags & 0x01).toBe(0)
+    expect(db.layers.get('A')!.isOff).toBe(false)
+  })
+
   test('setLayerOn with switchCurrentLayer switches CLAYER before turning off current layer', () => {
     const db = createMockDatabase()
     db.clayer = '0'
