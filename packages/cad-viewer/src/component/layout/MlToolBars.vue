@@ -58,9 +58,14 @@ import { useDocument, useSettings } from '../../composable'
 // Raw markup: AcUiToolbar takes SVG strings. (Rendering Vue icon components
 // while it builds buttons would flush pending watchers and re-enter it.)
 import arcThreePointsSvg from '../../svg/arc/arcThreePoints.svg?raw'
+import attachDwgSvg from '../../svg/attachDwg.svg?raw'
+import attachImageSvg from '../../svg/attachImage.svg?raw'
 import circleCenterRadiusSvg from '../../svg/circle/circleCenterRadius.svg?raw'
+import defineAttributeSvg from '../../svg/defineAttribute.svg?raw'
+import editAttributeSvg from '../../svg/editAttribute.svg?raw'
 import ellipseCenterSvg from '../../svg/ellipse/ellipseCenter.svg?raw'
 import hatchSvg from '../../svg/hatch/hatch.svg?raw'
+import insertBlockSvg from '../../svg/insertBlock.svg?raw'
 import lineSvg from '../../svg/line.svg?raw'
 import moveSvg from '../../svg/move.svg?raw'
 import offsetSvg from '../../svg/offset.svg?raw'
@@ -107,6 +112,9 @@ const i18n = {
         ? `main.verticalToolbar.chrome.${key.slice('toolbar.'.length)}`
         : key
     )
+      // Ribbon labels wrap with "\n" (e.g. "DWG\nアタッチ"); tooltips are one line.
+      .replace(/([\u3000-\u9fff\uff00-\uffef])\n(?=[\u3000-\u9fff\uff00-\uffef])/g, '$1')
+      .replace(/\s*\n\s*/g, ' ')
 }
 
 /** Where the user dragged the toolbar to (and its orientation). */
@@ -152,7 +160,16 @@ const handleLocaleChanged = () => {
  * Ribbon SVGs leave most shapes without a fill (the ribbon colours them via
  * CSS), which would render black here; default them to the text colour.
  */
-const tinted = (svg: string) => svg.replace('<svg ', '<svg fill="currentColor" ')
+const tinted = (svg: string) =>
+  /^<svg\b[^>]*\sfill=/.test(svg)
+    ? svg
+    : svg.replace('<svg ', '<svg fill="currentColor" ')
+
+const attachDwg = tinted(attachDwgSvg)
+const attachImage = tinted(attachImageSvg)
+const defineAttribute = tinted(defineAttributeSvg)
+const editAttribute = tinted(editAttributeSvg)
+const insertBlock = tinted(insertBlockSvg)
 
 const arcThreePoints = tinted(arcThreePointsSvg)
 const circleCenterRadius = tinted(circleCenterRadiusSvg)
@@ -247,6 +264,46 @@ const buildItems = (): AcUiToolbarItem[] => {
           label: 'main.ribbon.command.hatch',
           icon: hatch,
           command: 'hatch'
+        }
+      ]
+    },
+    {
+      id: 'insert',
+      label: 'main.ribbon.tab.insert',
+      icon: insertBlock,
+      childrenUi: 'toolbar',
+      minOpenMode: AcEdOpenMode.Write,
+      children: [
+        {
+          id: 'insert-block',
+          label: 'main.ribbon.command.insert',
+          icon: insertBlock,
+          command: 'insert'
+        },
+        {
+          id: 'insert-attdef',
+          label: 'main.ribbon.command.defineAttribute',
+          icon: defineAttribute,
+          command: 'attdef'
+        },
+        {
+          id: 'insert-attedit',
+          label: 'main.ribbon.command.editAttributes',
+          icon: editAttribute,
+          command: 'attedit'
+        },
+        toolbarSeparator(),
+        {
+          id: 'insert-xattach',
+          label: 'main.ribbon.command.attachDwg',
+          icon: attachDwg,
+          command: 'xattach'
+        },
+        {
+          id: 'insert-imageattach',
+          label: 'main.ribbon.command.attachImage',
+          icon: attachImage,
+          command: 'imageattach'
         }
       ]
     },
