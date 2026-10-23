@@ -16,6 +16,7 @@ import * as THREE from 'three'
 import { AcApDocManager } from '../../../app'
 import { AcTrView2d } from '../../../view'
 import { acgiIsLightBackground } from '../../global/AcEdUiColor'
+import { AcEdMTextCompositionPreview } from './AcEdMTextCompositionPreview'
 
 function acGiAttachmentToMText(
   ap: AcGiMTextAttachmentPoint | undefined
@@ -124,6 +125,13 @@ export interface AcEdMTextEditorOptions {
   width: number
   /** Default text height in world units. */
   textHeight: number
+  /**
+   * Height in world units of the area the user picked for the text. When
+   * set, the picked rectangle (`width` x `areaHeight`, hanging down from
+   * `location`) stays outlined while typing so the user can see where the
+   * text goes. The text box itself still grows with its contents.
+   */
+  areaHeight?: number
   /** Optional initial MTEXT source string. Defaults to empty string. */
   initialText?: string
   /**
@@ -177,6 +185,9 @@ function getSharedActiveInputBoxListeners() {
 
 export class AcEdMTextEditor {
   static readonly defaultLineSpacingFactor = 0.3
+
+  /** Caret blink period in seconds (`CursorStyle.blinkSpeed`). */
+  private static readonly caretBlinkSeconds = 1.05
 
   private static activeInputBox: MTextInputBox | null = null
   private static readonly activeInputBoxChangeListeners =
@@ -407,6 +418,67 @@ export class AcEdMTextEditor {
     }
   }
 
+  /**
+   * Summarizes everything the editor paints in WebGL (text layout, caret,
+   * selection, frame and caret blink phase). The view only needs a WebGL
+   * redraw when this changes.
+   */
+  private static frameSignature(inputBox: MTextInputBox): string {
+    const runtime = inputBox as unknown as {
+      renderedObject?: THREE.Object3D | null
+    }
+    const caret = inputBox.getCursorWorldPosition()
+    const selection = inputBox.getSelectionRange()
+    const halfBlinkMs = AcEdMTextEditor.caretBlinkSeconds * 500
+    return [
+      runtime.renderedObject?.uuid ?? '',
+      inputBox.getText(),
+      caret.x,
+      caret.y,
+      selection.start,
+      selection.end,
+      Math.floor(Date.now() / halfBlinkMs)
+    ].join('|')
+  }
+
+  /**
+   * Adds a dashed outline of the picked text area to the view's scene, or
+   * returns `null` when no area height was given.
+   */
+  private static createAreaOutline(
+    view: AcTrView2d,
+    origin: THREE.Vector3,
+    width: number,
+    areaHeight: number | undefined
+  ): THREE.LineLoop | null {
+    if (!areaHeight || !(areaHeight > 0) || !(width > 0)) return null
+    const { x, y } = origin
+    const z = origin.z + 0.005
+    const geometry = new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(x, y, z),
+      new THREE.Vector3(x + width, y, z),
+      new THREE.Vector3(x + width, y - areaHeight, z),
+      new THREE.Vector3(x, y - areaHeight, z)
+    ])
+    // Dash length of ~6px at the zoom level the editor was opened with.
+    const p0 = view.screenToWorld({ x: 0, y: 0 })
+    const p1 = view.screenToWorld({ x: 6, y: 0 })
+    const dash = Math.max(Math.abs(p1.x - p0.x), 1e-6)
+    const material = new THREE.LineDashedMaterial({
+      color: 0x4a90d9,
+      dashSize: dash,
+      gapSize: dash,
+      transparent: true,
+      opacity: 0.8,
+      depthTest: false
+    })
+    const outline = new THREE.LineLoop(geometry, material)
+    outline.computeLineDistances()
+    outline.renderOrder = 99
+    view.internalScene.add(outline)
+    return outline
+  }
+
   private static detachFormatBridge(inputBox: MTextInputBox): void {
     const runtime = inputBox as MTextInputBoxRuntime
     runtime[mtextFormatBridgeKey]?.dispose()
@@ -435,7 +507,8 @@ export class AcEdMTextEditor {
       toolbarFontFamilies = [],
       toolbarColorPicker,
       toolbarEnabled = AcEdMTextEditor.defaultToolbarEnabled,
-      initialAttachmentPoint
+      initialAttachmentPoint,
+      areaHeight
     } = options
     const origin = new THREE.Vector3(location.x, location.y, location.z ?? 0)
     const isLightBg = acgiIsLightBackground(view.backgroundColor)
@@ -500,7 +573,8 @@ export class AcEdMTextEditor {
       textStyle: defaultTextStyle,
       cursorStyle: {
         color: cursorColor,
-        glowColor: cursorColor
+        glowColor: cursorColor,
+        blinkSpeed: AcEdMTextEditor.caretBlinkSeconds
       },
       boundingBoxStyle: {
         padding: 0
@@ -524,13 +598,37 @@ export class AcEdMTextEditor {
     })
     AcEdMTextEditor.attachFormatBridge(mtextInputBox)
     AcEdMTextEditor.setActiveInputBox(mtextInputBox)
+    const areaOutline = AcEdMTextEditor.createAreaOutline(
+      view,
+      origin,
+      width,
+      areaHeight
+    )
+    const compositionPreview = new AcEdMTextCompositionPreview(mtextInputBox, {
+      ownerDocument: view.container.ownerDocument,
+      textColor: cursorColor,
+      backgroundColor: `#${view.backgroundColor.toString(16).padStart(6, '0')}`,
+      fontFamily: '"BIZ UDPGothic", "Noto Sans JP", sans-serif'
+    })
 
     return new Promise(resolve => {
       let done = false
 
+      // The text, caret, selection and frame are WebGL objects in the view's
+      // scene, so they only show up when the view redraws WebGL. `isHtmlDirty`
+      // alone (CSS2D pass) never paints them. Redrawing every frame would
+      // repaint large drawings at 60 fps while typing, so only mark the view
+      // dirty when something the editor draws has changed.
+      let lastFrameSignature = ''
       const onRenderFrame = () => {
         if (done) return
         mtextInputBox.update()
+        compositionPreview.update()
+        const signature = AcEdMTextEditor.frameSignature(mtextInputBox)
+        if (signature !== lastFrameSignature) {
+          lastFrameSignature = signature
+          view.isDirty = true
+        }
         view.isHtmlDirty = true
       }
 
@@ -550,6 +648,13 @@ export class AcEdMTextEditor {
           AcEdMTextEditor.setActiveInputBox(null)
         }
         AcEdMTextEditor.detachFormatBridge(mtextInputBox)
+        compositionPreview.dispose()
+        if (areaOutline) {
+          areaOutline.removeFromParent()
+          areaOutline.geometry.dispose()
+          ;(areaOutline.material as THREE.Material).dispose()
+          view.isDirty = true
+        }
         mtextInputBox.dispose()
         hiddenToolbarContainer?.remove()
         view.events.renderFrame.removeEventListener(onRenderFrame)

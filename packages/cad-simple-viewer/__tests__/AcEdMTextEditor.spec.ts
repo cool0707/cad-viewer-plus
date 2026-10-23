@@ -132,6 +132,9 @@ import { AcEdMTextEditor } from '../src/editor/input/ui/AcEdMTextEditor'
 interface FakeElement {
   ownerDocument: {
     createElement: jest.Mock
+    addEventListener?: jest.Mock
+    removeEventListener?: jest.Mock
+    body?: FakeElement
   }
   appendChild: jest.Mock
   remove: jest.Mock
@@ -162,6 +165,9 @@ function createFakeElement(ownerDocument?: FakeElement['ownerDocument']) {
 
 function createView() {
   const container = createFakeElement()
+  container.ownerDocument.addEventListener = jest.fn()
+  container.ownerDocument.removeEventListener = jest.fn()
+  container.ownerDocument.body = createFakeElement(container.ownerDocument)
   return {
     internalScene: {},
     internalCamera: {},
@@ -198,13 +204,14 @@ describe('AcEdMTextEditor', () => {
     }
     // Simulate a host that registered on a different module copy by writing
     // only into the shared global listener set.
-    const globalListeners = (
-      globalThis as {
-        __mlightcadAcEdMTextActiveInputBoxListeners__?: Set<
-          (inputBox: unknown) => void
-        >
-      }
-    ).__mlightcadAcEdMTextActiveInputBoxListeners__ ??
+    const globalListeners =
+      (
+        globalThis as {
+          __mlightcadAcEdMTextActiveInputBoxListeners__?: Set<
+            (inputBox: unknown) => void
+          >
+        }
+      ).__mlightcadAcEdMTextActiveInputBoxListeners__ ??
       new Set<(inputBox: unknown) => void>()
     ;(
       globalThis as {

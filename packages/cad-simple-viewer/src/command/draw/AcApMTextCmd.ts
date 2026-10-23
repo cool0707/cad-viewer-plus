@@ -52,6 +52,7 @@ export class AcApMTextCmd extends AcEdCommand {
       location,
       width,
       textHeight,
+      areaHeight: Math.abs(box.max.y - box.min.y),
       toolbarFontFamilies
     })
     if (!result) return
