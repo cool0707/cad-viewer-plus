@@ -1316,12 +1316,15 @@ describe('AcUiToolbar movable', () => {
     target.dispatchEvent(event)
   }
 
-  it('renders a grip and an orientation toggle', () => {
+  it('renders a grip with a layout menu button', () => {
     const { host, root, toolbar } = createMovableToolbar()
     expect(root.classList.contains('is-movable')).toBe(true)
-    expect(host.querySelector('[data-toolbar-item-id="toolbar-grip"]')).toBeTruthy()
+    const handle = host.querySelector('.ml-ex-ui-toolbar-handle')
     expect(
-      host.querySelector('[data-toolbar-item-id="toolbar-orientation"]')
+      handle?.querySelector('[data-toolbar-item-id="toolbar-grip"]')
+    ).toBeTruthy()
+    expect(
+      handle?.querySelector('[data-toolbar-item-id="toolbar-layout"]')
     ).toBeTruthy()
     toolbar.destroy()
   })
@@ -1359,18 +1362,36 @@ describe('AcUiToolbar movable', () => {
     toolbar.destroy()
   })
 
-  it('switches orientation and docks back on grip double-click', () => {
+  it('switches orientation from the layout menu and docks back', () => {
     const { host, root, toolbar, onFloatingLayoutChange } =
       createMovableToolbar()
-    host
-      .querySelector<HTMLButtonElement>(
-        '[data-toolbar-item-id="toolbar-orientation"]'
-      )!
-      .click()
+    const menuItems = () => {
+      host
+        .querySelector<HTMLButtonElement>(
+          '[data-toolbar-item-id="toolbar-layout"]'
+        )!
+        .click()
+      return host.querySelectorAll<HTMLButtonElement>('.ml-ex-ui-dropdown-item')
+    }
+    // Vertical / Horizontal / Reset position; the current one is marked.
+    let items = menuItems()
+    expect(items).toHaveLength(3)
+    expect(items[0].classList.contains('is-toggled')).toBe(true)
+    items[1].click()
+    expect(host.querySelector('.ml-ex-ui-dropdown')).toBeNull()
     expect(root.classList.contains('is-horizontal')).toBe(true)
     expect(onFloatingLayoutChange).toHaveBeenLastCalledWith(
       expect.objectContaining({ orientation: 'horizontal' })
     )
+
+    items = menuItems()
+    expect(items[1].classList.contains('is-toggled')).toBe(true)
+    items[2].click()
+    expect(root.classList.contains('is-vertical')).toBe(true)
+    expect(toolbar.getFloatingLayout()).toBeUndefined()
+
+    menuItems()[1].click()
+    expect(root.classList.contains('is-horizontal')).toBe(true)
 
     host
       .querySelector('[data-toolbar-item-id="toolbar-grip"]')!

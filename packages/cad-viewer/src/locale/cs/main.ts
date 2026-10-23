@@ -417,7 +417,10 @@ export default {
       expand: 'Rozbalit panel nástrojů',
       moreOverflow: 'Další nástroje',
       move: 'Přetažením přesunete (dvojklikem obnovíte)',
-      orientation: 'Přepnout svisle / vodorovně'
+      layoutMenu: 'Rozložení panelu nástrojů',
+      vertical: 'Svisle',
+      horizontal: 'Vodorovně',
+      resetPosition: 'Obnovit polohu'
     },
     measure: {
       text: 'Měření',

@@ -389,7 +389,10 @@ export default {
       expand: '展开工具栏',
       moreOverflow: '更多工具',
       move: '拖动以移动（双击恢复原位）',
-      orientation: '切换竖排 / 横排'
+      layoutMenu: '工具栏布局',
+      vertical: '竖排',
+      horizontal: '横排',
+      resetPosition: '恢复原位'
     },
     measure: {
       text: '测量',

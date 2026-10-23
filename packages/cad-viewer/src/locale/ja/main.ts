@@ -407,7 +407,10 @@ export default {
       expand: 'ツールバーを展開',
       moreOverflow: 'その他のツール',
       move: 'ドラッグで移動 (ダブルクリックで元の位置に戻す)',
-      orientation: '縦置き / 横置きを切り替え'
+      layoutMenu: 'ツールバーの配置',
+      vertical: '縦置き',
+      horizontal: '横置き',
+      resetPosition: '元の位置に戻す'
     },
     measure: {
       text: '計測',

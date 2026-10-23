@@ -17,7 +17,8 @@ import {
   ICON_CHEVRON_UP,
   ICON_DRAG_HANDLE,
   ICON_MORE,
-  ICON_TOOLBAR_ORIENTATION
+  ICON_PLACEMENT_LEFT,
+  ICON_PLACEMENT_TOP
 } from '../icons'
 import { AcUiDropdownMenu } from './AcUiDropdownMenu'
 import { AcUiSubToolbar } from './AcUiSubToolbar'
@@ -123,9 +124,9 @@ export interface AcUiToolbarMountOptions {
    */
   docState?: Partial<AcUiToolbarDocState>
   /**
-   * When true, prepend a drag grip and an orientation toggle so users can move
-   * the toolbar anywhere inside the host and switch it between vertical and
-   * horizontal. While floating, the edge used for sub-toolbars follows the side
+   * When true, prepend a drag grip so users can move the toolbar anywhere
+   * inside the host, with a ⋯ menu to switch it between vertical and
+   * horizontal or put it back. While floating, the edge used for sub-toolbars follows the side
    * of the host centre the bar sits on (vertical: left/right, horizontal:
    * top/bottom). Double-clicking the grip docks it back at {@link placement}.
    * Ignored with {@link inCanvasParent} or `size: 'stretch'`. @default false
@@ -200,6 +201,8 @@ export class AcUiToolbar {
   private readonly overflowButton: HTMLButtonElement
   /** Dropdown listing items that did not fit in the toolbar. */
   private overflowDropdown?: AcUiDropdownMenu
+  /** ⋯ menu beside the grip (orientation / reset position). */
+  private layoutMenu?: AcUiDropdownMenu
   /** Items currently hidden behind the overflow menu. */
   private overflowItems: AcUiToolbarItem[] = []
   /** Whether menu overflow is showing the ⋯ button (used for vertical positioning). */
@@ -893,12 +896,11 @@ export class AcUiToolbar {
   }
 
   /** Switches between vertical and horizontal, keeping the bar's centre. */
-  private toggleOrientation() {
+  private setOrientation(orientation: AcUiToolbarOrientation) {
+    if (orientation === this.getOrientationClass()) return
     const rect = this.getRootHostRect()
     const centerX = rect.left + rect.width / 2
     const centerY = rect.top + rect.height / 2
-    const orientation: AcUiToolbarOrientation =
-      this.getOrientationClass() === 'vertical' ? 'horizontal' : 'vertical'
     this.floating = { orientation, x: 0.5, y: 0.5 }
     this.options.placement = this.resolveFloatingPlacement()
     this.syncRootClasses()
@@ -929,9 +931,15 @@ export class AcUiToolbar {
     this.emitFloatingLayout()
   }
 
-  /** Prepends the drag grip and orientation toggle of a movable toolbar. */
+  /**
+   * Prepends the handle of a movable toolbar: the drag grip with a ⋯ button at
+   * its end that opens the layout menu.
+   */
   private appendMoveControls() {
     if (!this.isMovable()) return
+
+    const handle = document.createElement('div')
+    handle.className = 'ml-ex-ui-toolbar-handle'
 
     const grip = document.createElement('div')
     grip.className = 'ml-ex-ui-toolbar-grip'
@@ -942,22 +950,79 @@ export class AcUiToolbar {
       event.stopPropagation()
       this.dockBack()
     })
-    this.root.appendChild(grip)
+    handle.appendChild(grip)
 
     const button = document.createElement('button')
     button.type = 'button'
-    button.className = 'ml-ex-ui-toolbar-btn ml-ex-ui-toolbar-orientation-btn'
-    button.dataset.toolbarItemId = 'toolbar-orientation'
-    button.appendChild(createIconElement(ICON_TOOLBAR_ORIENTATION))
+    button.className = 'ml-ex-ui-toolbar-layout-btn'
+    button.dataset.toolbarItemId = 'toolbar-layout'
+    button.setAttribute('aria-haspopup', 'menu')
+    button.appendChild(createIconElement(ICON_MORE))
     button.addEventListener('click', event => {
       event.stopPropagation()
-      this.toggleOrientation()
+      this.toggleLayoutMenu(button)
     })
-    this.root.appendChild(button)
+    handle.appendChild(button)
+
+    this.root.appendChild(handle)
     this.syncMoveControlLabels()
   }
 
-  /** Updates grip / orientation toggle tooltips after locale change. */
+  /** Opens or closes the ⋯ layout menu (vertical / horizontal / reset). */
+  private toggleLayoutMenu(anchor: HTMLElement) {
+    if (this.layoutMenu) {
+      this.closeLayoutMenu()
+      return
+    }
+    this.closeChildrenUi()
+    const vertical = this.getOrientationClass() === 'vertical'
+    const items: AcUiToolbarItem[] = [
+      {
+        id: 'toolbar-layout-vertical',
+        label: 'toolbar.vertical',
+        icon: ICON_PLACEMENT_LEFT,
+        toggle: { getValue: () => vertical, on: {}, off: {} }
+      },
+      {
+        id: 'toolbar-layout-horizontal',
+        label: 'toolbar.horizontal',
+        icon: ICON_PLACEMENT_TOP,
+        toggle: { getValue: () => !vertical, on: {}, off: {} }
+      },
+      { id: 'toolbar-layout-separator', type: 'separator' },
+      { id: 'toolbar-layout-reset', label: 'toolbar.resetPosition' }
+    ]
+    const menu = new AcUiDropdownMenu(
+      this.options.i18n,
+      items,
+      anchor,
+      this.themeHost
+    )
+    menu.setOnSelect(item => {
+      if (item.id === 'toolbar-layout-vertical') {
+        this.setOrientation('vertical')
+      } else if (item.id === 'toolbar-layout-horizontal') {
+        this.setOrientation('horizontal')
+      } else if (item.id === 'toolbar-layout-reset') {
+        this.dockBack()
+      }
+    })
+    menu.setOnClose(() => {
+      if (this.layoutMenu === menu) {
+        this.layoutMenu = undefined
+        anchor.setAttribute('aria-expanded', 'false')
+      }
+    })
+    anchor.setAttribute('aria-expanded', 'true')
+    this.layoutMenu = menu
+  }
+
+  private closeLayoutMenu() {
+    this.layoutMenu?.close()
+    this.layoutMenu = undefined
+  }
+
+  /** Updates grip / layout menu tooltips after locale change. */
   private syncMoveControlLabels() {
     const grip = this.root.querySelector<HTMLElement>(
       '[data-toolbar-item-id="toolbar-grip"]'
@@ -966,10 +1031,10 @@ export class AcUiToolbar {
       grip.title = this.options.i18n.t('toolbar.move')
     }
     const button = this.root.querySelector<HTMLButtonElement>(
-      '[data-toolbar-item-id="toolbar-orientation"]'
+      '[data-toolbar-item-id="toolbar-layout"]'
     )
     if (button) {
-      button.title = this.options.i18n.t('toolbar.orientation')
+      button.title = this.options.i18n.t('toolbar.layoutMenu')
       button.setAttribute('aria-label', button.title)
     }
   }
@@ -1783,6 +1848,7 @@ export class AcUiToolbar {
   /** Closes any open dropdown or sub-toolbar and clears parent expanded state. */
   private closeChildrenUi() {
     this.closeOverflowMenu()
+    this.closeLayoutMenu()
     this.closeNestedSubToolbar()
     this.openDropdown?.close()
     this.openDropdown = undefined

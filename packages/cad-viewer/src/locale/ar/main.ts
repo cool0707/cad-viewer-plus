@@ -590,7 +590,10 @@ export default {
       expand: 'توسيع شريط الأدوات',
       moreOverflow: 'المزيد من الأدوات',
       move: 'اسحب للنقل (انقر نقرًا مزدوجًا للاستعادة)',
-      orientation: 'التبديل بين الوضع العمودي والأفقي'
+      layoutMenu: 'تخطيط شريط الأدوات',
+      vertical: 'عمودي',
+      horizontal: 'أفقي',
+      resetPosition: 'إعادة الموضع'
     },
 
     measure: {

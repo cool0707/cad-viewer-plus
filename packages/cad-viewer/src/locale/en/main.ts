@@ -423,7 +423,10 @@ export default {
       expand: 'Expand toolbar',
       moreOverflow: 'More tools',
       move: 'Drag to move (double-click to reset)',
-      orientation: 'Switch vertical / horizontal'
+      layoutMenu: 'Tool bar layout',
+      vertical: 'Vertical',
+      horizontal: 'Horizontal',
+      resetPosition: 'Reset position'
     },
     measure: {
       text: 'Measure',

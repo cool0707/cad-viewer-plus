@@ -427,7 +427,10 @@ export default {
       expand: 'Araç çubuğunu genişlet',
       moreOverflow: 'Diğer araçlar',
       move: 'Taşımak için sürükleyin (sıfırlamak için çift tıklayın)',
-      orientation: 'Dikey / yatay arasında geç'
+      layoutMenu: 'Araç çubuğu yerleşimi',
+      vertical: 'Dikey',
+      horizontal: 'Yatay',
+      resetPosition: 'Konumu sıfırla'
     },
     measure: {
       text: 'Ölç',
