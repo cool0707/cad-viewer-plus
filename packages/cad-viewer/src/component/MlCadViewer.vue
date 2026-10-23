@@ -290,6 +290,7 @@ provideLocale(
 )
 // Canvas element reference
 const containerRef = ref<HTMLDivElement>()
+const mainRef = ref<HTMLElement>()
 const layoutRef = ref<HTMLDivElement>()
 const headerRef = ref<HTMLElement>()
 
@@ -331,7 +332,19 @@ watch(
   { immediate: true }
 )
 
-provideViewerRect(containerRef)
+// The palette is laid out against the whole main area; the canvas container
+// itself shrinks by the docked palette (see paletteDockStyle).
+provideViewerRect(mainRef)
+
+const paletteDockStyle = computed(() => {
+  const { left, right, top, bottom } = store.paletteDockInsets
+  return {
+    '--ml-palette-dock-left': `${left}px`,
+    '--ml-palette-dock-right': `${right}px`,
+    '--ml-palette-dock-top': `${top}px`,
+    '--ml-palette-dock-bottom': `${bottom}px`
+  }
+})
 
 let headerResizeObserver: ResizeObserver | undefined
 
@@ -632,13 +645,6 @@ eventBus.on('failed-to-open-file', params => {
   })
 })
 
-// Mirror AutoCAD's LAYERCLOSE behavior: only close when the layer tab is open.
-eventBus.on('close-layer-manager', () => {
-  if (!store.dialogs.layerManager) return
-  if (store.dialogs.activePaletteTab !== 'layerManager') return
-  store.dialogs.layerManager = false
-})
-
 // Toggle notification center visibility
 const toggleNotificationCenter = () => {
   showNotificationCenter.value = !showNotificationCenter.value
@@ -669,7 +675,7 @@ const closeNotificationCenter = () => {
         </header>
 
         <!-- Main content area with CAD viewing tools and controls -->
-        <main class="ml-cad-main">
+        <main ref="mainRef" class="ml-cad-main" :style="paletteDockStyle">
           <!-- Canvas element for CAD rendering -->
           <div
             :class="viewerThemeClass"
@@ -718,7 +724,9 @@ const closeNotificationCenter = () => {
 /* Container element styling */
 .ml-cad-container {
   position: absolute;
-  inset: 0;
+  /* Leave the space of a docked palette so it never covers the drawing. */
+  inset: var(--ml-palette-dock-top, 0) var(--ml-palette-dock-right, 0)
+    var(--ml-palette-dock-bottom, 0) var(--ml-palette-dock-left, 0);
   display: block;
   outline: none;
   z-index: 1; /* Canvas below UI overlays inside main */

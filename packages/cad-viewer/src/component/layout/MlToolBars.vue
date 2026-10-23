@@ -469,7 +469,9 @@ watch(isDocumentOpening, opening => {
 .ml-vertical-toolbar-host,
 .ml-vertical-toolbar-host.ml-ex-ui-toolbar-host {
   position: absolute;
-  inset: 0;
+  /* Same box as the canvas: keep the bar out from under a docked palette. */
+  inset: var(--ml-palette-dock-top, 0) var(--ml-palette-dock-right, 0)
+    var(--ml-palette-dock-bottom, 0) var(--ml-palette-dock-left, 0);
   width: auto;
   height: auto;
   z-index: 3;
