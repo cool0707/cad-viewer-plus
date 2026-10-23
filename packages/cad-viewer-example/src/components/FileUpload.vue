@@ -304,6 +304,7 @@ import { UploadFilled } from '@element-plus/icons-vue'
 import {
   type AcApDataSource,
   type AcApDataSourceMenuItem,
+  acapIsDrawingFileName,
   AcApOpenViewMode,
   AcEdOpenMode,
   AcUiFileOpenPanel} from '@mlightcad/cad-simple-viewer'
@@ -536,11 +537,8 @@ const accessModes = computed(() => [
   }
 ] as const)
 
-const isValidFile = (file: File): boolean => {
-  const validExtensions = ['.dwg', '.dxf']
-  const fileName = file.name.toLowerCase()
-  return validExtensions.some(ext => fileName.endsWith(ext))
-}
+// DWG / DXF plus every registered converter (JWW, …).
+const isValidFile = (file: File): boolean => acapIsDrawingFileName(file.name)
 </script>
 
 <style scoped>

@@ -1,3 +1,4 @@
+import { acapStripDrawingExtension } from '../../app/AcApDrawingFileTypes'
 import { MARKUP_STATUSES } from './AcApMarkupStore'
 import type {
   AcApMarkupRecord,
@@ -218,6 +219,6 @@ export function stringifyMarkupSidecar(file: AcApMarkupSidecarFile): string {
  */
 export function markupSidecarFileName(drawingName?: string): string {
   if (!drawingName) return 'drawing.markup.json'
-  const base = drawingName.replace(/\.(dwg|dxf)$/i, '')
+  const base = acapStripDrawingExtension(drawingName)
   return `${base}.markup.json`
 }

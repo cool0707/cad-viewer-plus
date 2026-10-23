@@ -1,0 +1,153 @@
+import {
+  AcDbDatabase,
+  AcDbDatabaseConverterManager,
+  AcDbEntity,
+  acdbHostApplicationServices,
+  AcDbLine,
+  AcDbText
+} from '@mlightcad/data-model'
+import * as ezjww from 'ezjww'
+import { readFileSync } from 'fs'
+import { resolve } from 'path'
+
+import { AcDbJwwConverter } from '../src/AcDbJwwConverter'
+import { convertJwwToDxf, ezjwwLayerNames } from '../src/jwwToDxf'
+
+const SAMPLE = resolve(
+  __dirname,
+  '../../../resources/cad-data/samples/jww-sample.jww'
+)
+
+function sampleBytes() {
+  const buffer = readFileSync(SAMPLE)
+  return buffer.buffer.slice(
+    buffer.byteOffset,
+    buffer.byteOffset + buffer.byteLength
+  ) as ArrayBuffer
+}
+
+function entitiesOf(db: AcDbDatabase) {
+  return [...db.tables.blockTable.modelSpace.newIterator()] as AcDbEntity[]
+}
+
+async function openSample(
+  converter = new AcDbJwwConverter({ useWorker: false })
+) {
+  AcDbDatabaseConverterManager.instance.register('jww', converter)
+  const db = new AcDbDatabase()
+  acdbHostApplicationServices().workingDatabase = db
+  await db.read(sampleBytes(), { fileName: 'jww-sample.jww' }, 'jww')
+  return db
+}
+
+beforeAll(() => {
+  const wasm = require.resolve('ezjww/wasm/ezjww_wasm_bg.wasm')
+  ezjww.initSync(readFileSync(wasm))
+})
+
+afterAll(() => {
+  AcDbDatabaseConverterManager.instance.unregister('jww')
+})
+
+describe('convertJwwToDxf', () => {
+  it('rejects files that are not JWW', () => {
+    const notJww = new TextEncoder().encode(
+      '0\nSECTION\n2\nHEADER\n0\nENDSEC\n'
+    )
+    expect(() => convertJwwToDxf(ezjww, notJww)).toThrow(/Not a JWW/)
+  })
+
+  it('reproduces ezjww layer names for duplicate and empty names', () => {
+    const header = ezjww.readHeader(new Uint8Array(sampleBytes()))
+    header.layer_groups[2].layers[0].name = '壁'
+    header.layer_groups[2].layers[1].name = '0'
+    const names = ezjwwLayerNames(header)
+    expect(names.get('壁')).toEqual([0, 1])
+    expect(names.get('壁_2-0')).toEqual([2, 0])
+    expect(names.get('0_2-1')).toEqual([2, 1])
+    expect(names.get('F-F')).toEqual([15, 15])
+  })
+
+  it('writes the paper as drawing limits in real millimetres', () => {
+    const { dxf } = convertJwwToDxf(ezjww, new Uint8Array(sampleBytes()))
+    // A3 (420 x 297) at the 1/100 of the main layer group.
+    expect(dxf).toContain('9\n$LIMMIN\n10\n-21000\n20\n-14850\n')
+    expect(dxf).toContain('9\n$LIMMAX\n10\n21000\n20\n14850\n')
+    expect(dxf).toContain('9\n$INSUNITS\n70\n4\n')
+  })
+})
+
+describe('AcDbJwwConverter', () => {
+  it('opens a JWW file through the DXF converter', async () => {
+    const db = await openSample()
+    const entities = entitiesOf(db)
+    expect(entities.length).toBeGreaterThan(20)
+
+    // Layers are named "<group>-<layer> <group name> - <layer name>".
+    const layerNames = [...db.tables.layerTable.newIterator()].map(l => l.name)
+    expect(layerNames).toEqual(
+      expect.arrayContaining([
+        '0',
+        '0-0 平面図 - 通り芯',
+        '0-1 平面図 - 壁',
+        '1-0 図枠 - 枠'
+      ])
+    )
+    // Unused layers are not created.
+    expect(layerNames).not.toContain('0-F 平面図')
+
+    // Paper millimetres x 100: the 100 mm wall on paper is 10 m long.
+    const walls = entities.filter(
+      (e): e is AcDbLine =>
+        e instanceof AcDbLine && e.layer === '0-1 平面図 - 壁'
+    )
+    const lengths = walls.map(w => w.startPoint.distanceTo(w.endPoint))
+    expect(Math.max(...lengths)).toBeCloseTo(10000, 6)
+    expect(walls[0].linetypeScale).toBeCloseTo(100, 6)
+    // $LIMMIN / $LIMMAX are checked on the DXF text above: Jest loads the CJS
+    // build of data-model, which the header-reader patch does not cover.
+  })
+
+  it('keeps Japanese text and its font', async () => {
+    const db = await openSample()
+    const texts = entitiesOf(db).filter(
+      (e): e is AcDbText => e instanceof AcDbText
+    )
+    const room = texts.find(t => t.textString === '居間・食堂')
+    expect(room).toBeDefined()
+    expect(room!.height).toBeCloseTo(400, 6) // 4 mm on paper at 1/100
+    expect(room!.styleName).toBe('STANDARD')
+
+    const title = texts.find(t => t.textString === 'サンプル平面図')
+    expect(title!.styleName).toBe('ＭＳ 明朝')
+    const style = db.tables.textStyleTable.getAt('ＭＳ 明朝')
+    expect(style?.textStyle.font).toBe('ＭＳ 明朝')
+  })
+
+  it('can keep paper millimetres or use each layer group scale', async () => {
+    const paperDb = await openSample(
+      new AcDbJwwConverter({ useWorker: false, scaleMode: 'paper' })
+    )
+    const border = (db: AcDbDatabase) =>
+      entitiesOf(db).filter(
+        (e): e is AcDbLine =>
+          e instanceof AcDbLine && e.layer === '1-0 図枠 - 枠'
+      )[0]
+    expect(
+      border(paperDb).startPoint.distanceTo(border(paperDb).endPoint)
+    ).toBeCloseTo(400, 6)
+
+    const groupDb = await openSample(
+      new AcDbJwwConverter({ useWorker: false, scaleMode: 'layer-group' })
+    )
+    // The border is in the 1/1 group, so it stays 400 mm long.
+    expect(
+      border(groupDb).startPoint.distanceTo(border(groupDb).endPoint)
+    ).toBeCloseTo(400, 6)
+
+    const drawingDb = await openSample()
+    expect(
+      border(drawingDb).startPoint.distanceTo(border(drawingDb).endPoint)
+    ).toBeCloseTo(40000, 6)
+  })
+})

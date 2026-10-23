@@ -197,7 +197,7 @@ export default {
     or: 'أو',
     dropFile: 'أسقط ملفًا هنا أو',
     browse: 'تصفح',
-    dropOrBrowse: 'أسقط ملف DWG أو DXF هنا، أو تصفح',
+    dropOrBrowse: 'أسقط ملف رسم هنا، أو تصفح',
     newDrawing: 'رسم جديد',
     source: 'المصدر',
     unavailable: 'هذا المصدر غير متاح حاليًا.',

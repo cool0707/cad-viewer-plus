@@ -1,23 +1,19 @@
 import { log } from '@mlightcad/data-model'
 
+import {
+  acapDrawingFileAccept,
+  acapIsDrawingFileName
+} from '../AcApDrawingFileTypes'
 import type {
   AcApDataSource,
   AcApDataSourceAuthState,
   AcApDataSourceFile
 } from './AcApDataSource'
 
-/** File extensions accepted by the local data source. */
-const SUPPORTED_EXTENSIONS = ['.dxf', '.dwg'] as const
-
 /** Built-in local-file data source id. */
 export const ACAP_LOCAL_DATA_SOURCE_ID = 'local'
 
 let fileInput: HTMLInputElement | undefined
-
-const isSupportedCadFile = (fileName: string) => {
-  const lowerName = fileName.toLowerCase()
-  return SUPPORTED_EXTENSIONS.some(ext => lowerName.endsWith(ext))
-}
 
 const readFileAsArrayBuffer = (file: File): Promise<ArrayBuffer> =>
   new Promise((resolve, reject) => {
@@ -32,7 +28,6 @@ const ensureFileInput = (): HTMLInputElement => {
   if (!fileInput) {
     fileInput = document.createElement('input')
     fileInput.type = 'file'
-    fileInput.accept = SUPPORTED_EXTENSIONS.join(',')
     fileInput.style.display = 'none'
     document.body.appendChild(fileInput)
   }
@@ -48,6 +43,8 @@ const ensureFileInput = (): HTMLInputElement => {
  */
 export async function acapPickLocalCadFile(): Promise<AcApDataSourceFile | null> {
   const input = ensureFileInput()
+  // Converters (e.g. JWW) may be registered after the input was created.
+  input.accept = acapDrawingFileAccept()
   return new Promise(resolve => {
     const onChange = async () => {
       input.removeEventListener('change', onChange)
@@ -57,7 +54,7 @@ export async function acapPickLocalCadFile(): Promise<AcApDataSourceFile | null>
         resolve(null)
         return
       }
-      if (!isSupportedCadFile(file.name)) {
+      if (!acapIsDrawingFileName(file.name)) {
         log.warn(`Unsupported file type: ${file.name}`)
         resolve(null)
         return
@@ -76,7 +73,8 @@ export async function acapPickLocalCadFile(): Promise<AcApDataSourceFile | null>
 }
 
 /**
- * Built-in data source that opens a local `.dwg` / `.dxf` via `<input type="file">`.
+ * Built-in data source that opens a local drawing (`.dwg` / `.dxf` and any
+ * registered format such as `.jww`) via `<input type="file">`.
  */
 export class AcApLocalDataSource implements AcApDataSource {
   readonly id = ACAP_LOCAL_DATA_SOURCE_ID

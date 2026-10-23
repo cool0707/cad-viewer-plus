@@ -1,0 +1,109 @@
+diff --git a/dist/index.d.ts b/dist/index.d.ts
+index 503860e64a3bc115e8675afb3886e4d455ccc966..a1e71a7f53e17949c1e05127ac121b73ec1ca785 100644
+--- a/dist/index.d.ts
++++ b/dist/index.d.ts
+@@ -653,4 +653,8 @@ export interface JwwWriteConversion {
+ }
+ /** Explicit bounded conversion; inspect diagnostics even when a document is returned. */
+ export declare function toWriteDocument(document: JwwDocument, skipUnsupported?: boolean): JwwWriteConversion;
+-//# sourceMappingURL=index.d.ts.map
+\ No newline at end of file
++/** cad-viewer-plus patch: instantiate the wasm (`wasm/ezjww_wasm_bg.wasm`) before any other call. */
++export declare function initSync(source: BufferSource | WebAssembly.Module): void;
++/** cad-viewer-plus patch: asynchronous {@link initSync}. */
++export declare function initAsync(source: BufferSource | WebAssembly.Module): Promise<void>;
++export declare function isInitialized(): boolean;
+diff --git a/dist/index.js b/dist/index.js
+index 6d589cf2a10643f204c75f61e047d5c9f81e34fd..cf19efdcd74c5b84c516713b31055ac2da980416 100644
+--- a/dist/index.js
++++ b/dist/index.js
+@@ -52,7 +52,21 @@ exports.readCadDocument = readCadDocument;
+ exports.readDxfDocument = readDxfDocument;
+ exports.readDxfString = readDxfString;
+ exports.toWriteDocument = toWriteDocument;
++exports.initSync = initSync;
++exports.initAsync = initAsync;
++exports.isInitialized = isInitialized;
+ const wasm = __importStar(require("../wasm/ezjww_wasm.js"));
++/** cad-viewer-plus patch: instantiate the wasm from bytes or a compiled module. */
++function initSync(source) {
++    wasm.initSync(source);
++}
++/** cad-viewer-plus patch: asynchronous {@link initSync} (no main-thread size limit). */
++async function initAsync(source) {
++    await wasm.initAsync(source);
++}
++function isInitialized() {
++    return wasm.isInitialized();
++}
+ /** Return independent, mutable Rust writer defaults (A3, version 700). */
+ function newJwwDocument() {
+     return wasm.newJwwDocument();
+diff --git a/package.json b/package.json
+index 885ea3b212da04a06ceaf05cd20c9cf2cf1aca4c..89b75f6b88823524d78b3a409224a938ae3b11cc 100644
+--- a/package.json
++++ b/package.json
+@@ -14,7 +14,9 @@
+     ".": {
+       "types": "./dist/index.d.ts",
+       "default": "./dist/index.js"
+-    }
++    },
++    "./wasm/ezjww_wasm_bg.wasm": "./wasm/ezjww_wasm_bg.wasm",
++    "./package.json": "./package.json"
+   },
+   "files": [
+     "dist",
+diff --git a/wasm/ezjww_wasm.d.ts b/wasm/ezjww_wasm.d.ts
+index 74e0107a71ed398b79aad0b580033b37eecf3838..8fd82088c453534450058340781760b4c3607d71 100644
+--- a/wasm/ezjww_wasm.d.ts
++++ b/wasm/ezjww_wasm.d.ts
+@@ -42,3 +42,7 @@ export function readJwsHeader(data: Uint8Array): any;
+ export function toJwwBytes(document: any): Uint8Array;
+ 
+ export function toWriteDocument(document: any, skip_unsupported?: boolean | null): any;
++
++export function initSync(source: BufferSource | WebAssembly.Module): any;
++export function initAsync(source: BufferSource | WebAssembly.Module): Promise<any>;
++export function isInitialized(): boolean;
+diff --git a/wasm/ezjww_wasm.js b/wasm/ezjww_wasm.js
+index 04baefd787c8aacd7ccb940d6e4a9975923a716c..f1cde9a86353ab5814e49730020baa6dfaee923d 100644
+--- a/wasm/ezjww_wasm.js
++++ b/wasm/ezjww_wasm.js
+@@ -691,9 +691,30 @@ if (!('encodeInto' in cachedTextEncoder)) {
+ 
+ let WASM_VECTOR_LEN = 0;
+ 
+-const wasmPath = `${__dirname}/ezjww_wasm_bg.wasm`;
+-const wasmBytes = require('fs').readFileSync(wasmPath);
+-const wasmModule = new WebAssembly.Module(wasmBytes);
+-let wasmInstance = new WebAssembly.Instance(wasmModule, __wbg_get_imports());
+-let wasm = wasmInstance.exports;
+-wasm.__wbindgen_start();
++// cad-viewer-plus patch: the published glue reads the wasm with `fs` at load
++// time (wasm-pack nodejs target), which cannot run in a browser. Load lazily
++// through initSync / initAsync instead so the same glue works in Node and in
++// a Web Worker that fetches the wasm.
++let wasm;
++function __ezjwwFinalizeInit(instance) {
++    wasm = instance.exports;
++    cachedUint8ArrayMemory0 = null;
++    wasm.__wbindgen_start();
++    return wasm;
++}
++function initSync(source) {
++    if (wasm !== undefined) return wasm;
++    const wasmModule = source instanceof WebAssembly.Module ? source : new WebAssembly.Module(source);
++    return __ezjwwFinalizeInit(new WebAssembly.Instance(wasmModule, __wbg_get_imports()));
++}
++async function initAsync(source) {
++    if (wasm !== undefined) return wasm;
++    const result = await WebAssembly.instantiate(source, __wbg_get_imports());
++    return __ezjwwFinalizeInit(result instanceof WebAssembly.Instance ? result : result.instance);
++}
++function isInitialized() {
++    return wasm !== undefined;
++}
++exports.initSync = initSync;
++exports.initAsync = initAsync;
++exports.isInitialized = isInitialized;

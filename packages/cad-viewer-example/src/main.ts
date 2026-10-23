@@ -3,6 +3,10 @@
 import '@fontsource-variable/noto-sans-jp'
 import 'element-plus/dist/index.css'
 
+import {
+  JWW_PARSER_WORKER_FILE,
+  registerJwwConverter
+} from '@mlightcad/cad-jww-converter'
 import { LIBREDWG_PARSER_WORKER_FILE } from '@mlightcad/cad-simple-viewer'
 import { i18n } from '@mlightcad/cad-viewer'
 import ElementPlus from 'element-plus'
@@ -14,6 +18,8 @@ import { registerLibreDwgConverter } from './registerLibreDwg'
 const initApp = () => {
   // Opt into GPL DWG support before the viewer mounts.
   registerLibreDwgConverter(`./assets/${LIBREDWG_PARSER_WORKER_FILE}`)
+  // Jw_cad (.jww) through ezjww (MIT, WebAssembly) in a worker.
+  registerJwwConverter(`./assets/${JWW_PARSER_WORKER_FILE}`)
 
   const app = createApp(App)
   // Required when Vite aliases `@mlightcad/ui-components` to source: those SFCs

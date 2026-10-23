@@ -45,3 +45,10 @@ Japanese tools do); it checks the encoding detection added in
 `$LIMMIN`/`$LIMMAX` (A1 sheet) leave out a circle far outside the sheet. Open
 it with `?view=limits` and `?view=extents` to compare the 図面範囲 (limits)
 and extents initial views.
+
+`jww-sample.jww` is a Jw_cad (JWW, version 7.00) drawing generated with the
+ezjww writer by `tools/make-jww-sample.mjs`: an A3 floor plan at 1/100 in layer
+group 0 (grid lines in a chain line type, walls, a door, room names, a
+dimension, a north-arrow block) and a 1/1 title block in group 1. It is opened
+by the e2e test `packages/cad-viewer-example/e2e/tests/jww.spec.ts` and by the
+demo page (`?url=cad-data/samples/jww-sample.jww&view=limits`).

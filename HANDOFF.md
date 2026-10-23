@@ -17,6 +17,7 @@
 | `f384068` | NURBS 評価の高速化 (canteen.dwg 5.4s → 3.1s) |
 | `0564556` | DXF の Shift_JIS 等の自動判定 (コードページ宣言が ANSI_1252 でも化けない) |
 | `641b60b` | 初期表示「図面範囲」(モデル = LIMITS、レイアウト = 用紙枠)、TABLES の無い DXF で画層を自動作成 |
+| (このブランチ) | **JWW 読み込み** (`packages/cad-jww-converter`)、拡張子判定の一般化 (`AcApDrawingFileTypes`) |
 
 デモ: <https://cool0707.github.io/cad-viewer-plus/> (`?url=` `?new=1` `?lang=` `?view=extents|saved|limits` が使える)
 
@@ -28,10 +29,30 @@
 | `@mlightcad/libredwg-converter@3.15.14` | DWG ヘッダーの LIMMIN 等を `db` に格納 |
 | `@mlightcad/geometry-engine@3.15.14` | NURBS 評価の高速パス |
 | `@mlightcad/mtext-renderer@0.13.5` | `fonts.json` の絶対 URL (Google Fonts) を許可 |
+| `ezjww@0.7.3` | npm 版は Node 専用 (読み込み時に `fs` で wasm を読む)。`initSync` / `initAsync` を追加し、wasm を後から渡せるようにした (`exports` に wasm パスも追加) |
 
 ---
 
-## 2. 次の作業: JWW / SXF 読み込み
+## 2. JWW (済) / SXF (次の作業)
+
+### 2.0 JWW でやったこと (2026-10-23)
+
+- `packages/cad-jww-converter` (MIT): `AcDbJwwConverter` (Worker で ezjww → `convertJwwToDxf()` で DXF 文字列 → 登録済み DXF コンバーターで読み込み = パターン A)。
+  example の `main.ts` で `registerJwwConverter('./assets/jww-parser-worker.js')`。
+  配布物は `dist/jww-parser-worker.js` + `dist/jww-parser.wasm` (約 1MB)。example の `vite.config.ts` と `tools/copy-workers.mjs` でコピー。
+- ezjww の DXF 出力をそのまま使わず、`readDxfDocument` (構造化) + `readDocument` (フォント名・レイヤグループ) から **自前で DXF を書いている** (`src/jwwToDxf.ts`)。理由:
+  - JWW の座標は **図寸 (用紙 mm、用紙中心が原点)**。ezjww は縮尺を掛けないので計測値が図寸になる → 主レイヤグループ (要素数最多) の縮尺で一律に実寸化 (`scaleMode: 'drawing'`、既定)。グループ別 (`'layer-group'`、Jw_cad の DXF 出力相当) と図寸 (`'paper'`) も選べる。グループ別を既定にしないのは、1/1 の図枠グループと 1/100 の平面図グループが混在するとき図枠が極小になるため。
+  - 用紙サイズ (`paper_size`: 0–4 = A0–A4、8–11 = 2A–5A、12–14 = 10m/50m/100m) → `$LIMMIN/$LIMMAX` (原点中心、主縮尺倍)。
+  - 画層名を `<グループ>-<レイヤ> <グループ名> - <レイヤ名>` (16 進、Jw_cad と同じ) にし、使われている画層だけ作る。ezjww の画層名 → (グループ, レイヤ) は ezjww の `layer_name_map` を移植した `ezjwwLayerNames()` で逆引き。
+  - 文字のフォント (ＭＳ ゴシック等) ごとに文字スタイルを作る (ezjww の DXF は全部 STANDARD)。
+  - 線種パターンは図寸 mm なので、要素の線種尺度 (48) に縮尺を入れる。
+- 拡張子判定: `cad-simple-viewer/src/app/AcApDrawingFileTypes.ts` (`acapDrawingFileTypes()` など。DWG/DXF + `AcDbDatabaseConverterManager` に登録済みの形式)。`AcApDocument.openDocument`、ファイル選択パネル (タグ表示も)、ローカル/URL データソース、マークアップ/計測サイドカー名、example の `FileUpload.vue` が使う。`AcDbDatabase.openUri()` は元から未知の拡張子を converter type として渡すので変更不要。
+- サンプル: `resources/cad-data/samples/jww-sample.jww` (`node tools/make-jww-sample.mjs` で ezjww の writer から生成、自作なのでライセンス問題なし)。テスト: `packages/cad-jww-converter/__tests__`、`cad-simple-viewer/__tests__/AcApDrawingFileTypes.spec.ts`、e2e `cad-viewer-example/e2e/tests/jww.spec.ts`。
+- ezjww リポジトリの `jww_samples/` (実際の Jw_cad 図面: マンション平面例、木造平面例など) でもブラウザ表示を確認済み (リポジトリには入れていない)。
+- 注意: Jest は data-model の CJS ビルドを読むので、data-model パッチ (`$LIMMIN` 読み込みなど) は Jest では効かない。`db.limmin` はブラウザでしか確認できない。
+- 未対応: JWC (旧形式、ezjww は `readJwcDocument` あり)、JWS、画像 (`^@BM`)、Worker 無しの main thread モードはテストのみで使用 (`wasmUrl` 指定で動く)。外部参照 (XATTACH) は DWG/DXF のまま。
+
+以下は着手前の調査メモ (JWW 部分は上記で対応済み)。
 
 ### 2.1 ビューア側の差し込み口 (調査済み)
 
@@ -107,8 +128,8 @@ SXF は国交省・JACIC (現 OCF) の CAD データ交換標準。電子納品�
 
 ### 2.4 進め方の提案
 
-1. 拡張子判定の一般化 (2.1 の表) と、受け入れ拡張子を登録済みコンバーターから作る仕組み — 形式に依存しない下準備。テストも書く。
-2. JWW: ezjww の web 版ビルドを用意 → パターン A で表示 → レイヤ・色・用紙・縮尺を詰める。
+1. ~~拡張子判定の一般化~~ (済)
+2. ~~JWW~~ (済。2.0 参照)
 3. SFC: TS パーサー (またはezsxf の wasm 化) → パターン A/B。
 4. P21 / P2Z / SFZ。
 5. `resources/cad-data/samples/` にテスト用の小さい JWW / SFC を追加 (配布ライセンスに注意。自作が安全)、デモページにリンク、README 8 言語に追記。

@@ -1,5 +1,6 @@
 import { AcApI18n } from '../../i18n/AcApI18n'
 import { AcUiDialog } from '../../ui/AcUiDialog'
+import { acapIsDrawingFileName } from '../AcApDrawingFileTypes'
 import type {
   AcApDataSource,
   AcApDataSourceAuthState,
@@ -171,7 +172,7 @@ function fileNameFromUrl(url: string): string {
   try {
     const pathname = new URL(url, window.location.href).pathname
     const segment = pathname.split('/').filter(Boolean).pop()
-    if (segment && /\.(dwg|dxf)$/i.test(segment)) {
+    if (segment && acapIsDrawingFileName(segment)) {
       return decodeURIComponent(segment)
     }
   } catch {

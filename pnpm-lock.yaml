@@ -34,6 +34,9 @@ patchedDependencies:
   '@mlightcad/mtext-renderer@0.13.5':
     hash: 0d988d98fc2da267cf496f084984c2e0401e53b13eeee61a5455f6343eb16c68
     path: patches/@mlightcad__mtext-renderer@0.13.5.patch
+  ezjww@0.7.3:
+    hash: b0f1a6d5ff3af15261eeaccd15fd95661ca43329d99fb10facb7a015cc722bb3
+    path: patches/ezjww@0.7.3.patch
 
 importers:
 
@@ -340,6 +343,16 @@ importers:
       three:
         specifier: ^0.186.1
         version: 0.186.1
+
+  packages/cad-jww-converter:
+    dependencies:
+      ezjww:
+        specifier: 0.7.3
+        version: 0.7.3(patch_hash=b0f1a6d5ff3af15261eeaccd15fd95661ca43329d99fb10facb7a015cc722bb3)
+    devDependencies:
+      '@mlightcad/data-model':
+        specifier: 1.15.14
+        version: 1.15.14(patch_hash=871f264c2f67748d46f0b722857a086168308d44eca1094e6426ce0286ecbd9b)
 
   packages/cad-onedrive-plugin:
     dependencies:
@@ -722,6 +735,9 @@ importers:
       '@mlightcad/cad-html-plugin':
         specifier: workspace:*
         version: link:../cad-html-plugin
+      '@mlightcad/cad-jww-converter':
+        specifier: workspace:*
+        version: link:../cad-jww-converter
       '@mlightcad/cad-onedrive-plugin':
         specifier: workspace:*
         version: link:../cad-onedrive-plugin
@@ -4422,6 +4438,10 @@ packages:
 
   extendable-error@0.1.7:
     resolution: {integrity: sha512-UOiS2in6/Q0FK0R0q6UY9vYpQ21mr/Qn1KOnte7vsACuNJf514WvCCUHSRCPcgjPT2bAhNIJdlE6bVap1GKmeg==}
+
+  ezjww@0.7.3:
+    resolution: {integrity: sha512-aSCJsbYANgMz6u7dZKE9zq/zvxCdPF4Kxq1cLXbmZeA6Fd6tcQEDzrXqnrn7EyXjRZoHLOIs4GTKvLRtdm/kOQ==}
+    engines: {node: '>=18.0.0'}
 
   fast-deep-equal@3.1.3:
     resolution: {integrity: sha512-f3qQ9oQy9j2AhBe/H9VC91wLmKBCCU/gDOnKNAYG5hswO7BLKj09Hc5HYNz9cGI++xlpDCIgDaitVs03ATR84Q==}
@@ -10501,6 +10521,8 @@ snapshots:
   exsolve@1.0.8: {}
 
   extendable-error@0.1.7: {}
+
+  ezjww@0.7.3(patch_hash=b0f1a6d5ff3af15261eeaccd15fd95661ca43329d99fb10facb7a015cc722bb3): {}
 
   fast-deep-equal@3.1.3: {}
 

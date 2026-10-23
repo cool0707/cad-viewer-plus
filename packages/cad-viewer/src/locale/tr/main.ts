@@ -866,7 +866,7 @@ export default {
       unload: 'Kaldır',
       load: 'Yükle',
       empty: 'Bu çizimde harici referans veya görüntü yok',
-      urlPrompt: 'DWG veya DXF dosyasının URL’sini girin',
+      urlPrompt: 'Çizim dosyasının (DWG, DXF vb.) URL’sini girin',
       urlRequired: 'Lütfen bir URL girin',
       loadFailed: '"{name}" referansı yüklenemedi'
     },

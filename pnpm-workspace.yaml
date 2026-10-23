@@ -28,3 +28,4 @@ patchedDependencies:
   '@mlightcad/geometry-engine@3.15.14': patches/@mlightcad__geometry-engine@3.15.14.patch
   '@mlightcad/libredwg-converter@3.15.14': patches/@mlightcad__libredwg-converter@3.15.14.patch
   '@mlightcad/mtext-renderer@0.13.5': patches/@mlightcad__mtext-renderer@0.13.5.patch
+  ezjww@0.7.3: patches/ezjww@0.7.3.patch

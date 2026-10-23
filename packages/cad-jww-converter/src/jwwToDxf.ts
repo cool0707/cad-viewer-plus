@@ -1,0 +1,617 @@
+import type { DxfDocument, JwwDocument, JwwHeader } from 'ezjww'
+
+import { jwwPaperSize } from './jwwPaper'
+
+/**
+ * The subset of the `ezjww` module API used for conversion. Accepting it as a
+ * parameter keeps this module free of the wasm import, so the same code runs
+ * in the parser worker, on the main thread and in Node tests.
+ */
+export interface EzjwwApi {
+  detectFileFormat(input: Uint8Array): unknown
+  readDocument(input: Uint8Array): JwwDocument
+  readDxfDocument(
+    input: Uint8Array,
+    options?: { explodeInserts?: boolean }
+  ): DxfDocument
+}
+
+/**
+ * How paper millimetres (JWW coordinates) become drawing units.
+ *
+ * - `drawing`: everything is multiplied by the scale of the main layer group
+ *   (the one with the most entities). The drawing looks as it does on paper
+ *   in Jw_cad and the main drawing measures in real millimetres.
+ * - `layer-group`: each entity uses the scale of its own layer group, like
+ *   Jw_cad's DXF export. Every group measures correctly, but groups with
+ *   different scales (e.g. a 1/1 title block) no longer line up.
+ * - `paper`: no scaling; units are paper millimetres.
+ */
+export type JwwScaleMode = 'drawing' | 'layer-group' | 'paper'
+
+/** Options of {@link convertJwwToDxf}. */
+export interface JwwConversionOptions {
+  /** @default 'drawing' */
+  scaleMode?: JwwScaleMode
+}
+
+/** Result of {@link convertJwwToDxf}. */
+export interface JwwConversionResult {
+  /** ASCII DXF (AC1024, UTF-8), in millimetres. */
+  dxf: string
+  /** Entity types ezjww could not convert, as reported by ezjww. */
+  unsupportedEntities: string[]
+}
+
+/** Text style used when a JWW text record names no font. */
+const DEFAULT_FONT = 'ＭＳ ゴシック'
+
+/** Linetype patterns ezjww references without defining them (paper mm). */
+const BUILTIN_LINE_TYPES: Record<string, [string, number[]]> = {
+  CONTINUOUS: ['Solid line', []],
+  DASHED: ['Dashed line', [0.6, -0.3]],
+  DASHED2: ['Dashed line x2', [1.2, -0.6]],
+  DASHDOT: ['Dash dot', [0.6, -0.2, 0.1, -0.2]],
+  DASHDOT2: ['Dash dot x2', [1.2, -0.4, 0.2, -0.4]],
+  CENTER: ['Center line', [1.25, -0.25, 0.25, -0.25]],
+  CENTER2: ['Center line x2', [2.5, -0.5, 0.5, -0.5]],
+  DOT: ['Dotted line', [0.1, -0.1]],
+  DOT2: ['Dotted line x2', [0.2, -0.2]]
+}
+
+/** One entity of ezjww's `readDxfDocument` output (fields vary by type). */
+interface EzDxfEntity {
+  type: string
+  layer: string
+  color: number
+  line_type: string
+  line_weight?: number
+  [key: string]: unknown
+}
+
+interface LayerInfo {
+  /** DXF layer name written to the drawing. */
+  name: string
+  group: number
+  frozen: boolean
+  locked: boolean
+}
+
+/**
+ * Converts a JWW (Jw_cad) file to DXF text that the native DXF converter can
+ * read.
+ *
+ * Geometry, pen colors, line types and blocks come from ezjww. On top of that
+ * this function:
+ * - converts paper millimetres to real-world millimetres with the layer group
+ *   scale (see {@link JwwScaleMode});
+ * - names layers `<group>-<layer> <group name> - <layer name>` (hex numbers as
+ *   in Jw_cad) and only writes layers that are used;
+ * - writes the sheet as `$LIMMIN` / `$LIMMAX` so "drawing limits" shows the
+ *   paper;
+ * - keeps the font of each text as a text style (ＭＳ ゴシック etc.).
+ */
+export function convertJwwToDxf(
+  ez: EzjwwApi,
+  data: Uint8Array,
+  options: JwwConversionOptions = {}
+): JwwConversionResult {
+  const format = ez.detectFileFormat(data)
+  if (format !== 'jww') {
+    throw new Error(
+      `Not a JWW (Jw_cad) file: detected format '${String(format ?? 'unknown')}'`
+    )
+  }
+  const jww = ez.readDocument(data)
+  const dxfDoc = ez.readDxfDocument(data, { explodeInserts: false })
+  const writer = new JwwDxfWriter(jww, dxfDoc, options.scaleMode ?? 'drawing')
+  return {
+    dxf: writer.write(),
+    unsupportedEntities: [...(dxfDoc.unsupported_entities ?? [])]
+  }
+}
+
+/**
+ * Rebuilds ezjww's layer naming (`layer_name_map` in ezjww-core `dxf.rs`) so
+ * that each DXF layer name it emits can be traced back to its JWW layer group
+ * and layer number.
+ */
+export function ezjwwLayerNames(
+  header: JwwHeader
+): Map<string, [number, number]> {
+  const result = new Map<string, [number, number]>()
+  const used = new Set<string>(['0'])
+  header.layer_groups.forEach((group, g) => {
+    group.layers.forEach((layer, l) => {
+      const fallback = `${hex(g)}-${hex(l)}`
+      const candidate = sanitizeEzjwwName(layer.name, fallback)
+      const name = uniqueName(candidate, `_${fallback}`, used)
+      result.set(name, [g, l])
+    })
+  })
+  return result
+}
+
+function hex(value: number) {
+  return value.toString(16).toUpperCase()
+}
+
+function sanitizeEzjwwName(raw: string, fallback: string) {
+  let name = Array.from(raw.trim())
+    .slice(0, 255)
+    .map(ch => (/\p{Cc}/u.test(ch) || '<>/\\":;?*|='.includes(ch) ? '_' : ch))
+    .join('')
+  if (name.replace(/^_+|_+$/g, '').trim() === '') {
+    name = fallback
+  }
+  return name
+}
+
+function uniqueName(candidate: string, suffix: string, used: Set<string>) {
+  if (!used.has(candidate)) {
+    used.add(candidate)
+    return candidate
+  }
+  const take = (s: string, n: number) => Array.from(s).slice(0, n).join('')
+  let unique = take(candidate, 255 - Array.from(suffix).length) + suffix
+  let collision = 2
+  while (used.has(unique)) {
+    const numbered = `${suffix}_${collision}`
+    unique = take(candidate, 255 - Array.from(numbered).length) + numbered
+    collision++
+  }
+  used.add(unique)
+  return unique
+}
+
+/** Makes a string safe for a DXF symbol table name. */
+function tableName(raw: string) {
+  return raw
+    .replace(/[\p{Cc}<>/\\":;?*|=]/gu, '_')
+    .trim()
+    .slice(0, 255)
+}
+
+/** Makes a string safe for a single-line DXF group value. */
+function oneLine(value: string) {
+  return value.replace(/[\r\n]+/g, ' ')
+}
+
+function fmt(value: unknown) {
+  const n = typeof value === 'number' && Number.isFinite(value) ? value : 0
+  // Avoid exponent notation, which some DXF readers reject.
+  return Math.abs(n) < 1e-12 ? '0.0' : String(Number(n.toFixed(10)))
+}
+
+class JwwDxfWriter {
+  private out: string[] = []
+  private handle = 0x10
+  private readonly layersByEzName = new Map<string, LayerInfo>()
+  private readonly usedLayers = new Map<string, LayerInfo>()
+  private readonly groupScales: number[]
+  private readonly mainScale: number
+  private readonly fontsByText = new Map<string, string[]>()
+  private readonly styles = new Map<string, string>()
+  private readonly textWidths: number[]
+  private textWidthIndex = 0
+  private readonly blockRecords = new Map<string, string>()
+
+  constructor(
+    private readonly jww: JwwDocument,
+    private readonly dxf: DxfDocument,
+    private readonly scaleMode: JwwScaleMode
+  ) {
+    const header = jww.header
+    this.groupScales = header.layer_groups.map(group =>
+      Number.isFinite(group.scale) && group.scale > 0 ? group.scale : 1
+    )
+    this.mainScale = scaleMode === 'paper' ? 1 : this.findMainScale()
+
+    for (const [ezName, [g, l]] of ezjwwLayerNames(header)) {
+      const group = header.layer_groups[g]
+      const layer = group.layers[l]
+      const label = [group.name, layer.name]
+        .map(s => tableName(s ?? ''))
+        .filter(s => s !== '')
+        .join(' - ')
+      this.layersByEzName.set(ezName, {
+        name: tableName(`${hex(g)}-${hex(l)}${label ? ` ${label}` : ''}`),
+        group: g,
+        frozen: layer.state === 0 || group.state === 0,
+        locked: layer.protect !== 0 || group.protect !== 0
+      })
+    }
+
+    const texts = [
+      ...jww.entities,
+      ...(jww.block_defs ?? []).flatMap(def => def.entities ?? [])
+    ]
+    for (const entity of texts) {
+      if (entity.type !== 'TEXT') continue
+      const key = textKey(entity.content, entity.start_x, entity.start_y)
+      const fonts = this.fontsByText.get(key)
+      const font =
+        (entity.font_name as string | undefined)?.trim() || DEFAULT_FONT
+      if (fonts) fonts.push(font)
+      else this.fontsByText.set(key, [font])
+    }
+    this.styles.set(DEFAULT_FONT, 'STANDARD')
+    this.textWidths =
+      (dxf as DxfDocument & { text_width_factors?: number[] })
+        .text_width_factors ?? []
+  }
+
+  write() {
+    // Entities are converted first so that the tables only list what is used.
+    const blocks = (this.dxf.blocks ?? []).map(block => {
+      this.blockRecords.set(block.name, this.nextHandle())
+      const body = this.capture(() => {
+        for (const entity of block.entities as unknown as EzDxfEntity[]) {
+          this.writeEntity(entity, 1)
+        }
+      })
+      return { block, body }
+    })
+    const entities = this.capture(() => {
+      for (const entity of this.dxf.entities as unknown as EzDxfEntity[]) {
+        this.writeEntity(entity, this.scaleOf(entity.layer))
+      }
+    })
+
+    this.writeHeader()
+    this.section('TABLES')
+    this.writeLineTypes()
+    this.writeLayers()
+    this.writeStyles()
+    this.writeBlockRecords()
+    this.pair(0, 'ENDSEC')
+
+    this.section('BLOCKS')
+    this.writeBlockBegin('*Model_Space', 0, 0)
+    this.writeBlockEnd()
+    this.writeBlockBegin('*Paper_Space', 0, 0)
+    this.writeBlockEnd()
+    for (const { block, body } of blocks) {
+      this.writeBlockBegin(block.name, block.base_x, block.base_y)
+      this.out.push(body)
+      this.writeBlockEnd()
+    }
+    this.pair(0, 'ENDSEC')
+
+    this.section('ENTITIES')
+    this.out.push(entities)
+    this.pair(0, 'ENDSEC')
+    this.pair(0, 'EOF')
+    return this.out.join('')
+  }
+
+  /** Scale of the layer group with the most entities (the main drawing). */
+  private findMainScale() {
+    const counts = new Map<number, number>()
+    for (const entity of this.jww.entities) {
+      const g = entity.base?.layer_group ?? 0
+      counts.set(g, (counts.get(g) ?? 0) + 1)
+    }
+    let best = this.jww.header.write_layer_group ?? 0
+    let bestCount = -1
+    for (const [g, count] of counts) {
+      if (count > bestCount) {
+        best = g
+        bestCount = count
+      }
+    }
+    return this.groupScales[best] ?? 1
+  }
+
+  private scaleOf(ezLayer: string) {
+    const layer = this.layersByEzName.get(ezLayer)
+    return this.scaleMode === 'layer-group' && layer
+      ? this.groupScales[layer.group]
+      : this.mainScale
+  }
+
+  private layerName(ezLayer: string) {
+    const layer = this.layersByEzName.get(ezLayer)
+    if (!layer) return tableName(ezLayer) || '0'
+    this.usedLayers.set(layer.name, layer)
+    return layer.name
+  }
+
+  private styleFor(content: string, x: number, y: number) {
+    const fonts = this.fontsByText.get(textKey(content, x, y))
+    const font = fonts?.shift() ?? DEFAULT_FONT
+    let style = this.styles.get(font)
+    if (!style) {
+      style = tableName(font) || `JW_FONT_${this.styles.size}`
+      this.styles.set(font, style)
+    }
+    return style
+  }
+
+  private writeEntity(e: EzDxfEntity, s: number) {
+    const n = (key: string) =>
+      typeof e[key] === 'number' ? (e[key] as number) : 0
+    switch (e.type) {
+      case 'LINE':
+        this.entityHeader('LINE', e, s)
+        this.point(10, n('x1') * s, n('y1') * s)
+        this.point(11, n('x2') * s, n('y2') * s)
+        break
+      case 'CIRCLE':
+        this.entityHeader('CIRCLE', e, s)
+        this.point(10, n('center_x') * s, n('center_y') * s)
+        this.pair(40, fmt(n('radius') * s))
+        break
+      case 'ARC':
+        this.entityHeader('ARC', e, s)
+        this.point(10, n('center_x') * s, n('center_y') * s)
+        this.pair(40, fmt(n('radius') * s))
+        this.pair(50, fmt(n('start_angle')))
+        this.pair(51, fmt(n('end_angle')))
+        break
+      case 'ELLIPSE':
+        this.entityHeader('ELLIPSE', e, s)
+        this.point(10, n('center_x') * s, n('center_y') * s)
+        this.point(11, n('major_axis_x') * s, n('major_axis_y') * s)
+        this.pair(40, fmt(n('minor_ratio')))
+        this.pair(41, fmt(n('start_param')))
+        this.pair(42, fmt(n('end_param')))
+        break
+      case 'POINT':
+        this.entityHeader('POINT', e, s)
+        this.point(10, n('x') * s, n('y') * s)
+        break
+      case 'TEXT': {
+        const content = String(e.content ?? '')
+        const style = this.styleFor(content, n('x'), n('y'))
+        const width =
+          this.textWidths[this.textWidthIndex++] ?? (n('width_factor') || 1)
+        this.entityHeader('TEXT', e, s)
+        this.point(10, n('x') * s, n('y') * s)
+        this.pair(40, fmt(n('height') * s))
+        this.pair(41, fmt(width))
+        this.pair(1, oneLine(content))
+        this.pair(50, fmt(n('rotation')))
+        this.pair(7, style)
+        break
+      }
+      case 'SOLID':
+        this.entityHeader('SOLID', e, s)
+        this.point(10, n('x1') * s, n('y1') * s)
+        this.point(11, n('x2') * s, n('y2') * s)
+        // DXF stores SOLID corners in "Z" order: 12 is the 4th corner.
+        this.point(12, n('x4') * s, n('y4') * s)
+        this.point(13, n('x3') * s, n('y3') * s)
+        break
+      case 'FILLED_POLYGON': {
+        const points = ((e.points as { x: number; y: number }[]) ?? []).filter(
+          p => Number.isFinite(p.x) && Number.isFinite(p.y)
+        )
+        for (let i = 1; i + 1 < points.length; i++) {
+          this.entityHeader('SOLID', e, s)
+          this.point(10, points[0].x * s, points[0].y * s)
+          this.point(11, points[i].x * s, points[i].y * s)
+          this.point(12, points[i + 1].x * s, points[i + 1].y * s)
+          this.point(13, points[i + 1].x * s, points[i + 1].y * s)
+        }
+        break
+      }
+      case 'INSERT':
+        this.entityHeader('INSERT', e, s)
+        this.pair(2, String(e.block_name ?? ''))
+        this.point(10, n('x') * s, n('y') * s)
+        this.pair(41, fmt(n('scale_x') * s))
+        this.pair(42, fmt(n('scale_y') * s))
+        this.pair(43, fmt(s))
+        this.pair(50, fmt(n('rotation')))
+        break
+      default:
+        break
+    }
+  }
+
+  private entityHeader(type: string, e: EzDxfEntity, s: number) {
+    this.pair(0, type)
+    this.pair(5, this.nextHandle())
+    this.pair(8, this.layerName(e.layer))
+    this.pair(6, e.line_type || 'BYLAYER')
+    this.pair(62, String(e.color ?? 256))
+    if (typeof e.line_weight === 'number' && e.line_weight >= 0) {
+      this.pair(370, String(e.line_weight))
+    }
+    // Line type patterns are paper millimetres, like JWW coordinates.
+    if (s !== 1 && type !== 'INSERT') this.pair(48, fmt(s))
+  }
+
+  private writeHeader() {
+    this.section('HEADER')
+    this.variable('$ACADVER', 1, 'AC1024')
+    this.variable('$HANDSEED', 5, 'FFFFFFFF')
+    this.variable('$DWGCODEPAGE', 3, 'ANSI_1252')
+    this.variable('$MEASUREMENT', 70, '1')
+    this.variable('$INSUNITS', 70, '4')
+    this.variable('$TEXTSTYLE', 7, 'STANDARD')
+    this.variable('$CLAYER', 8, '0')
+    this.variable('$CELTYPE', 6, 'BYLAYER')
+    this.variable('$CECOLOR', 62, '256')
+    const paper = jwwPaperSize(this.jww.header.paper_size)
+    if (paper) {
+      const hw = (paper.width / 2) * this.mainScale
+      const hh = (paper.height / 2) * this.mainScale
+      this.pair(9, '$LIMMIN')
+      this.pair(10, fmt(-hw))
+      this.pair(20, fmt(-hh))
+      this.pair(9, '$LIMMAX')
+      this.pair(10, fmt(hw))
+      this.pair(20, fmt(hh))
+    }
+    this.pair(0, 'ENDSEC')
+  }
+
+  private writeLineTypes() {
+    const defined = new Map(
+      (this.dxf.line_types ?? []).map(lt => [lt.name, lt] as const)
+    )
+    const names = new Set(['BYBLOCK', 'BYLAYER', 'CONTINUOUS'])
+    const collect = (entities: EzDxfEntity[]) => {
+      for (const e of entities) if (e.line_type) names.add(e.line_type)
+    }
+    collect(this.dxf.entities as unknown as EzDxfEntity[])
+    for (const block of this.dxf.blocks ?? []) {
+      collect(block.entities as unknown as EzDxfEntity[])
+    }
+    this.table('LTYPE', names.size)
+    for (const name of names) {
+      const def = defined.get(name)
+      const [description, pattern] = def
+        ? [def.description, def.pattern]
+        : (BUILTIN_LINE_TYPES[name] ?? ['', []])
+      this.pair(0, 'LTYPE')
+      this.pair(5, this.nextHandle())
+      this.pair(100, 'AcDbSymbolTableRecord')
+      this.pair(100, 'AcDbLinetypeTableRecord')
+      this.pair(2, name)
+      this.pair(70, '0')
+      this.pair(3, oneLine(description))
+      this.pair(72, '65')
+      this.pair(73, String(pattern.length))
+      this.pair(40, fmt(pattern.reduce((sum, v) => sum + Math.abs(v), 0)))
+      for (const value of pattern) {
+        this.pair(49, fmt(value))
+        this.pair(74, '0')
+      }
+    }
+    this.pair(0, 'ENDTAB')
+  }
+
+  private writeLayers() {
+    const layers = [...this.usedLayers.values()].sort((a, b) =>
+      a.name.localeCompare(b.name)
+    )
+    this.table('LAYER', layers.length + 1)
+    this.writeLayer('0', 7, 0)
+    for (const layer of layers) {
+      const flags = (layer.frozen ? 1 : 0) | (layer.locked ? 4 : 0)
+      this.writeLayer(layer.name, 7, flags)
+    }
+    this.pair(0, 'ENDTAB')
+  }
+
+  private writeLayer(name: string, color: number, flags: number) {
+    this.pair(0, 'LAYER')
+    this.pair(5, this.nextHandle())
+    this.pair(100, 'AcDbSymbolTableRecord')
+    this.pair(100, 'AcDbLayerTableRecord')
+    this.pair(2, name)
+    this.pair(70, String(flags))
+    this.pair(62, String(color))
+    this.pair(6, 'CONTINUOUS')
+  }
+
+  private writeStyles() {
+    this.table('STYLE', this.styles.size)
+    for (const [font, name] of this.styles) {
+      this.pair(0, 'STYLE')
+      this.pair(5, this.nextHandle())
+      this.pair(100, 'AcDbSymbolTableRecord')
+      this.pair(100, 'AcDbTextStyleTableRecord')
+      this.pair(2, name)
+      this.pair(70, '0')
+      this.pair(40, '0.0')
+      this.pair(41, '1.0')
+      this.pair(50, '0.0')
+      this.pair(71, '0')
+      this.pair(42, '2.5')
+      this.pair(3, '')
+      this.pair(4, '')
+      // TrueType family name, matched against the aliases in fonts.json.
+      this.pair(1001, 'ACAD')
+      this.pair(1000, oneLine(font))
+      this.pair(1071, '0')
+    }
+    this.pair(0, 'ENDTAB')
+  }
+
+  private writeBlockRecords() {
+    const records: [string, string][] = [
+      ['*Model_Space', this.nextHandle()],
+      ['*Paper_Space', this.nextHandle()],
+      ...this.blockRecords
+    ]
+    this.table('BLOCK_RECORD', records.length)
+    for (const [name, handle] of records) {
+      this.pair(0, 'BLOCK_RECORD')
+      this.pair(5, handle)
+      this.pair(100, 'AcDbSymbolTableRecord')
+      this.pair(100, 'AcDbBlockTableRecord')
+      this.pair(2, name)
+    }
+    this.pair(0, 'ENDTAB')
+  }
+
+  private writeBlockBegin(name: string, x: number, y: number) {
+    this.pair(0, 'BLOCK')
+    this.pair(5, this.nextHandle())
+    this.pair(100, 'AcDbEntity')
+    this.pair(8, '0')
+    this.pair(100, 'AcDbBlockBegin')
+    this.pair(2, name)
+    this.pair(70, '0')
+    this.point(10, x, y)
+    this.pair(3, name)
+    this.pair(1, '')
+  }
+
+  private writeBlockEnd() {
+    this.pair(0, 'ENDBLK')
+    this.pair(5, this.nextHandle())
+    this.pair(100, 'AcDbEntity')
+    this.pair(8, '0')
+    this.pair(100, 'AcDbBlockEnd')
+  }
+
+  private table(name: string, count: number) {
+    this.pair(0, 'TABLE')
+    this.pair(2, name)
+    this.pair(5, this.nextHandle())
+    this.pair(70, String(count))
+  }
+
+  private section(name: string) {
+    this.pair(0, 'SECTION')
+    this.pair(2, name)
+  }
+
+  private variable(name: string, code: number, value: string) {
+    this.pair(9, name)
+    this.pair(code, value)
+  }
+
+  private point(code: number, x: number, y: number) {
+    this.pair(code, fmt(x))
+    this.pair(code + 10, fmt(y))
+    this.pair(code + 20, '0.0')
+  }
+
+  private pair(code: number, value: string) {
+    this.out.push(`${code}\n${value}\n`)
+  }
+
+  private nextHandle() {
+    return (this.handle++).toString(16).toUpperCase()
+  }
+
+  /** Runs `fn` and returns what it wrote instead of appending it. */
+  private capture(fn: () => void) {
+    const saved = this.out
+    this.out = []
+    fn()
+    const text = this.out.join('')
+    this.out = saved
+    return text
+  }
+}
+
+function textKey(content: unknown, x: unknown, y: unknown) {
+  return `${String(content)}\u0000${Number(x)}\u0000${Number(y)}`
+}

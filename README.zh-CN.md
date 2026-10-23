@@ -22,7 +22,10 @@
     Malgun Gothic → Noto Sans KR 等）。
   - 界面文字：**Noto Sans JP**（通过 `@fontsource-variable/noto-sans-jp` 自托管）。
 - **新建图纸的布局名称本地化**：显示为当前界面语言的名称，而不是模板中固定的中文名称。
-- 计划中：导入 **JWW**（Jw_cad）和 **SXF**（P21 / SFC）。
+- **导入 JWW（Jw_cad）** — 示例应用可打开 `.jww` 文件（`@mlightcad/cad-jww-converter`，MIT；
+  解析器为 [ezjww](https://github.com/monozukuri-ai/ezjww)，Rust → WebAssembly，在 Web Worker 中运行）。
+  坐标按图层组比例从图纸毫米换算为实际毫米，图纸幅面作为图形界限。
+- 计划中：导入 **SXF**（P21 / SFC）。
 
 ## 演示
 
@@ -61,6 +64,22 @@ pnpm test
 DXF 由内置的 MIT 解析器读取。DWG 可选使用基于
 [LibreDWG](https://github.com/LibreDWG/libredwg) 的 `@mlightcad/libredwg-converter`，
 其许可证为 **GPL-3.0**，分发前请确认 GPL 的影响。
+
+## JWW 支持
+
+`@mlightcad/cad-jww-converter` 用于读取 Jw_cad 图纸（`.jww`）：在 Web Worker 中用 ezjww（MIT）
+解析，转换为 DXF 后由内置 DXF 读取器加载。注册后，请将包 `dist/` 中的
+`jww-parser-worker.js` 与 `jww-parser.wasm` 部署在同一目录：
+
+```ts
+import { registerJwwConverter } from '@mlightcad/cad-jww-converter'
+
+registerJwwConverter('./assets/jww-parser-worker.js')
+```
+
+JWW 以图纸毫米保存坐标。默认按主图层组（实体最多的组）的比例整体放大，因此外观与 Jw_cad
+一致，主图可按实际毫米测量。`scaleMode: 'layer-group'` 按各组自身比例放大，
+`scaleMode: 'paper'` 保持图纸毫米。暂不支持旧格式 JWC。
 
 ## 许可证
 

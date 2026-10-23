@@ -13,7 +13,7 @@ export default {
   example: {
     fileUpload: {
       title: 'اختر ملف CAD لعرضه',
-      subtitle: 'استورد رسومات DWG أو DXF إلى العارض',
+      subtitle: 'استورد رسومات DWG أو DXF أو JWW (Jw_cad) إلى العارض',
       fontCdnNotice:
         'Japanese fonts (BIZ UD) are bundled with this viewer. Fonts for other scripts (Chinese, Korean, Latin substitutes, etc.) are downloaded from Google Fonts when a drawing needs them; if Google Fonts is unreachable, that text may not display correctly.',
       newDrawing: 'رسم جديد',
@@ -83,7 +83,7 @@ export default {
       exportDisableHint: 'إخفاء أوامر التصدير وعناصر قائمة File',
 
       invalidFileType:
-        'نوع الملف غير صالح. يرجى اختيار ملف DWG أو DXF.'
+        'نوع الملف غير صالح. يرجى اختيار ملف DWG أو DXF أو JWW.'
     }
   }
 }

@@ -853,7 +853,7 @@ export default {
       unload: 'Uvolnit',
       load: 'Načíst',
       empty: 'V tomto výkresu nejsou žádné externí reference ani obrázky',
-      urlPrompt: 'Zadejte URL souboru DWG nebo DXF',
+      urlPrompt: 'Zadejte URL souboru výkresu (DWG, DXF apod.)',
       urlRequired: 'Zadejte prosím URL',
       loadFailed: 'Nepodařilo se načíst referenci „{name}“'
     },
