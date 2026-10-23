@@ -1,0 +1,207 @@
+diff --git a/lib/base/AcDbDxfPairReader.js b/lib/base/AcDbDxfPairReader.js
+index 2cce9fe775215b17f5d2a956818aec331db43811..4c6cb5bfd2ea33f69cf7409d695ef7bdc30868c6 100644
+--- a/lib/base/AcDbDxfPairReader.js
++++ b/lib/base/AcDbDxfPairReader.js
+@@ -576,6 +576,10 @@ function acdbResolveDwgCodePageEncoding(value) {
+     if (!value)
+         return null;
+     var codePage = AcDbCodePage[value];
++    if (codePage === undefined) {
++        // Some writers emit lower-case names such as `ansi_932`.
++        codePage = AcDbCodePage[value.trim().toUpperCase()];
++    }
+     if (codePage === undefined)
+         return null;
+     return (_a = acdbDwgCodePageToEncoding(codePage)) !== null && _a !== void 0 ? _a : null;
+@@ -1090,6 +1094,161 @@ function acdbIsValidUtf8(bytes) {
+     }
+     return true;
+ }
++/** Multi-byte CJK encodings tried when a non-UTF-8 DXF has no usable code page. */
++var CJK_DECODE_CANDIDATES = ['shift-jis', 'gbk', 'big5', 'euc-kr'];
++/**
++ * Collects the non-ASCII lines of an ASCII DXF (up to `limit` bytes) so
++ * encoding sniffing only looks at the bytes that actually differ between
++ * code pages.
++ */
++function acdbCollectNonAsciiLines(bytes, limit) {
++    var chunks = [];
++    var total = 0;
++    var start = 0;
++    var nonAscii = false;
++    for (var i = 0; i <= bytes.length && total < limit; i++) {
++        var c = i < bytes.length ? bytes[i] : 0x0a;
++        if (c === 0x0a || c === 0x0d) {
++            if (nonAscii && i > start) {
++                chunks.push(bytes.subarray(start, i));
++                total += i - start;
++            }
++            start = i + 1;
++            nonAscii = false;
++        }
++        else if (c >= 0x80) {
++            nonAscii = true;
++        }
++    }
++    var out = new Uint8Array(total + chunks.length);
++    var pos = 0;
++    for (var k = 0; k < chunks.length; k++) {
++        out.set(chunks[k], pos);
++        pos += chunks[k].length;
++        out[pos++] = 0x0a;
++    }
++    return out.subarray(0, pos);
++}
++/** Decodes with `encoding`, or returns null when the bytes are invalid for it. */
++function acdbTryDecodeStrict(sample, encoding) {
++    try {
++        return new TextDecoder(encoding, { fatal: true }).decode(sample);
++    }
++    catch (_a) {
++        return null;
++    }
++}
++/**
++ * Byte statistics of the non-ASCII sample used by {@link acdbGuessLegacyEncoding}.
++ *
++ * - `isolatedRatio`: share of high bytes surrounded by ASCII on both sides —
++ *   typical of single-byte Latin text ("façade"), rare in CJK where high bytes
++ *   come in lead/trail pairs.
++ * - `lowTrailRatio`: share of double-byte pairs whose trail byte is below 0xA1
++ *   — common in Big5 (and Shift_JIS), almost absent in GB2312/EUC text.
++ */
++function acdbHighByteStats(sample) {
++    var high = 0;
++    var isolated = 0;
++    var pairs = 0;
++    var lowTrail = 0;
++    for (var i = 0; i < sample.length; i++) {
++        var c = sample[i];
++        if (c < 0x80)
++            continue;
++        high++;
++        var prev = i > 0 ? sample[i - 1] : 0x0a;
++        var next = i + 1 < sample.length ? sample[i + 1] : 0x0a;
++        if (prev < 0x80 && next < 0x80) {
++            isolated++;
++        }
++        if (c >= 0x81 && c <= 0xfe && i + 1 < sample.length && next >= 0x40 && next !== 0x7f) {
++            pairs++;
++            if (next < 0xa1)
++                lowTrail++;
++            i++;
++        }
++    }
++    return {
++        isolatedRatio: high > 0 ? isolated / high : 0,
++        lowTrailRatio: pairs > 0 ? lowTrail / pairs : 0
++    };
++}
++/**
++ * Whether text decoded as Shift_JIS looks like Japanese: it has full-width
++ * kana, or is mostly ideographs / full-width symbols with few half-width kana
++ * and no private-use characters (GBK / EUC-KR / Latin bytes decoded as
++ * Shift_JIS turn into half-width kana runs or user-defined characters).
++ */
++function acdbLooksJapanese(text) {
++    var fullKana = 0;
++    var halfKana = 0;
++    var cjk = 0;
++    var pua = 0;
++    var nonAscii = 0;
++    for (var i = 0; i < text.length; i++) {
++        var ch = text.charCodeAt(i);
++        if (ch < 0x80)
++            continue;
++        nonAscii++;
++        if (ch >= 0x3040 && ch <= 0x30ff)
++            fullKana++;
++        else if (ch >= 0xff61 && ch <= 0xff9f)
++            halfKana++;
++        else if ((ch >= 0x4e00 && ch <= 0x9fff) ||
++            (ch >= 0x3000 && ch <= 0x303f) ||
++            (ch >= 0xff01 && ch <= 0xff5e) ||
++            (ch >= 0x2460 && ch <= 0x24ff))
++            cjk++;
++        else if (ch >= 0xe000 && ch <= 0xf8ff)
++            pua++;
++    }
++    if (nonAscii === 0)
++        return false;
++    if (fullKana > 0 && pua === 0)
++        return true;
++    return pua === 0 && halfKana <= nonAscii * 0.1 && cjk >= nonAscii * 0.5;
++}
++/**
++ * Guesses the text encoding of a DXF whose bytes are not valid UTF-8 and whose
++ * header does not identify a usable legacy code page (missing `$DWGCODEPAGE`,
++ * a code page on an R2007+ header, or ANSI_1252 written by tools that
++ * actually emit Shift_JIS).
++ *
++ * 1. A declared multi-byte CJK code page wins when it decodes strictly.
++ * 2. Shift_JIS when it decodes strictly and the text looks Japanese.
++ * 3. Single-byte text (isolated high bytes) → declared code page or
++ *    windows-1252.
++ * 4. Big5 vs GBK by trail-byte distribution, then EUC-KR.
++ * 5. Fallback: declared code page or windows-1252.
++ */
++function acdbGuessLegacyEncoding(bytes, declared) {
++    var sample = acdbCollectNonAsciiLines(bytes, 256 * 1024);
++    var singleByteFallback = declared && CJK_DECODE_CANDIDATES.indexOf(declared) < 0
++        ? declared
++        : 'windows-1252';
++    if (declared && CJK_DECODE_CANDIDATES.indexOf(declared) >= 0) {
++        if (acdbTryDecodeStrict(sample, declared) != null)
++            return declared;
++    }
++    var sjis = acdbTryDecodeStrict(sample, 'shift-jis');
++    if (sjis != null && acdbLooksJapanese(sjis)) {
++        return 'shift-jis';
++    }
++    var stats = acdbHighByteStats(sample);
++    if (stats.isolatedRatio >= 0.3) {
++        return singleByteFallback;
++    }
++    var order = stats.lowTrailRatio > 0.2
++        ? ['big5', 'gbk', 'euc-kr']
++        : ['gbk', 'big5', 'euc-kr'];
++    for (var j = 0; j < order.length; j++) {
++        if (acdbTryDecodeStrict(sample, order[j]) != null) {
++            return order[j];
++        }
++    }
++    return singleByteFallback;
++}
+ /**
+  * Create a pair reader from DXF bytes (ASCII or binary).
+  *
+@@ -1169,19 +1328,24 @@ export function acdbCreateDxfPairReader(data, options) {
+     //    headerless files stay on UTF-8, where replacement characters mark
+     //    the broken bytes.
+     var legacyEncoding = null;
++    var declaredEncoding = null;
+     try {
+         var buffer = bytes.byteOffset === 0 && bytes.byteLength === bytes.buffer.byteLength
+             ? bytes.buffer
+             : bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength);
+-        legacyEncoding = acdbLegacyEncodingFromHeader(acdbPeekDxfHeaderInfo(buffer));
++        var headerInfo = acdbPeekDxfHeaderInfo(buffer);
++        declaredEncoding = headerInfo.encoding;
++        legacyEncoding = acdbLegacyEncodingFromHeader(headerInfo);
+     }
+     catch (_c) {
+-        // Unrecognized $ACADVER spelling: treat as version-less and stay UTF-8
+-        // instead of failing the whole read.
++        // Unrecognized $ACADVER spelling: treat as version-less.
+     }
+-    if (legacyEncoding) {
++    if (legacyEncoding && legacyEncoding !== 'windows-1252') {
+         return acdbMakeByteAsciiDxfPairReader(bytes, legacyEncoding);
+     }
+-    return acdbMakeUtf8DxfPairReader(bytes);
++    // No usable code page (missing, declared on an R2007+ header, or ANSI_1252
++    // from tools that really write Shift_JIS): sniff the non-ASCII bytes
++    // instead of decoding them as UTF-8 replacement characters.
++    return acdbMakeByteAsciiDxfPairReader(bytes, acdbGuessLegacyEncoding(bytes, legacyEncoding || declaredEncoding));
+ }
+ //# sourceMappingURL=AcDbDxfPairReader.js.map

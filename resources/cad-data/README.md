@@ -36,3 +36,7 @@ renames them for the active UI language (e.g. `レイアウト1`).
 `fonts-sample.dxf` exercises the font mapping (ＭＳ ゴシック / 明朝 / Ｐゴシック,
 SHX + big font, Arial, 宋体, 맑은 고딕). The demo page opens it with
 `cad-viewer/?url=cad-data/samples/fonts-sample.dxf`.
+
+`sjis-sample.dxf` is a Shift_JIS DXF that declares `ANSI_1252` (as several
+Japanese tools do); it checks the encoding detection added in
+`patches/@mlightcad__data-model@1.15.14.patch`.

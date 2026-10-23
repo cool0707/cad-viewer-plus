@@ -120,6 +120,10 @@
           <strong>フォント確認用サンプルを開く</strong>
           <span>ＭＳ ゴシック / 明朝 / SHX / Arial / 宋体 / 맑은 고딕 の置き換えを確認</span>
         </a>
+        <a class="card" href="cad-viewer/?url=cad-data/samples/sjis-sample.dxf&amp;lang=ja">
+          <strong>Shift_JIS の DXF を開く</strong>
+          <span>文字コード宣言が ANSI_1252 の Shift_JIS DXF が文字化けしないことを確認</span>
+        </a>
         <a class="card" href="cad-viewer/?new=1&amp;lang=ja">
           <strong>新規図面</strong>
           <span>日本語 UI、「モデル / レイアウト1 / レイアウト2」タブ</span>
@@ -155,6 +159,7 @@
         <li>UI がすべて日本語で、中国語が残っていない (ブラウザが日本語なら自動で日本語)</li>
         <li>UI の文字が Noto Sans JP で表示される (中国語字形にならない)</li>
         <li>図面の日本語が BIZ UD ゴシック / 明朝で表示される</li>
+        <li>Shift_JIS の DXF (文字コード宣言なし・ANSI_1252・R2007 以降でも) が文字化けしない</li>
         <li><code>%%c</code> <code>%%d</code> <code>%%p</code> が ⌀ ° ± で表示される</li>
         <li>Arial・中国語・韓国語の文字は Google Fonts から読み込まれる (ネットワーク環境による)</li>
         <li>フォントとテンプレートは <code>cad-data/</code> から読み込まれ、外部 CAD CDN へのアクセスがない</li>
