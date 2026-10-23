@@ -963,7 +963,9 @@ export abstract class AcEdBaseView {
    */
   applySelection(ids: AcDbObjectId[], action: AcEdSelectionAction) {
     if (!this.entitySelectionEnabled) return
-    ids = this.selectableIds(ids, action)
+    // Toggle filters only the ids it adds (see below) so a locked entity
+    // can still be deselected.
+    if (action !== 'toggle') ids = this.selectableIds(ids, action)
     if (action === 'replace') {
       this.selectionSet.clear()
       const unique = ids.filter(id => !this.selectionSet.has(id))
@@ -972,6 +974,17 @@ export abstract class AcEdBaseView {
     }
 
     if (ids.length === 0) return
+
+    if (action === 'toggle') {
+      const existing = ids.filter(id => this.selectionSet.has(id))
+      const added = this.selectableIds(
+        ids.filter(id => !this.selectionSet.has(id)),
+        'add'
+      )
+      if (existing.length > 0) this.selectionSet.delete(existing)
+      if (added.length > 0) this.selectionSet.add(added)
+      return
+    }
 
     if (action === 'add') {
       const unique = ids.filter(id => !this.selectionSet.has(id))
@@ -990,7 +1003,13 @@ export abstract class AcEdBaseView {
     ids: AcDbObjectId[],
     action: AcEdSelectionAction
   ): AcDbObjectId[] {
-    if (action === 'remove' || this._allowSelectOnLockedLayer) return ids
+    if (
+      action === 'remove' ||
+      action === 'toggle' ||
+      this._allowSelectOnLockedLayer
+    ) {
+      return ids
+    }
     const db = AcApDocManager.tryGetInstance?.()?.curDocument?.database
     const filtered = excludeLockedLayerIds(db, ids)
     if (filtered.lockedCount > 0) {

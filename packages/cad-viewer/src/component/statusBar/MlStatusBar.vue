@@ -29,6 +29,7 @@
         />
         <ml-full-screen-button />
         <ml-point-style-button />
+        <ml-selection-style-button />
         <ml-osnap-button />
         <ml-sys-var-toggle-button
           :sys-var-name="AcDbSystemVariables.ORTHOMODE"
@@ -84,6 +85,7 @@ import MlOsnapButton from './MlOsnapButton.vue'
 import MlPointStyleButton from './MlPointStyleButton.vue'
 import MlPolarTrackingButton from './MlPolarTrackingButton.vue'
 import MlProgress from './MlProgress.vue'
+import MlSelectionStyleButton from './MlSelectionStyleButton.vue'
 import MlSettingButton from './MlSettingButton.vue'
 import MlThemeButton from './MlThemeButton.vue'
 import MlWarningButton from './MlWarningButton.vue'
