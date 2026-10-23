@@ -25,12 +25,16 @@
   - その他の文字：必要になったときだけ **Google Fonts** から読み込みます
     （Arial → Arimo、SimSun → Noto Serif SC、Malgun Gothic → Noto Sans KR など）。
   - UI の文字：**Noto Sans JP**（`@fontsource-variable/noto-sans-jp` で同梱）。
-- **新規図面の名前を日本語化** — レイアウトのタブはテンプレートの中国語名ではなく
-  「モデル／レイアウト1／レイアウト2」（表示言語に合わせた名前）になります。
+- **新規図面の名前を日本語化** — 印刷ページのタブはテンプレートの中国語名ではなく
+  「キャンバス／印刷ページ1／印刷ページ2」（表示言語に合わせた名前）になります。
+- **CAD 未経験者向けの用語** — UI では一般的な言葉を使います: 画層 → レイヤー、ブロック → シンボル、
+  ブロック属性 → シンボルのプロパティ、モデル空間 → キャンバス、レイアウト → 印刷ページ、
+  ハッチング → 塗りつぶし、外部参照 → リンク図面、クイック選択 → 条件で選択 など。
+  ツールチップには CAD 用語を括弧で併記しています（全ロケール）。
 - **JWW（Jw_cad）の読み込み** — サンプルアプリで `.jww` を開けます
   （`@mlightcad/cad-jww-converter`、MIT。解析は [ezjww](https://github.com/monozukuri-ai/ezjww)
   （Rust → WebAssembly）を Web Worker で実行）。座標はレイヤグループの縮尺で図寸から
-  実寸 (mm) に変換し、用紙を図面範囲に、画層名を「`グループ-レイヤ 名前`」にします。
+  実寸 (mm) に変換し、用紙を図面範囲に、レイヤー名を「`グループ-レイヤ 名前`」にします。
 - 予定：**SXF**（P21 / SFC）の読み込み。
 
 ## デモ
@@ -107,7 +111,7 @@ SHX フォントは同梱していません。SHX を使う文字は BIZ UD ゴ�
 | --- | --- |
 | `@mlightcad/cad-simple-viewer` | ビューアの中核（UI フレームワークなし） |
 | `@mlightcad/cad-viewer` | リボンやパレットを備えた Vue 3 版のフル機能ビューア |
-| `@mlightcad/cad-simple-ui-plugin` | シンプルビューア用のツールバー・画層・レビュー UI |
+| `@mlightcad/cad-simple-ui-plugin` | シンプルビューア用のツールバー・レイヤー・レビュー UI |
 | `@mlightcad/cad-html-plugin`、`cad-pdf-plugin`、`cad-svg-plugin` | HTML / PDF / SVG 書き出し |
 | `@mlightcad/cad-diff-viewer` | 図面の左右比較 |
 | `@mlightcad/three-renderer` | Three.js による描画 |

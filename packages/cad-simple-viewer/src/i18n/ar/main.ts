@@ -1,6 +1,6 @@
 export default {
   newDrawing: {
-    layoutPrefix: 'تخطيط'
+    layoutPrefix: 'صفحة'
   },
   document: {
     untitled: 'بلا عنوان'
@@ -113,9 +113,9 @@ export default {
     dimstyle: 'جارٍ تحليل أنماط الأبعاد ...',
     layer: 'جارٍ تحليل الطبقات ...',
     vport: 'جارٍ تحليل منافذ العرض ...',
-    blockrecord: 'جارٍ تحليل سجلات الكتل ...',
+    blockrecord: 'جارٍ تحليل تعريفات الرموز ...',
     header: 'جارٍ تحليل رأس الملف ...',
-    block: 'جارٍ تحليل الكتل ...',
+    block: 'جارٍ تحليل الرموز ...',
     entity: 'جارٍ تحليل العناصر ...',
     object: 'جارٍ تحليل القواميس المسماة ...',
     rendering: 'جارٍ عرض الرسم ...',

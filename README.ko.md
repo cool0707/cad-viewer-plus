@@ -22,7 +22,10 @@
   - 그 밖의 문자는 필요할 때 **Google Fonts**에서 불러옵니다(Arial → Arimo,
     SimSun → Noto Serif SC, 맑은 고딕 → Noto Sans KR 등).
   - UI 문자: **Noto Sans JP**(`@fontsource-variable/noto-sans-jp`로 자체 호스팅).
-- **새 도면의 레이아웃 이름 현지화**: 템플릿의 중국어 이름 대신 현재 UI 언어의 이름을 표시합니다.
+- **새 도면의 인쇄 페이지 이름 현지화**: 템플릿의 중국어 이름 대신 현재 UI 언어의 이름을 표시합니다.
+- **CAD 비경험자를 위한 쉬운 용어**: UI에서 일상적인 단어를 사용합니다. 블록 → 심볼, 블록 속성 → 심볼 속성,
+  모형 공간 → 캔버스, 배치 → 인쇄 페이지, 해치 → 패턴 채우기, 외부 참조 → 연결된 도면,
+  빠른 선택 → 조건으로 선택 등. 도구 설명에는 CAD 용어를 괄호로 함께 표시합니다(모든 로캘).
 - **JWW(Jw_cad) 가져오기** — 예제 앱에서 `.jww` 파일을 열 수 있습니다
   (`@mlightcad/cad-jww-converter`, MIT. 파서는 [ezjww](https://github.com/monozukuri-ai/ezjww),
   Rust → WebAssembly, Web Worker에서 실행). 좌표는 레이어 그룹 축척으로 용지 mm에서

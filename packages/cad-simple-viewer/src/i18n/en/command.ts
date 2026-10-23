@@ -2,7 +2,7 @@ export default {
   ACAD: {
     '-hatch': {
       description:
-        'Creates hatch fills through command-line options without the ribbon UI'
+        'Creates pattern fills through command-line options without the ribbon UI'
     },
     '-layer': {
       description: 'Manages layers through command-line options'
@@ -48,10 +48,10 @@ export default {
     },
     celtscale: {
       description:
-        'Controls the linetype scale factor for newly created objects'
+        'Controls the line type scale factor for newly created objects'
     },
     celtype: {
-      description: 'Sets the linetype for newly created objects'
+      description: 'Sets the line type for newly created objects'
     },
     celweight: {
       description: 'Sets the default lineweight for newly created objects'
@@ -139,15 +139,15 @@ export default {
     },
     imageattach: {
       description:
-        'Attaches a raster image as an external reference to the current drawing'
+        'Attaches a raster image as a link to the current drawing'
     },
     '-insert': {
       description:
-        'Inserts a block definition into the current drawing (command-line)'
+        'Inserts a symbol definition into the current drawing (command-line)'
     },
     xattach: {
       description:
-        'Attaches a DWG or DXF drawing as an external reference to the current drawing'
+        'Attaches a DWG or DXF drawing as a linked drawing to the current drawing'
     },
     gripcolor: {
       description:
@@ -168,54 +168,54 @@ export default {
     },
     hatch: {
       description:
-        'Fills an enclosed area or selected objects with a hatch pattern'
+        'Fills an enclosed area or selected objects with a fill pattern'
     },
     ipdf: {
       description: 'Imports vector geometry from a PDF file'
     },
     hpang: {
       description:
-        'Sets the default angle, in radians, for newly created hatch patterns'
+        'Sets the default angle, in radians, for newly created fill patterns'
     },
     hpassoc: {
-      description: 'Controls whether newly created hatches are associative'
+      description: 'Controls whether newly created pattern fills are associative'
     },
     hpbackgroundcolor: {
       description:
-        'Sets the default background color for newly created hatch patterns'
+        'Sets the default background color for newly created fill patterns'
     },
     hpcolor: {
-      description: 'Sets the default color for newly created hatches'
+      description: 'Sets the default color for newly created pattern fills'
     },
     hpdouble: {
-      description: 'Controls whether user-defined hatch patterns are doubled'
+      description: 'Controls whether user-defined fill patterns are doubled'
     },
     hpislanddetection: {
       description:
-        'Controls how islands within newly created hatch boundaries are treated'
+        'Controls how islands within newly created pattern fill boundaries are treated'
     },
     hplayer: {
-      description: 'Sets the default layer for newly created hatches and fills'
+      description: 'Sets the default layer for newly created fills'
     },
     hpname: {
       description:
-        'Sets the default pattern name for newly created hatches in this session'
+        'Sets the default pattern name for newly created pattern fills in this session'
     },
     hpscale: {
       description:
-        'Sets the default scale factor for newly created hatch patterns'
+        'Sets the default scale factor for newly created fill patterns'
     },
     hpseparate: {
       description:
-        'Controls whether one or separate hatch objects are created for multiple boundaries'
+        'Controls whether one or separate pattern fill objects are created for multiple boundaries'
     },
     hptransparency: {
       description:
-        'Sets the default transparency for newly created hatches and fills'
+        'Sets the default transparency for newly created fills'
     },
     insunits: {
       description:
-        'Specifies drawing units for automatic scaling of inserted blocks, images, or xrefs'
+        'Specifies drawing units for automatic scaling of inserted symbols, images, or linked drawings'
     },
     jpgout: {
       description: 'Exports to JPEG'
@@ -271,7 +271,7 @@ export default {
       description: 'Logs debug information in console'
     },
     ltscale: {
-      description: 'Sets the global linetype scale factor for the drawing'
+      description: 'Sets the global line type scale factor for the drawing'
     },
     lunits: {
       description: 'Sets the display format for coordinates and distances'
@@ -284,10 +284,10 @@ export default {
       description: 'Controls whether lineweights are displayed in the drawing'
     },
     clearmeasurements: {
-      description: 'Removes all measurements from the current layout'
+      description: 'Removes all measurements from the current print page'
     },
     measurementvis: {
-      description: 'Shows or hides measurements on the current layout'
+      description: 'Shows or hides measurements on the current print page'
     },
     measurementpanel: {
       description: 'Opens the measurement palette'
@@ -366,7 +366,7 @@ export default {
     },
     paperbkcolor: {
       description:
-        'Sets the background color of the paper-space (layout) drawing area'
+        'Sets the background color of the print page drawing area'
     },
     pdmode: {
       description: 'Controls how POINT entities are displayed'
@@ -452,7 +452,7 @@ export default {
       description: 'Shows or hides markups'
     },
     clearmarkups: {
-      description: 'Clears all markups on the current layout'
+      description: 'Clears all markups on the current print page'
     },
     markupexport: {
       description: 'Exports markups to a sidecar JSON file'

@@ -172,11 +172,11 @@ export default {
   hatch: {
     prompt: 'Select boundary object or',
     pickPoint: 'Specify internal point (or press Enter to finish)',
-    select: 'Select objects to hatch',
-    patternName: 'Enter hatch pattern name',
-    scale: 'Specify hatch pattern scale',
-    angle: 'Specify hatch pattern angle',
-    style: 'Enter hatch style',
+    select: 'Select objects to fill',
+    patternName: 'Enter fill pattern name',
+    scale: 'Specify fill pattern scale',
+    angle: 'Specify fill pattern angle',
+    style: 'Enter pattern fill style',
     associative: 'Specify associativity',
     invalidBoundary: 'Selected objects do not form a closed boundary.',
     keywords: {
@@ -365,11 +365,11 @@ export default {
     invalidSelection: 'Invalid object selected.',
     settingsPrompt: 'Enter LAYFRZ setting to change',
     viewportPrompt: 'Specify viewport freeze behavior',
-    blockSelectionPrompt: 'Specify nested block selection behavior',
+    blockSelectionPrompt: 'Specify nested symbol selection behavior',
     vpfreezeFallback:
       'Current viewer does not support per-viewport layer freeze; using Freeze behavior instead.',
     nestedSelectionLimited:
-      'Nested block selection settings are stored, but current picking still resolves the top-level entity layer.',
+      'Nested symbol selection settings are stored, but current picking still resolves the top-level entity layer.',
     layerNotFound: 'Layer not found',
     cannotFreezeCurrent: 'Cannot freeze the current layer.',
     alreadyFrozen: 'Layer is already frozen',
@@ -393,8 +393,8 @@ export default {
         global: 'Viewports'
       },
       blockSelection: {
-        display: 'Block selection(B)',
-        local: 'Block selection',
+        display: 'Symbol selection(B)',
+        local: 'Symbol selection',
         global: 'BlockSelection'
       },
       freeze: {
@@ -408,8 +408,8 @@ export default {
         global: 'Vpfreeze'
       },
       block: {
-        display: 'Block(B)',
-        local: 'Block',
+        display: 'Symbol(B)',
+        local: 'Symbol',
         global: 'Block'
       },
       entity: {
@@ -488,11 +488,11 @@ export default {
     invalidSelection: 'Invalid object selected.',
     settingsPrompt: 'Enter LAYOFF setting to change',
     viewportPrompt: 'Specify viewport behavior',
-    blockSelectionPrompt: 'Specify nested block selection behavior',
+    blockSelectionPrompt: 'Specify nested symbol selection behavior',
     vpfreezeFallback:
       'Current viewer does not support per-viewport layer off; using Off behavior instead.',
     nestedSelectionLimited:
-      'Nested block selection settings are stored, but current picking still resolves the top-level entity layer.',
+      'Nested symbol selection settings are stored, but current picking still resolves the top-level entity layer.',
     layerNotFound: 'Layer not found',
     cannotTurnOffCurrent: 'Cannot turn off the current layer.',
     alreadyOff: 'Layer is already off',
@@ -516,8 +516,8 @@ export default {
         global: 'Viewports'
       },
       blockSelection: {
-        display: 'Block selection(B)',
-        local: 'Block selection',
+        display: 'Symbol selection(B)',
+        local: 'Symbol selection',
         global: 'BlockSelection'
       },
       off: {
@@ -531,8 +531,8 @@ export default {
         global: 'Vpfreeze'
       },
       block: {
-        display: 'Block(B)',
-        local: 'Block',
+        display: 'Symbol(B)',
+        local: 'Symbol',
         global: 'Block'
       },
       entity: {
@@ -795,14 +795,14 @@ export default {
     decodeFailed: 'Failed to read the selected image file.'
   },
   insert: {
-    blockName: 'Enter block name:',
+    blockName: 'Enter symbol name:',
     insertionPoint: 'Specify insertion point:',
     scale: 'Specify scale factor:',
     rotation: 'Specify rotation angle:',
     invalidScale: 'Scale factor must be greater than 0.',
-    invalidBlockName: 'Invalid block name.',
-    blockNotFound: 'Block not found',
-    xrefNotAllowed: 'Cannot insert an external reference with -INSERT.'
+    invalidBlockName: 'Invalid symbol name.',
+    blockNotFound: 'Symbol not found',
+    xrefNotAllowed: 'Cannot insert a linked drawing with -INSERT.'
   },
   xattach: {
     insertionPoint: 'Specify insertion point:',
@@ -810,7 +810,7 @@ export default {
     rotation: 'Specify rotation angle:',
     invalidScale: 'Scale factor must be greater than 0.',
     unsupportedFile: 'Please select a DWG or DXF file.',
-    loading: 'Loading external reference...',
+    loading: 'Loading linked drawing...',
     loadFailed: 'Failed to read the selected drawing file.'
   },
   point: {
@@ -1238,7 +1238,7 @@ export default {
   chtml: {
     exportFormat: 'Export format',
     exportInvisibleLayers: 'Export invisible layers',
-    exportLayouts: 'Export layouts',
+    exportLayouts: 'Export print pages',
     initialView: 'Initial view when opening HTML',
     viewerMode: 'Offline viewer mode',
     chunkSizeMiB: 'Chunk size in MiB (multi-file package)',
@@ -1287,8 +1287,8 @@ export default {
     }
   },
   cpdf: {
-    modelSpaceFit: 'Model space frame',
-    exportLayouts: 'Export layouts',
+    modelSpaceFit: 'Canvas frame',
+    exportLayouts: 'Export print pages',
     textMode: 'Text rendering',
     keywords: {
       extents: {

@@ -17,7 +17,7 @@ export default {
       insert: 'Ekle',
       review: 'İnceleme',
       measurement: 'Ölçüm',
-      hatchContext: 'Tarama',
+      hatchContext: 'Desen dolgusu',
       mtextEditorContext: 'Metin Düzenleyici'
     },
     hatch: {
@@ -63,22 +63,22 @@ export default {
         off: 'Kapalı'
       },
       tooltip: {
-        pickPoints: 'Tarama bölgeleri oluşturmak için iç noktalar seçin.',
+        pickPoints: 'Desen dolgusu bölgeleri oluşturmak için iç noktalar seçin.',
         selectObjects: 'Taranacak kapalı sınır nesnelerini seçin.',
-        pattern: 'Tarama deseni adını seçin.',
-        scale: 'Tarama deseni ölçeğini ayarlayın.',
-        angle: 'Tarama deseni açısını derece cinsinden ayarlayın.',
-        style: 'Tarama oluşturma için ada tespit stilini kontrol edin.',
-        associative: 'İlişkisel tarama modunu aç/kapat.',
+        pattern: 'Dolgu deseni adını seçin.',
+        scale: 'Dolgu deseni ölçeğini ayarlayın.',
+        angle: 'Dolgu deseni açısını derece cinsinden ayarlayın.',
+        style: 'Desen dolgusu oluşturma için ada tespit stilini kontrol edin.',
+        associative: 'İlişkisel desen dolgusu modunu aç/kapat.',
         fillType: 'Dolgu türünü seçin: düz, desen veya geçiş.',
         fillColor: 'Dolgu rengini seçin.',
         patternColor: 'Desen çizgi rengini seçin.',
         gradient1Color: 'İlk geçiş rengini seçin.',
         backgroundColor: 'Desen dolgusu için arka plan rengini seçin.',
         gradient2Color: 'İkinci geçiş rengini seçin.',
-        opacity: 'Tarama saydamlığını ayarlayın (0-90).',
+        opacity: 'Desen dolgusu saydamlığını ayarlayın (0-90).',
         imageScale: 'Dolgu görüntüsü ölçeğini ayarlayın.',
-        close: 'Tarama oluşturmadan çıkın ve bu bağlamsal sekmeyi kapatın.'
+        close: 'Desen dolgusu oluşturmadan çıkın ve bu bağlamsal sekmeyi kapatın.'
       }
     },
     mtext: {
@@ -221,16 +221,16 @@ export default {
       lengthUnits: 'Uzunluk Birimleri',
       angleUnits: 'Açı Birimleri',
       reference: 'Referans',
-      block: 'Blok'
+      block: 'Sembol'
     },
     insertBlock: {
-      empty: 'Kullanılabilir blok yok',
+      empty: 'Kullanılabilir sembol yok',
       currentDrawing: 'Geçerli Çizim',
-      previewMenu: 'Blok önizleme galerisi'
+      previewMenu: 'Sembol önizleme galerisi'
     },
     property: {
       color: 'Renk',
-      lineType: 'Çizgi Tipi',
+      lineType: 'Çizgi Türü',
       lineWeight: 'Çizgi Kalınlığı'
     },
     layerTools: {
@@ -288,7 +288,7 @@ export default {
       ellipse: 'Bir elips veya eliptik yay çizin.',
       rect: 'Bir dikdörtgen veya düzgün çokgen çizin.',
       point: 'Çizime bir nokta nesnesi yerleştirin.',
-      hatch: 'Kapalı bir alanı tarama deseniyle doldurun.',
+      hatch: 'Kapalı bir alanı bir desenle doldurun (tarama).',
       text: 'Çizimde çok satırlı metin açıklamaları oluşturun.',
       move: 'Seçili nesneleri yeni bir konuma taşıyın.',
       rotate: 'Seçili nesneleri bir taban noktası etrafında döndürün.',
@@ -300,30 +300,30 @@ export default {
       redo: 'Son geri alınan düzenleme işlemini yineleyin.',
       properties: 'Geçerli seçim için Özellikler panelini açın.',
       quickSelect:
-        'Ölçütlere göre varlıkları filtrelemek ve seçmek için Hızlı Seçimi açın.',
-      find: 'Tüm çizimde veya geçerli yerleşimde metin aramak için Bul paletini açın.',
+        'Nesneleri tür, katman ve diğer ölçütlere göre filtrelemek ve seçmek için Ölçüte Göre Seç (Hızlı Seçim) panelini açın.',
+      find: 'Tüm çizimde veya geçerli baskı sayfasında metin aramak için Bul paletini açın.',
       countList:
-        'Blok sayılarını görüntülemek ve yönetmek için Sayım paletini açın.',
+        'Sembol (blok) sayılarını görüntülemek ve yönetmek için Sayım paletini açın.',
       missingResources:
-        'Yazı tipleri, görseller ve xref’ler için Eksik / Harici Kaynaklar paletini açın.',
+        'Yazı tipleri, görseller ve bağlantılı çizimler (xref) için Eksik / Harici Kaynaklar paletini açın.',
       drawingUnits:
         'Koordinat biçimlerini, hassasiyeti ve ekleme ölçeğini ayarlamak için Çizim Birimlerini açın.',
       attachDwg:
-        'Bir DWG veya DXF çizimini harici referans olarak ekleyin (XATTACH).',
+        'Bir DWG veya DXF çizimini bağlantılı çizim (harici referans) olarak ekleyin (XATTACH).',
       attachImage:
-        'Bir raster görüntüyü harici referans olarak ekleyin (IMAGEATTACH).',
+        'Bir raster görüntüyü bağlantı olarak ekleyin (IMAGEATTACH).',
       insert:
-        'Blok tanımlarını göz atmak ve eklemek için Bloklar paletini açın (INSERT).',
+        'Sembol tanımlarına göz atmak ve eklemek için Semboller (bloklar) paletini açın (INSERT).',
       editAttributes:
-        'Blok öznitelik değerlerini ve görüntü özelliklerini düzenlemek için Gelişmiş Öznitelik Düzenleyiciyi açın (ATTEDIT).',
+        'Sembol özelliklerinin (blok öznitelikleri) değerlerini ve görüntü ayarlarını düzenleyin (ATTEDIT).',
       defineAttribute:
-        'Bir blokta kullanılacak öznitelik tanımı oluşturun (ATTDEF).',
+        'Bir sembolde kullanılacak bir özellik (öznitelik tanımı) oluşturun (ATTDEF).',
       agent:
         'Doğal dil kullanarak geometri çizmek için CAD Ajanı panel sekmesini açın.',
       propertyColor:
         'Yeni oluşturulan nesneler veya seçili varlıklar için rengi ayarlayın.',
       propertyLineType:
-        'Yeni oluşturulan nesneler veya seçili varlıklar için çizgi tipini ayarlayın.',
+        'Yeni oluşturulan nesneler veya seçili varlıklar için çizgi türünü (çizgi tipi) ayarlayın.',
       propertyLineWeight:
         'Yeni oluşturulan nesneler veya seçili varlıklar için çizgi kalınlığını ayarlayın.',
       layerAction: {
@@ -331,7 +331,7 @@ export default {
         isolate:
           'Yalnızca seçili katmanı gösterir ve diğerlerini gizleyerek ilgili nesnelere odaklanmanızı sağlar.',
         freeze:
-          'Seçili katmanı dondurarak nesnelerini gizler ve yeniden oluşturma sırasında atlanmasını sağlar.',
+          'Seçili katmanı dondurarak nesnelerini gizler ve ekran yenilenirken (yeniden oluşturma) atlanmasını sağlar.',
         lock: 'Seçili katmanı kilitleyerek nesnelerinin görünür kalmasını ancak düzenlenememesini sağlar.',
         current:
           'Seçili katmanı geçerli yaparak yeni nesnelerin o katmanda oluşturulmasını sağlar.',
@@ -339,7 +339,7 @@ export default {
           'Şu anda kapalı olan tüm katmanları açar. Donmuş katmanlar donmuş kalır.',
         unisolate:
           'Katman İzole tarafından gizlenen veya kilitlenen katmanları, sonraki katman değişikliklerini koruyarak geri yükler.',
-        thaw: 'Seçili katmanı çözerek nesnelerinin tekrar görünür ve yeniden oluşturmaya dahil olmasını sağlar.',
+        thaw: 'Seçili katmanı çözerek nesnelerinin tekrar görünür ve ekran yenilemeye (yeniden oluşturma) dahil olmasını sağlar.',
         unlock:
           'Seçili katmanın kilidini açarak nesnelerinin tekrar seçilip değiştirilebilmesini sağlar.',
         restore:
@@ -404,7 +404,7 @@ export default {
       polygon: 'Çokgen',
       point: 'Nokta',
       divide: 'Böl',
-      hatch: 'Tarama',
+      hatch: 'Desen\ndolgusu',
       text: 'Metin',
       gradient: 'Geçiş',
       move: 'Taşı',
@@ -415,15 +415,15 @@ export default {
       undo: 'Geri Al',
       redo: 'Yinele',
       properties: 'Özellikler',
-      quickSelect: 'Hızlı\nSeçim',
+      quickSelect: 'Ölçüte\nGöre Seç',
       find: 'Bul',
       countList: 'Sayım',
       drawingUnits: 'Çizim\nBirimleri',
       attachDwg: 'DWG\nEkle',
       attachImage: 'Görüntü\nEkle',
       insert: 'Ekle',
-      editAttributes: 'Öznitelikleri\nDüzenle',
-      defineAttribute: 'Öznitelik\nTanımla',
+      editAttributes: 'Özellikleri\nDüzenle',
+      defineAttribute: 'Özellik\nTanımla',
       agent: 'CAD\nAjanı'
     }
   },
@@ -463,7 +463,7 @@ export default {
     },
     clearMeasurements: {
       text: 'Temizle',
-      description: 'Geçerli yerleşimdeki tüm ölçümleri kaldırır'
+      description: 'Geçerli baskı sayfasındaki tüm ölçümleri kaldırır'
     },
     measurementImport: {
       text: 'İçe Aktar',
@@ -570,7 +570,7 @@ export default {
     },
     clearMarkups: {
       text: 'Temizle',
-      description: 'Geçerli yerleşimdeki tüm işaretleri temizler'
+      description: 'Geçerli baskı sayfasındaki tüm işaretleri temizler'
     },
     select: {
       text: 'Seç',
@@ -590,7 +590,7 @@ export default {
     zoomSaved: {
       text: 'Kayıtlı',
       description:
-        'AutoCAD kayıtlı görünümünü (VPORT / düzen limitleri) veya açılış görünümünü geri yükler'
+        'AutoCAD kayıtlı görünümünü (VPORT / baskı sayfası limitleri) veya açılış görünümünü geri yükler'
     },
     zoomToExtent: {
       text: 'Sınırlar',
@@ -666,8 +666,8 @@ export default {
     export: {
       tooltip: 'Görüntüyü PNG olarak dışa aktar'
     },
-    modelTab: 'Model',
-    moreLayouts: 'Diğer düzenler'
+    modelTab: 'Tuval',
+    moreLayouts: 'Diğer baskı sayfaları'
   },
   toolPalette: {
     entityProperties: {
@@ -730,7 +730,7 @@ export default {
         lock: 'Kilitle',
         plot: 'Çizdir',
         color: 'Renk',
-        linetype: 'Çizgi tipi',
+        linetype: 'Çizgi türü',
         lineweight: 'Çizgi kalınlığı',
         transparency: 'Saydamlık',
         description: 'Açıklama',
@@ -747,22 +747,22 @@ export default {
       input: 'Aranacak metin',
       find: 'Bul',
       matchCase: 'Büyük/küçük harf duyarlı',
-      currentLayoutOnly: 'Yalnızca geçerli yerleşim',
-      hint: 'Tüm çizimde (tüm yerleşimler) metin, çok satırlı metin, öznitelikler ile blok, ölçü, kılavuz ve tablolardaki metni aramak için Enter tuşuna basın.',
+      currentLayoutOnly: 'Yalnızca geçerli baskı sayfası',
+      hint: 'Tüm çizimde (tüm baskı sayfaları) metin, çok satırlı metin, sembol özellikleri ile sembol, ölçü, kılavuz ve tablolardaki metni aramak için Enter tuşuna basın.',
       hintLayout:
-        'Geçerli yerleşimde metin, çok satırlı metin, öznitelikler ile blok, ölçü, kılavuz ve tablolardaki metni aramak için Enter tuşuna basın.',
+        'Geçerli baskı sayfasında metin, çok satırlı metin, sembol özellikleri ile sembol, ölçü, kılavuz ve tablolardaki metni aramak için Enter tuşuna basın.',
       noResults: 'Metin bulunamadı',
       count: '{count} sonuç',
-      countLayouts: '{layouts} yerleşimde {count} sonuç',
+      countLayouts: '{layouts} baskı sayfasında {count} sonuç',
       countTruncated: 'İlk {count} sonuç gösteriliyor — aramayı daraltın',
       noDocument: 'Aramak için bir çizim açın',
-      layoutUnavailable: '"{layout}" yerleşimi açılamadı',
-      unnamedLayout: '(adsız yerleşim)',
+      layoutUnavailable: '"{layout}" baskı sayfası açılamadı',
+      unnamedLayout: '(adsız baskı sayfası)',
       kind: {
         text: 'Metin',
         mtext: 'Çok satırlı metin',
-        attribute: 'Öznitelik',
-        block: 'Blok metni',
+        attribute: 'Sembol özelliği',
+        block: 'Sembol metni',
         dimension: 'Ölçü',
         leader: 'Kılavuz',
         table: 'Tablo'
@@ -771,13 +771,13 @@ export default {
     countList: {
       tab: 'Sayım',
       title: 'Sayım',
-      searchPlaceholder: 'Blok adı ara',
+      searchPlaceholder: 'Sembol adı ara',
       countInArea: 'Alanda say',
       areaSet: 'Sayım alanı güncellendi',
-      areaCleared: 'Tüm model alanı sayılıyor',
-      blockName: 'Blok',
+      areaCleared: 'Tüm tuval sayılıyor',
+      blockName: 'Sembol',
       count: 'Adet',
-      empty: 'Görünür blok bulunamadı',
+      empty: 'Görünür sembol bulunamadı',
       prompt: {
         firstCorner: 'Sayım alanının ilk köşesini belirtin veya [Entire]: ',
         secondCorner: 'Karşı köşeyi belirtin: '
@@ -828,7 +828,7 @@ export default {
       title: 'Eksik / Harici Kaynaklar',
       fontTab: 'Yazı tipi',
       imageTab: 'Görsel',
-      xrefTab: 'Harici Referanslar',
+      xrefTab: 'Bağlantılı Çizimler',
       attach: 'Ekle',
       attachDwg: 'DWG/DXF ekle...',
       attachImage: 'Görüntü ekle...',
@@ -865,7 +865,7 @@ export default {
       fromUrl: 'URL…',
       unload: 'Kaldır',
       load: 'Yükle',
-      empty: 'Bu çizimde harici referans veya görüntü yok',
+      empty: 'Bu çizimde bağlantılı çizim veya görüntü yok',
       urlPrompt: 'Çizim dosyasının (DWG, DXF vb.) URL’sini girin',
       urlRequired: 'Lütfen bir URL girin',
       loadFailed: '"{name}" referansı yüklenemedi'
@@ -914,7 +914,7 @@ export default {
         fonts: 'Yazı Tipleri'
       },
       columns: {
-        layout: 'Düzen',
+        layout: 'Baskı sayfası',
         layer: 'Katman',
         geometry: 'Geometri',
         mapping: 'Eşleme',
@@ -948,7 +948,7 @@ export default {
       midOpenPaints: 'Açılış sırası çizimler',
       yields: 'Yield sayısı',
       cache: 'INSERT render önbelleği (üst düzey)',
-      slowBlocks: 'En yavaş blok şablon missleri',
+      slowBlocks: 'En yavaş sembol şablon missleri',
       total: 'Toplam açılış',
       read: 'db.read',
       parse: 'PARSE',
@@ -965,26 +965,26 @@ export default {
         share: 'Pay',
         metric: 'Metrik',
         value: 'Değer',
-        block: 'Blok',
+        block: 'Sembol',
         build: 'Build',
         compact: 'Compact'
       }
     },
     blocks: {
-      tab: 'Bloklar',
-      title: 'Bloklar',
+      tab: 'Semboller',
+      title: 'Semboller',
       tabCurrentDrawing: 'Geçerli Çizim',
       tabRecent: 'Son Kullanılanlar',
       tabFavorites: 'Favoriler',
       tabLibraries: 'Kitaplıklar',
-      sectionCurrentDrawing: 'Geçerli Çizim Blokları',
-      sectionRecent: 'Son Kullanılan Bloklar',
-      sectionFavorites: 'Favori Bloklar',
-      sectionLibraries: 'Blok Kitaplıkları',
+      sectionCurrentDrawing: 'Geçerli Çizimdeki Semboller',
+      sectionRecent: 'Son Kullanılan Semboller',
+      sectionFavorites: 'Favori Semboller',
+      sectionLibraries: 'Sembol Kitaplıkları',
       filterPlaceholder: 'Filtrele...',
-      empty: 'Kullanılabilir blok yok',
-      emptyRecent: 'Son eklenen blok yok',
-      emptyFavorites: 'Favori blok yok',
+      empty: 'Kullanılabilir sembol yok',
+      emptyRecent: 'Son eklenen sembol yok',
+      emptyFavorites: 'Favori sembol yok',
       emptyLibraries: 'Yapılandırılmış kitaplık yok',
       toggleFavorite: 'Favoriyi değiştir',
       options: 'Seçenekler',
@@ -1001,7 +1001,7 @@ export default {
     custom: 'Özel'
   },
   lineTypeSelect: {
-    placeholder: 'Çizgi Tipi'
+    placeholder: 'Çizgi Türü'
   },
   colorIndexPicker: {
     color: 'Renk: ',
@@ -1012,11 +1012,11 @@ export default {
   entityInfo: {
     color: 'Renk',
     layer: 'Katman',
-    lineType: 'Çizgi Tipi'
+    lineType: 'Çizgi Türü'
   },
   ribbonProperty: {
     color: 'Renk',
-    lineType: 'Çizgi Tipi',
+    lineType: 'Çizgi Türü',
     lineWeight: 'Çizgi Kalınlığı',
     layer: 'Katman'
   },
@@ -1029,7 +1029,7 @@ export default {
       visibility: 'Görünürlük',
       freeze: 'Dondur',
       lock: 'Kilitle',
-      lineType: 'Çizgi Tipi',
+      lineType: 'Çizgi Türü',
       color: 'Renk',
       visible: 'Görünür',
       hidden: 'Gizli',

@@ -26,7 +26,11 @@ takže výkresy nikdy neopustí zařízení uživatele.
     (Arial → Arimo, SimSun → Noto Serif SC, Malgun Gothic → Noto Sans KR, …).
   - Text rozhraní: **Noto Sans JP** (hostováno pomocí
     `@fontsource-variable/noto-sans-jp`).
-- **Lokalizované názvy rozvržení** v nových výkresech místo čínských názvů ze šablony.
+- **Lokalizované názvy tiskových stránek** v nových výkresech místo čínských názvů ze šablony.
+- **Srozumitelné pojmy i pro uživatele bez zkušeností s CAD** — rozhraní používá běžná slova:
+  blok → symbol, atribut bloku → vlastnost symbolu, modelový prostor → plátno,
+  rozvržení → tisková stránka, šrafování → vzorová výplň, externí reference → propojený výkres,
+  rychlý výběr → výběr podle kritérií atd. Popisky nástrojů uvádějí CAD pojem v závorce (všechna národní prostředí).
 - **Import JWW (Jw_cad)** — ukázková aplikace otevírá soubory `.jww` pomocí
   `@mlightcad/cad-jww-converter` (MIT; parser [ezjww](https://github.com/monozukuri-ai/ezjww),
   Rust → WebAssembly, ve Web Workeru). Souřadnice se převádějí z milimetrů na papíře na skutečné

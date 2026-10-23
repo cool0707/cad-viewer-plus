@@ -2,7 +2,7 @@ export default {
   ACAD: {
     '-hatch': {
       description:
-        'Şerit menüsü olmadan komut satırı seçenekleriyle tarama dolgular oluşturur'
+        'Şerit menüsü olmadan komut satırı seçenekleriyle desen dolguları oluşturur'
     },
     '-layer': {
       description: 'Komut satırı seçenekleriyle katmanları yönetir'
@@ -49,10 +49,10 @@ export default {
     },
     celtscale: {
       description:
-        'Yeni oluşturulan nesneler için çizgi tipi ölçek faktörünü denetler'
+        'Yeni oluşturulan nesneler için çizgi türü ölçek faktörünü denetler'
     },
     celtype: {
-      description: 'Yeni oluşturulan nesneler için çizgi tipini ayarlar'
+      description: 'Yeni oluşturulan nesneler için çizgi türünü ayarlar'
     },
     celweight: {
       description:
@@ -129,11 +129,11 @@ export default {
     },
     extmax: {
       description:
-        'Model alanı çizim kapsamının sağ üst köşesini saklar (salt okunur)'
+        'Tuval çizim kapsamının sağ üst köşesini saklar (salt okunur)'
     },
     extmin: {
       description:
-        'Model alanı çizim kapsamının sol alt köşesini saklar (salt okunur)'
+        'Tuval çizim kapsamının sol alt köşesini saklar (salt okunur)'
     },
     entout: {
       description:
@@ -146,14 +146,14 @@ export default {
     },
     imageattach: {
       description:
-        'Geçerli çizime harici başvuru olarak bir raster görüntü ekler'
+        'Geçerli çizime bağlantı olarak bir raster görüntü ekler'
     },
     '-insert': {
-      description: 'Bir blok tanımını geçerli çizime ekler (komut satırı)'
+      description: 'Bir sembol tanımını geçerli çizime ekler (komut satırı)'
     },
     xattach: {
       description:
-        'Geçerli çizime harici başvuru olarak bir DWG veya DXF çizimi ekler'
+        'Geçerli çizime bağlantılı çizim olarak bir DWG veya DXF çizimi ekler'
     },
     gripcolor: {
       description:
@@ -175,57 +175,57 @@ export default {
     },
     hatch: {
       description:
-        'Kapalı bir alanı veya seçili nesneleri bir tarama deseniyle doldurur'
+        'Kapalı bir alanı veya seçili nesneleri bir desenle doldurur'
     },
     ipdf: {
       description: 'Bir PDF dosyasından vektör geometrisini içe aktarır'
     },
     hpang: {
       description:
-        'Yeni oluşturulan tarama desenleri için varsayılan açıyı radyan cinsinden ayarlar'
+        'Yeni oluşturulan dolgu desenleri için varsayılan açıyı radyan cinsinden ayarlar'
     },
     hpassoc: {
       description:
-        'Yeni oluşturulan taramaların ilişkisel olup olmayacağını denetler'
+        'Yeni oluşturulan desen dolgularının ilişkisel olup olmayacağını denetler'
     },
     hpbackgroundcolor: {
       description:
-        'Yeni oluşturulan tarama desenleri için varsayılan arka plan rengini ayarlar'
+        'Yeni oluşturulan dolgu desenleri için varsayılan arka plan rengini ayarlar'
     },
     hpcolor: {
-      description: 'Yeni oluşturulan taramalar için varsayılan rengi ayarlar'
+      description: 'Yeni oluşturulan desen dolguları için varsayılan rengi ayarlar'
     },
     hpdouble: {
       description:
-        'Kullanıcı tanımlı tarama desenlerinin ikiye katlanıp katlanmayacağını denetler'
+        'Kullanıcı tanımlı dolgu desenlerinin ikiye katlanıp katlanmayacağını denetler'
     },
     hpislanddetection: {
       description:
-        'Yeni oluşturulan tarama sınırları içindeki adaların nasıl işleneceğini denetler'
+        'Yeni oluşturulan desen dolgusu sınırları içindeki adaların nasıl işleneceğini denetler'
     },
     hplayer: {
       description:
-        'Yeni oluşturulan taramalar ve dolgular için varsayılan katmanı ayarlar'
+        'Yeni oluşturulan dolgular için varsayılan katmanı ayarlar'
     },
     hpname: {
       description:
-        'Bu oturumda yeni oluşturulan taramalar için varsayılan desen adını ayarlar'
+        'Bu oturumda yeni oluşturulan desen dolguları için varsayılan desen adını ayarlar'
     },
     hpscale: {
       description:
-        'Yeni oluşturulan tarama desenleri için varsayılan ölçek faktörünü ayarlar'
+        'Yeni oluşturulan dolgu desenleri için varsayılan ölçek faktörünü ayarlar'
     },
     hpseparate: {
       description:
-        'Birden çok sınır için tek mi yoksa ayrı tarama nesneleri mi oluşturulacağını denetler'
+        'Birden çok sınır için tek mi yoksa ayrı desen dolgusu nesneleri mi oluşturulacağını denetler'
     },
     hptransparency: {
       description:
-        'Yeni oluşturulan taramalar ve dolgular için varsayılan saydamlığı ayarlar'
+        'Yeni oluşturulan dolgular için varsayılan saydamlığı ayarlar'
     },
     insunits: {
       description:
-        'Eklenen blokların, görüntülerin veya dış referansların otomatik ölçeklendirilmesi için çizim birimlerini belirtir'
+        'Eklenen sembollerin, görüntülerin veya bağlantılı çizimlerin otomatik ölçeklendirilmesi için çizim birimlerini belirtir'
     },
     jpgout: {
       description: 'JPEG olarak dışa aktarır'
@@ -282,7 +282,7 @@ export default {
       description: 'Hata ayıklama bilgilerini konsola kaydeder'
     },
     ltscale: {
-      description: 'Çizim için genel çizgi tipi ölçek faktörünü ayarlar'
+      description: 'Çizim için genel çizgi türü ölçek faktörünü ayarlar'
     },
     lunits: {
       description: 'Koordinatlar ve mesafeler için görüntüleme biçimini ayarlar'
@@ -296,10 +296,10 @@ export default {
         'Çizgi kalınlıklarının çizimde görüntülenip görüntülenmeyeceğini denetler'
     },
     clearmeasurements: {
-      description: 'Geçerli yerleşimdeki tüm ölçümleri kaldırır'
+      description: 'Geçerli baskı sayfasındaki tüm ölçümleri kaldırır'
     },
     measurementvis: {
-      description: 'Geçerli yerleşimdeki ölçümleri gösterir veya gizler'
+      description: 'Geçerli baskı sayfasındaki ölçümleri gösterir veya gizler'
     },
     measurementpanel: {
       description: 'Ölçüm paletini açar'
@@ -338,7 +338,7 @@ export default {
       description: 'Ölçüm katmanları için kullanılan rengi ayarlar'
     },
     modelbkcolor: {
-      description: 'Model alanı çizim alanının arka plan rengini ayarlar'
+      description: 'Tuval çizim alanının arka plan rengini ayarlar'
     },
     mline: {
       description:
@@ -378,7 +378,7 @@ export default {
     },
     paperbkcolor: {
       description:
-        'Kağıt alanı (düzen) çizim alanının arka plan rengini ayarlar'
+        'Baskı sayfası çizim alanının arka plan rengini ayarlar'
     },
     pdmode: {
       description: 'POINT varlıklarının nasıl görüntüleneceğini denetler'
@@ -463,7 +463,7 @@ export default {
       description: 'İşaretleri gösterir veya gizler'
     },
     clearmarkups: {
-      description: 'Geçerli yerleşimdeki tüm işaretleri temizler'
+      description: 'Geçerli baskı sayfasındaki tüm işaretleri temizler'
     },
     markupexport: {
       description: 'İşaretleri sidecar JSON dosyasına dışa aktarır'

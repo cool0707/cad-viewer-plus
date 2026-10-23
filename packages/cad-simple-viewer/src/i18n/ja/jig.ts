@@ -104,11 +104,11 @@ export default {
   hatch: {
     prompt: '境界オブジェクトを選択 または',
     pickPoint: '内側の点を指定 (Enter で終了)',
-    select: 'ハッチングするオブジェクトを選択',
-    patternName: 'ハッチングパターン名を入力',
-    scale: 'ハッチングパターンの尺度を指定',
-    angle: 'ハッチングパターンの角度を指定',
-    style: 'ハッチングのスタイルを入力',
+    select: '塗りつぶすオブジェクトを選択',
+    patternName: '塗りつぶしパターン名を入力',
+    scale: '塗りつぶしパターンの尺度を指定',
+    angle: '塗りつぶしパターンの角度を指定',
+    style: '塗りつぶしのスタイルを入力',
     associative: '自動調整を指定',
     invalidBoundary: '選択したオブジェクトは閉じた境界を構成していません。',
     keywords: {
@@ -166,27 +166,27 @@ export default {
   },
   layer: {
     main: 'オプションを入力',
-    listSummary: '画層の一覧をブラウザのコンソールに出力しました',
-    emptyInput: '画層名が入力されていません。',
-    newPrompt: '新しい画層の名前を入力',
-    makePrompt: '作成して現在にする画層の名前を入力',
-    setPrompt: '現在にする画層の名前を入力',
-    onPrompt: '表示する画層の名前を入力',
-    offPrompt: '非表示にする画層の名前を入力',
-    freezePrompt: 'フリーズする画層の名前を入力',
-    thawPrompt: 'フリーズ解除する画層の名前を入力',
-    lockPrompt: 'ロックする画層の名前を入力',
-    unlockPrompt: 'ロックを解除する画層の名前を入力',
-    colorLayerPrompt: '色を変更する画層の名前を入力',
+    listSummary: 'レイヤーの一覧をブラウザのコンソールに出力しました',
+    emptyInput: 'レイヤー名が入力されていません。',
+    newPrompt: '新しいレイヤーの名前を入力',
+    makePrompt: '作成して現在にするレイヤーの名前を入力',
+    setPrompt: '現在にするレイヤーの名前を入力',
+    onPrompt: '表示するレイヤーの名前を入力',
+    offPrompt: '非表示にするレイヤーの名前を入力',
+    freezePrompt: 'フリーズするレイヤーの名前を入力',
+    thawPrompt: 'フリーズ解除するレイヤーの名前を入力',
+    lockPrompt: 'ロックするレイヤーの名前を入力',
+    unlockPrompt: 'ロックを解除するレイヤーの名前を入力',
+    colorLayerPrompt: '色を変更するレイヤーの名前を入力',
     colorValuePrompt:
       '色を入力 (ACI 1～255、255,0,0 のような RGB、または CSS の色名)',
     invalidColor: '色の入力が無効です。',
-    descriptionLayerPrompt: '説明を編集する画層の名前を入力',
-    descriptionValuePrompt: '新しい画層の説明を入力',
-    created: '作成した画層の数',
-    alreadyExists: '画層は既に存在します',
-    notFound: '画層が見つかりません',
-    cannotChangeCurrent: '現在の画層は非表示またはフリーズにできません。',
+    descriptionLayerPrompt: '説明を編集するレイヤーの名前を入力',
+    descriptionValuePrompt: '新しいレイヤーの説明を入力',
+    created: '作成したレイヤーの数',
+    alreadyExists: 'レイヤーは既に存在します',
+    notFound: 'レイヤーが見つかりません',
+    cannotChangeCurrent: '現在のレイヤーは非表示またはフリーズにできません。',
     keywords: {
       list: { display: '?(?)', local: '?', global: '?' },
       make: { display: '作成(M)', local: '作成', global: 'Make' },
@@ -211,31 +211,31 @@ export default {
     }
   },
   layon: {
-    alreadyOn: 'すべての画層は既に表示されています。',
-    turnedOn: '表示した画層'
+    alreadyOn: 'すべてのレイヤーは既に表示されています。',
+    turnedOn: '表示したレイヤー'
   },
   laycur: {
-    prompt: '現在の画層に変更するオブジェクトを選択',
-    currentLayerNotFound: '現在の画層が見つかりません。',
+    prompt: '現在のレイヤーに変更するオブジェクトを選択',
+    currentLayerNotFound: '現在のレイヤーが見つかりません。',
     noObjects: '有効なオブジェクトが選択されていません。',
-    alreadyCurrent: '選択したオブジェクトは既に現在の画層上にあります。',
-    changed: '現在の画層に変更したオブジェクト'
+    alreadyCurrent: '選択したオブジェクトは既に現在のレイヤー上にあります。',
+    changed: '現在のレイヤーに変更したオブジェクト'
   },
   layfrz: {
-    prompt: 'フリーズする画層上のオブジェクトを選択 または',
+    prompt: 'フリーズするレイヤー上のオブジェクトを選択 または',
     invalidSelection: '無効なオブジェクトが選択されました。',
     settingsPrompt: '変更する LAYFRZ の設定を入力',
     viewportPrompt: 'ビューポートでのフリーズ動作を指定',
-    blockSelectionPrompt: 'ネストされたブロックの選択動作を指定',
+    blockSelectionPrompt: 'ネストされたシンボルの選択動作を指定',
     vpfreezeFallback:
-      '現在のビューアはビューポートごとの画層フリーズに対応していないため、フリーズとして処理します。',
+      '現在のビューアはビューポートごとのレイヤーフリーズに対応していないため、フリーズとして処理します。',
     nestedSelectionLimited:
-      'ネストされたブロックの選択設定は保存されますが、現在の選択では最上位オブジェクトの画層が使われます。',
-    layerNotFound: '画層が見つかりません',
-    cannotFreezeCurrent: '現在の画層はフリーズできません。',
-    alreadyFrozen: '画層は既にフリーズされています',
-    frozen: 'フリーズした画層',
-    restored: '元に戻した画層',
+      'ネストされたシンボルの選択設定は保存されますが、現在の選択では最上位オブジェクトのレイヤーが使われます。',
+    layerNotFound: 'レイヤーが見つかりません',
+    cannotFreezeCurrent: '現在のレイヤーはフリーズできません。',
+    alreadyFrozen: 'レイヤーは既にフリーズされています',
+    frozen: 'フリーズしたレイヤー',
+    restored: '元に戻したレイヤー',
     nothingToUndo: '元に戻す LAYFRZ の操作はありません。',
     keywords: {
       settings: { display: '設定(S)', local: '設定', global: 'Settings' },
@@ -246,8 +246,8 @@ export default {
         global: 'Viewports'
       },
       blockSelection: {
-        display: 'ブロック選択(B)',
-        local: 'ブロック選択',
+        display: 'シンボル選択(B)',
+        local: 'シンボル選択',
         global: 'BlockSelection'
       },
       freeze: { display: 'フリーズ(F)', local: 'フリーズ', global: 'Freeze' },
@@ -256,7 +256,7 @@ export default {
         local: 'VP フリーズ',
         global: 'Vpfreeze'
       },
-      block: { display: 'ブロック(B)', local: 'ブロック', global: 'Block' },
+      block: { display: 'シンボル(B)', local: 'シンボル', global: 'Block' },
       entity: {
         display: 'オブジェクト(E)',
         local: 'オブジェクト',
@@ -266,17 +266,17 @@ export default {
     }
   },
   layiso: {
-    prompt: '選択表示する画層上のオブジェクトを選択 または',
-    settingsPrompt: '選択表示しない画層の設定を入力',
-    offModePrompt: '選択表示しない画層の非表示の方法を入力',
-    noLayers: '有効な画層が選択されていません。',
-    layerNotFound: '画層が見つかりません',
-    isolated: '選択表示した画層',
-    affectedLayers: '影響を受ける画層',
+    prompt: '選択表示するレイヤー上のオブジェクトを選択 または',
+    settingsPrompt: '選択表示しないレイヤーの設定を入力',
+    offModePrompt: '選択表示しないレイヤーの非表示の方法を入力',
+    noLayers: '有効なレイヤーが選択されていません。',
+    layerNotFound: 'レイヤーが見つかりません',
+    isolated: '選択表示したレイヤー',
+    affectedLayers: '影響を受けるレイヤー',
     vpfreezeFallback:
-      '現在のビューアはビューポートごとの画層フリーズに対応していないため、非表示として処理します。',
+      '現在のビューアはビューポートごとのレイヤーフリーズに対応していないため、非表示として処理します。',
     lockFadeFallback:
-      '現在のビューアは画層のフェード表示に対応していないため、選択表示しない画層はフェードせずにロックされます。',
+      '現在のビューアはレイヤーのフェード表示に対応していないため、選択表示しないレイヤーはフェードせずにロックされます。',
     keywords: {
       settings: { display: '設定(S)', local: '設定', global: 'Settings' },
       off: { display: '非表示(O)', local: '非表示', global: 'Off' },
@@ -293,44 +293,44 @@ export default {
     }
   },
   layuniso: {
-    noPrevious: '元に戻す LAYISO の画層状態がありません。',
-    layerNotFound: '画層が見つかりません',
-    nothingRestored: 'LAYISO による画層の変更は元に戻されませんでした。',
-    restored: '元に戻した画層'
+    noPrevious: '元に戻す LAYISO のレイヤー状態がありません。',
+    layerNotFound: 'レイヤーが見つかりません',
+    nothingRestored: 'LAYISO によるレイヤーの変更は元に戻されませんでした。',
+    restored: '元に戻したレイヤー'
   },
   laythw: {
-    alreadyThawed: 'すべての画層は既にフリーズ解除されています。',
-    thawed: 'フリーズ解除した画層'
+    alreadyThawed: 'すべてのレイヤーは既にフリーズ解除されています。',
+    thawed: 'フリーズ解除したレイヤー'
   },
   laylck: {
-    prompt: 'ロックする画層上のオブジェクトを選択',
+    prompt: 'ロックするレイヤー上のオブジェクトを選択',
     invalidSelection: '無効なオブジェクトが選択されました。',
-    layerNotFound: '画層が見つかりません',
-    alreadyLocked: '画層は既にロックされています',
-    locked: 'ロックした画層'
+    layerNotFound: 'レイヤーが見つかりません',
+    alreadyLocked: 'レイヤーは既にロックされています',
+    locked: 'ロックしたレイヤー'
   },
   layulk: {
-    prompt: 'ロックを解除する画層上のオブジェクトを選択',
+    prompt: 'ロックを解除するレイヤー上のオブジェクトを選択',
     invalidSelection: '無効なオブジェクトが選択されました。',
-    layerNotFound: '画層が見つかりません',
-    alreadyUnlocked: '画層は既にロック解除されています',
-    unlocked: 'ロックを解除した画層'
+    layerNotFound: 'レイヤーが見つかりません',
+    alreadyUnlocked: 'レイヤーは既にロック解除されています',
+    unlocked: 'ロックを解除したレイヤー'
   },
   layoff: {
-    prompt: '非表示にする画層上のオブジェクトを選択 または',
+    prompt: '非表示にするレイヤー上のオブジェクトを選択 または',
     invalidSelection: '無効なオブジェクトが選択されました。',
     settingsPrompt: '変更する LAYOFF の設定を入力',
     viewportPrompt: 'ビューポートでの動作を指定',
-    blockSelectionPrompt: 'ネストされたブロックの選択動作を指定',
+    blockSelectionPrompt: 'ネストされたシンボルの選択動作を指定',
     vpfreezeFallback:
-      '現在のビューアはビューポートごとの画層の非表示に対応していないため、非表示として処理します。',
+      '現在のビューアはビューポートごとのレイヤーの非表示に対応していないため、非表示として処理します。',
     nestedSelectionLimited:
-      'ネストされたブロックの選択設定は保存されますが、現在の選択では最上位オブジェクトの画層が使われます。',
-    layerNotFound: '画層が見つかりません',
-    cannotTurnOffCurrent: '現在の画層は非表示にできません。',
-    alreadyOff: '画層は既に非表示です',
-    turnedOff: '非表示にした画層',
-    restored: '元に戻した画層',
+      'ネストされたシンボルの選択設定は保存されますが、現在の選択では最上位オブジェクトのレイヤーが使われます。',
+    layerNotFound: 'レイヤーが見つかりません',
+    cannotTurnOffCurrent: '現在のレイヤーは非表示にできません。',
+    alreadyOff: 'レイヤーは既に非表示です',
+    turnedOff: '非表示にしたレイヤー',
+    restored: '元に戻したレイヤー',
     nothingToUndo: '元に戻す LAYOFF の操作はありません。',
     keywords: {
       settings: { display: '設定(S)', local: '設定', global: 'Settings' },
@@ -341,8 +341,8 @@ export default {
         global: 'Viewports'
       },
       blockSelection: {
-        display: 'ブロック選択(B)',
-        local: 'ブロック選択',
+        display: 'シンボル選択(B)',
+        local: 'シンボル選択',
         global: 'BlockSelection'
       },
       off: { display: '非表示(O)', local: '非表示', global: 'Off' },
@@ -351,7 +351,7 @@ export default {
         local: 'VP フリーズ',
         global: 'Vpfreeze'
       },
-      block: { display: 'ブロック(B)', local: 'ブロック', global: 'Block' },
+      block: { display: 'シンボル(B)', local: 'シンボル', global: 'Block' },
       entity: {
         display: 'オブジェクト(E)',
         local: 'オブジェクト',
@@ -361,8 +361,8 @@ export default {
     }
   },
   layerp: {
-    restored: '直前の画層状態に戻しました。',
-    noPreviousState: '元に戻す直前の画層状態はありません。'
+    restored: '直前のレイヤー状態に戻しました。',
+    noPreviousState: '元に戻す直前のレイヤー状態はありません。'
   },
   line: {
     firstPoint: '1 点目を指定',
@@ -556,14 +556,14 @@ export default {
     decodeFailed: '選択した画像ファイルを読み込めませんでした。'
   },
   insert: {
-    blockName: 'ブロック名を入力:',
+    blockName: 'シンボル名を入力:',
     insertionPoint: '挿入位置を指定:',
     scale: '尺度を指定:',
     rotation: '回転角度を指定:',
     invalidScale: '尺度は 0 より大きい必要があります。',
-    invalidBlockName: 'ブロック名が無効です。',
-    blockNotFound: 'ブロックが見つかりません',
-    xrefNotAllowed: '-INSERT では外部参照を挿入できません。'
+    invalidBlockName: 'シンボル名が無効です。',
+    blockNotFound: 'シンボルが見つかりません',
+    xrefNotAllowed: '-INSERT ではリンク図面を挿入できません。'
   },
   xattach: {
     insertionPoint: '挿入位置を指定:',
@@ -571,7 +571,7 @@ export default {
     rotation: '回転角度を指定:',
     invalidScale: '尺度は 0 より大きい必要があります。',
     unsupportedFile: 'DWG または DXF ファイルを選択してください。',
-    loading: '外部参照を読み込んでいます...',
+    loading: 'リンク図面を読み込んでいます...',
     loadFailed: '選択した図面ファイルを読み込めませんでした。'
   },
   point: {
@@ -818,8 +818,8 @@ export default {
   },
   chtml: {
     exportFormat: '書き出し形式',
-    exportInvisibleLayers: '非表示の画層も書き出す',
-    exportLayouts: 'レイアウトを書き出す',
+    exportInvisibleLayers: '非表示のレイヤーも書き出す',
+    exportLayouts: '印刷ページを書き出す',
     initialView: 'HTML を開いたときの初期表示',
     viewerMode: 'オフラインビューアのモード',
     chunkSizeMiB: 'チャンクのサイズ (MiB、複数ファイルのパッケージ)',
@@ -856,8 +856,8 @@ export default {
     }
   },
   cpdf: {
-    modelSpaceFit: 'モデル空間の範囲',
-    exportLayouts: 'レイアウトを書き出す',
+    modelSpaceFit: 'キャンバスの範囲',
+    exportLayouts: '印刷ページを書き出す',
     textMode: '文字の描画方法',
     keywords: {
       extents: {

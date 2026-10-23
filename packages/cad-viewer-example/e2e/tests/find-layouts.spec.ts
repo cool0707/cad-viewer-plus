@@ -170,7 +170,7 @@ test.describe('Find palette (full Vue UI)', () => {
       'Model | Sala Técnica 01',
       'Planta | Legenda: Sala Técnica 01'
     ])
-    await expect(status(page)).toContainText('3 found in 3 layouts')
+    await expect(status(page)).toContainText('3 found in 3 print pages')
   })
 
   test('is accent/case-insensitive and respects match case and hidden layers', async ({
@@ -307,7 +307,7 @@ test.describe('Find palette (full Vue UI)', () => {
     await search(page, 'escola')
     await expect(rows(page)).toHaveCount(1)
     expect(await results(page)).toEqual(['Model | Projeto Escola Modelo'])
-    await expect(rows(page).first()).toContainText('Block text')
+    await expect(rows(page).first()).toContainText('Symbol text')
 
     await rows(page).first().click()
     await expect

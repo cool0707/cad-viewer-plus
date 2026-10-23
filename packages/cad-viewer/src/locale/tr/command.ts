@@ -2,29 +2,29 @@ export default {
   ACAD: {
     hatch: {
       description:
-        'Şerit tabanlı bağlamsal iş akışıyla tarama dolgusu oluşturur'
+        'Şerit tabanlı bağlamsal iş akışıyla desen dolgusu oluşturur'
     },
     layer: {
       description: 'Katman özellikleri yöneticisi'
     },
     md: {
       description:
-        'Yazı tipi, görsel ve xref’ler için Eksik / Harici Kaynaklar paletini açar'
+        'Yazı tipi, görsel ve bağlantılı çizimler için Eksik / Harici Kaynaklar paletini açar'
     },
     xref: {
       description:
-        'Eksik / Harici Kaynaklar paletini Xref sekmesinde açar'
+        'Eksik / Harici Kaynaklar paletini Bağlantılı Çizimler sekmesinde açar'
     },
     properties: {
       description: 'Varlık özellikleri paleti'
     },
     find: {
       description:
-        'Yerleşimler arasında metin, çok satırlı metin, öznitelikler ile blok, ölçü, kılavuz ve tablolardaki metni aramak için Bul paletini açar'
+        'Baskı sayfaları arasında metin, çok satırlı metin, sembol özellikleri ile sembol, ölçü, kılavuz ve tablolardaki metni aramak için Bul paletini açar'
     },
     countlist: {
       description:
-        'Sayılan blokları görüntülemek ve yönetmek için Sayım paletini açar'
+        'Sayılan sembolleri görüntülemek ve yönetmek için Sayım paletini açar'
     },
     mem: {
       description:
@@ -47,10 +47,10 @@ export default {
     },
     attedit: {
       description:
-        'Bir blok referansının öznitelik değerlerini ve görüntü özelliklerini düzenler'
+        'Bir sembolün özellik değerlerini ve görüntü ayarlarını düzenler'
     },
     attdef: {
-      description: 'Bir blok için öznitelik tanımı oluşturur'
+      description: 'Bir sembol için özellik tanımı oluşturur'
     }
   },
   USER: {}

@@ -17,7 +17,7 @@ export default {
       insert: 'Insert',
       review: 'Review',
       measurement: 'Measurement',
-      hatchContext: 'Hatch',
+      hatchContext: 'Pattern fill',
       mtextEditorContext: 'Text Editor'
     },
     hatch: {
@@ -63,22 +63,22 @@ export default {
         off: 'Off'
       },
       tooltip: {
-        pickPoints: 'Pick internal points to create hatch regions.',
-        selectObjects: 'Select closed boundary objects to hatch.',
-        pattern: 'Choose the hatch pattern name.',
-        scale: 'Set the hatch pattern scale.',
-        angle: 'Set the hatch pattern angle in degrees.',
-        style: 'Control island detection style for hatch creation.',
-        associative: 'Toggle associative hatch mode.',
+        pickPoints: 'Pick internal points to create pattern fill regions.',
+        selectObjects: 'Select closed boundary objects to fill.',
+        pattern: 'Choose the fill pattern name.',
+        scale: 'Set the fill pattern scale.',
+        angle: 'Set the fill pattern angle in degrees.',
+        style: 'Control island detection style for pattern fill creation.',
+        associative: 'Toggle associative pattern fill mode.',
         fillType: 'Select fill type: solid, pattern, or gradient.',
         fillColor: 'Choose the fill color.',
         patternColor: 'Choose the pattern line color.',
         gradient1Color: 'Choose the first gradient color.',
         backgroundColor: 'Choose the background color for pattern fill.',
         gradient2Color: 'Choose the second gradient color.',
-        opacity: 'Set the hatch transparency (0-90).',
+        opacity: 'Set the pattern fill transparency (0-90).',
         imageScale: 'Set the fill image scale.',
-        close: 'Exit Hatch creation and close this contextual tab.'
+        close: 'Exit pattern fill creation and close this contextual tab.'
       }
     },
     mtext: {
@@ -220,16 +220,16 @@ export default {
       lengthUnits: 'Length Units',
       angleUnits: 'Angle Units',
       reference: 'Reference',
-      block: 'Block'
+      block: 'Symbol'
     },
     insertBlock: {
-      empty: 'No blocks available',
+      empty: 'No symbols available',
       currentDrawing: 'Current Drawing',
-      previewMenu: 'Block preview gallery'
+      previewMenu: 'Symbol preview gallery'
     },
     property: {
       color: 'Color',
-      lineType: 'Linetype',
+      lineType: 'Line type',
       lineWeight: 'Lineweight'
     },
     layerTools: {
@@ -284,7 +284,7 @@ export default {
       ellipse: 'Draw an ellipse or elliptical arc.',
       rect: 'Draw a rectangle or regular polygon.',
       point: 'Place a point object in the drawing.',
-      hatch: 'Fill a closed area with a hatch pattern.',
+      hatch: 'Fill a closed area with a pattern (hatch).',
       text: 'Create multiline text annotations in the drawing.',
       move: 'Move selected objects to a new position.',
       rotate: 'Rotate selected objects around a base point.',
@@ -295,29 +295,29 @@ export default {
       redo: 'Redo the last undone editing operation.',
       properties: 'Open the Properties palette for the current selection.',
       quickSelect:
-        'Open Quick Select to filter and select entities by criteria.',
-      find: 'Open the Find palette to search text in the whole drawing or the current layout.',
-      countList: 'Open the Count palette to view and manage block counts.',
+        'Open Select by Criteria (Quick Select) to filter and select objects by type, layer and more.',
+      find: 'Open the Find palette to search text in the whole drawing or the current print page.',
+      countList:
+        'Open the Count palette to view and manage symbol (block) counts.',
       missingResources:
-        'Open the Missing / External Resources palette for fonts, images, and xrefs.',
+        'Open the Missing / External Resources palette for fonts, images, and linked drawings (xrefs).',
       drawingUnits:
         'Open Drawing Units to set coordinate formats, precision, and insertion scale.',
       attachDwg:
-        'Attach a DWG or DXF drawing as an external reference (XATTACH).',
-      attachImage:
-        'Attach a raster image as an external reference (IMAGEATTACH).',
+        'Attach a DWG or DXF drawing as a linked drawing (xref) (XATTACH).',
+      attachImage: 'Attach a raster image as a link (IMAGEATTACH).',
       insert:
-        'Open the Blocks palette to browse and insert block definitions (INSERT).',
+        'Open the Symbols (blocks) palette to browse and insert symbol definitions (INSERT).',
       editAttributes:
-        'Open the Enhanced Attribute Editor to edit block attribute values and display properties (ATTEDIT).',
+        'Edit symbol property (block attribute) values and display settings (ATTEDIT).',
       defineAttribute:
-        'Create an attribute definition for use in a block (ATTDEF).',
+        'Create a property (attribute definition) for use in a symbol (ATTDEF).',
       agent:
         'Open the CAD Agent palette tab to draw geometry using natural language.',
       propertyColor:
         'Set the color for newly created objects or selected entities.',
       propertyLineType:
-        'Set the line type for newly created objects or selected entities.',
+        'Set the line type (linetype) for newly created objects or selected entities.',
       propertyLineWeight:
         'Set the line weight for newly created objects or selected entities.',
       layerAction: {
@@ -325,7 +325,7 @@ export default {
         isolate:
           'Shows only the selected layer and hides the others so you can focus on related objects.',
         freeze:
-          'Freezes the selected layer so its objects are hidden and skipped during regeneration.',
+          'Freezes the selected layer so its objects are hidden and skipped when the display is refreshed (regen).',
         lock: 'Locks the selected layer so its objects stay visible but cannot be edited.',
         current:
           'Makes the selected layer current so new objects are created on that layer.',
@@ -333,7 +333,7 @@ export default {
           'Turns on every layer that is currently off. Layers that are frozen remain frozen.',
         unisolate:
           'Restores layers hidden or locked by Layer Isolate while keeping later layer changes.',
-        thaw: 'Thaws the selected layer so its objects are visible and included in regeneration again.',
+        thaw: 'Thaws the selected layer so its objects are visible and included when the display is refreshed (regen) again.',
         unlock:
           'Unlocks the selected layer so its objects can be selected and modified again.',
         restore:
@@ -400,7 +400,7 @@ export default {
       polygon: 'Polygon',
       point: 'Point',
       divide: 'Divide',
-      hatch: 'Hatch',
+      hatch: 'Pattern fill',
       text: 'Text',
       gradient: 'Gradient',
       move: 'Move',
@@ -411,15 +411,15 @@ export default {
       undo: 'Undo',
       redo: 'Redo',
       properties: 'Properties',
-      quickSelect: 'Quick\nSelect',
+      quickSelect: 'Select by\nCriteria',
       find: 'Find',
       countList: 'Count',
       drawingUnits: 'Drawing\nUnits',
       attachDwg: 'Attach\nDWG',
       attachImage: 'Attach\nImage',
       insert: 'Insert',
-      editAttributes: 'Edit\nAttributes',
-      defineAttribute: 'Define\nAttribute',
+      editAttributes: 'Edit\nProperties',
+      defineAttribute: 'Define\nProperty',
       agent: 'CAD\nAgent'
     }
   },
@@ -460,7 +460,7 @@ export default {
     },
     clearMeasurements: {
       text: 'Clear',
-      description: 'Removes all measurements from the current layout'
+      description: 'Removes all measurements from the current print page'
     },
     measurementImport: {
       text: 'Import',
@@ -568,7 +568,7 @@ export default {
     },
     clearMarkups: {
       text: 'Clear',
-      description: 'Clears all markups on the current layout'
+      description: 'Clears all markups on the current print page'
     },
     select: {
       text: 'Select',
@@ -592,7 +592,7 @@ export default {
     zoomSaved: {
       text: 'Saved',
       description:
-        'Restores AutoCAD saved view (VPORT / layout limits), or the open-time view'
+        'Restores AutoCAD saved view (VPORT / print page limits), or the open-time view'
     },
     zoomToExtent: {
       text: 'Extents',
@@ -666,8 +666,8 @@ export default {
     export: {
       tooltip: 'Export image as PNG'
     },
-    modelTab: 'Model',
-    moreLayouts: 'More layouts'
+    modelTab: 'Canvas',
+    moreLayouts: 'More print pages'
   },
   toolPalette: {
     entityProperties: {
@@ -730,7 +730,7 @@ export default {
         lock: 'Lock',
         plot: 'Plot',
         color: 'Color',
-        linetype: 'Linetype',
+        linetype: 'Line type',
         lineweight: 'Lineweight',
         transparency: 'Transparency',
         description: 'Description',
@@ -747,22 +747,22 @@ export default {
       input: 'Search text',
       find: 'Find',
       matchCase: 'Match case',
-      currentLayoutOnly: 'Current layout only',
-      hint: 'Press Enter to search text, multiline text, attributes and the text in blocks, dimensions, leaders and tables in the whole drawing (all layouts).',
+      currentLayoutOnly: 'Current print page only',
+      hint: 'Press Enter to search text, multiline text, symbol properties and the text in symbols, dimensions, leaders and tables in the whole drawing (all print pages).',
       hintLayout:
-        'Press Enter to search text, multiline text, attributes and the text in blocks, dimensions, leaders and tables in the current layout.',
+        'Press Enter to search text, multiline text, symbol properties and the text in symbols, dimensions, leaders and tables in the current print page.',
       noResults: 'No text found',
       count: '{count} found',
-      countLayouts: '{count} found in {layouts} layouts',
+      countLayouts: '{count} found in {layouts} print pages',
       countTruncated: 'First {count} results shown — refine the search',
       noDocument: 'Open a drawing to search',
-      layoutUnavailable: 'Could not open layout "{layout}"',
-      unnamedLayout: '(unnamed layout)',
+      layoutUnavailable: 'Could not open print page "{layout}"',
+      unnamedLayout: '(unnamed print page)',
       kind: {
         text: 'Text',
         mtext: 'MText',
-        attribute: 'Attribute',
-        block: 'Block text',
+        attribute: 'Symbol property',
+        block: 'Symbol text',
         dimension: 'Dimension',
         leader: 'Leader',
         table: 'Table'
@@ -771,13 +771,13 @@ export default {
     countList: {
       tab: 'Count',
       title: 'Count',
-      searchPlaceholder: 'Search block name',
+      searchPlaceholder: 'Search symbol name',
       countInArea: 'Count in Area',
       areaSet: 'Count area updated',
-      areaCleared: 'Counting entire model space',
-      blockName: 'Block',
+      areaCleared: 'Counting entire canvas',
+      blockName: 'Symbol',
       count: 'Count',
-      empty: 'No visible blocks found',
+      empty: 'No visible symbols found',
       prompt: {
         firstCorner: 'Specify first corner of count area or [Entire]: ',
         secondCorner: 'Specify opposite corner: '
@@ -828,7 +828,7 @@ export default {
       title: 'Missing / External Resources',
       fontTab: 'Font',
       imageTab: 'Image',
-      xrefTab: 'External References',
+      xrefTab: 'Linked Drawings',
       attach: 'Attach',
       attachDwg: 'Attach DWG/DXF...',
       attachImage: 'Attach Image...',
@@ -865,7 +865,7 @@ export default {
       fromUrl: 'URL…',
       unload: 'Unload',
       load: 'Load',
-      empty: 'No external references or images in this drawing',
+      empty: 'No linked drawings or images in this drawing',
       urlPrompt: 'Enter the URL of a drawing file (DWG, DXF, etc.)',
       urlRequired: 'Please enter a URL',
       loadFailed: 'Failed to load reference "{name}"'
@@ -914,7 +914,7 @@ export default {
         fonts: 'Fonts'
       },
       columns: {
-        layout: 'Layout',
+        layout: 'Print page',
         layer: 'Layer',
         geometry: 'Geometry',
         mapping: 'Mapping',
@@ -947,7 +947,7 @@ export default {
       midOpenPaints: 'Mid-open paints',
       yields: 'Yields',
       cache: 'INSERT rendering cache (top-level)',
-      slowBlocks: 'Slowest block template misses',
+      slowBlocks: 'Slowest symbol template misses',
       total: 'Total open',
       read: 'db.read',
       parse: 'PARSE',
@@ -964,26 +964,26 @@ export default {
         share: 'Share',
         metric: 'Metric',
         value: 'Value',
-        block: 'Block',
+        block: 'Symbol',
         build: 'Build',
         compact: 'Compact'
       }
     },
     blocks: {
-      tab: 'Blocks',
-      title: 'Blocks',
+      tab: 'Symbols',
+      title: 'Symbols',
       tabCurrentDrawing: 'Current Drawing',
       tabRecent: 'Recent',
       tabFavorites: 'Favorites',
       tabLibraries: 'Libraries',
-      sectionCurrentDrawing: 'Current Drawing Blocks',
-      sectionRecent: 'Recent Blocks',
-      sectionFavorites: 'Favorite Blocks',
-      sectionLibraries: 'Block Libraries',
+      sectionCurrentDrawing: 'Current Drawing Symbols',
+      sectionRecent: 'Recent Symbols',
+      sectionFavorites: 'Favorite Symbols',
+      sectionLibraries: 'Symbol Libraries',
       filterPlaceholder: 'Filter...',
-      empty: 'No blocks available',
-      emptyRecent: 'No recently inserted blocks',
-      emptyFavorites: 'No favorite blocks',
+      empty: 'No symbols available',
+      emptyRecent: 'No recently inserted symbols',
+      emptyFavorites: 'No favorite symbols',
       emptyLibraries: 'No libraries configured',
       toggleFavorite: 'Toggle favorite',
       options: 'Options',
@@ -1000,7 +1000,7 @@ export default {
     custom: 'Custom'
   },
   lineTypeSelect: {
-    placeholder: 'Linetype'
+    placeholder: 'Line type'
   },
   colorIndexPicker: {
     color: 'Color: ',
@@ -1011,11 +1011,11 @@ export default {
   entityInfo: {
     color: 'Color',
     layer: 'Layer',
-    lineType: 'Linetype'
+    lineType: 'Line type'
   },
   ribbonProperty: {
     color: 'Color',
-    lineType: 'Linetype',
+    lineType: 'Line type',
     lineWeight: 'Lineweight',
     layer: 'Layer'
   },
@@ -1028,7 +1028,7 @@ export default {
       visibility: 'Visibility',
       freeze: 'Freeze',
       lock: 'Lock',
-      lineType: 'Linetype',
+      lineType: 'Line type',
       color: 'Color',
       visible: 'Visible',
       hidden: 'Hidden',

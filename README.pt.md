@@ -26,8 +26,12 @@ acontecem no cliente, então os desenhos nunca saem do dispositivo do usuário.
     (Arial → Arimo, SimSun → Noto Serif SC, Malgun Gothic → Noto Sans KR, …).
   - Texto da interface: **Noto Sans JP** (auto-hospedada via
     `@fontsource-variable/noto-sans-jp`).
-- **Nomes de layout localizados** em novos desenhos, em vez dos nomes em chinês
+- **Nomes de páginas de impressão localizados** em novos desenhos, em vez dos nomes em chinês
   do modelo.
+- **Termos simples para quem não usa CAD** — a interface usa palavras do dia a dia: bloco → símbolo,
+  atributo de bloco → propriedade do símbolo, espaço do modelo → tela, layout → página de impressão,
+  hachura → preenchimento com padrão, referência externa → desenho vinculado, seleção rápida → selecionar por critérios etc.
+  As dicas de ferramenta mantêm o termo CAD entre parênteses (todos os idiomas).
 - **Importação de JWW (Jw_cad)** — o app de exemplo abre arquivos `.jww` com
   `@mlightcad/cad-jww-converter` (MIT; analisador [ezjww](https://github.com/monozukuri-ai/ezjww),
   Rust → WebAssembly, em um Web Worker). As coordenadas passam de milímetros de papel para

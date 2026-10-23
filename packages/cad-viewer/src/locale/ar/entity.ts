@@ -14,9 +14,9 @@ export default {
     Arc: 'قوس',
     ArcDimension: 'بُعد طول القوس',
 
-    AttDef: 'تعريف سمة',
+    AttDef: 'تعريف خاصية رمز',
 
-    BlockReference: 'مرجع كتلة',
+    BlockReference: 'رمز',
     Circle: 'دائرة',
 
     Dimension: 'بُعد',
@@ -24,7 +24,7 @@ export default {
 
     Ellipse: 'قطع ناقص',
     Face: 'وجه',
-    Hatch: 'تهشير',
+    Hatch: 'تعبئة بنمط',
     Leader: 'خط توجيه',
     Line: 'خط',
 
@@ -81,8 +81,8 @@ export default {
     Link: 'رابط',
     Embedded: 'مضمّن',
     Static: 'ثابت',
-    ModelSpace: 'مساحة النموذج',
-    PaperSpace: 'مساحة الورق'
+    ModelSpace: 'لوحة الرسم',
+    PaperSpace: 'صفحة الطباعة'
   },
 
   property: {
@@ -91,7 +91,7 @@ export default {
     general: 'عام',
     geometry: 'الهندسة',
     dimension: 'الأبعاد',
-    attribute: 'السمة',
+    attribute: 'خاصية الرمز',
     pattern: 'النمط',
     shape: 'الشكل',
     table: 'الجدول',
@@ -152,7 +152,7 @@ export default {
     majorAxisRadius: 'نصف المحور الأكبر',
     minorAxisRadius: 'نصف المحور الأصغر',
 
-    blockName: 'اسم الكتلة',
+    blockName: 'اسم الرمز',
 
     positionX: 'الموضع X',
     positionY: 'الموضع Y',
@@ -212,11 +212,11 @@ export default {
     outputQuality: 'جودة الإخراج',
     autoOutputQuality: 'جودة الإخراج التلقائية',
 
-    dimBlockId: 'معرّف كتلة البُعد',
+    dimBlockId: 'معرّف رمز البُعد',
 
-    dimBlockPositionX: 'موضع كتلة البُعد X',
-    dimBlockPositionY: 'موضع كتلة البُعد Y',
-    dimBlockPositionZ: 'موضع كتلة البُعد Z',
+    dimBlockPositionX: 'موضع رمز البُعد X',
+    dimBlockPositionY: 'موضع رمز البُعد Y',
+    dimBlockPositionZ: 'موضع رمز البُعد Z',
 
     textPositionX: 'موضع النص X',
     textPositionY: 'موضع النص Y',

@@ -4,7 +4,7 @@
 export const commandJa = {
   ACAD: {
     layer: {
-      description: '画層管理のドックパネルを開閉します'
+      description: 'レイヤー管理のドックパネルを開閉します'
     },
     markuppanel: {
       description: 'レビューパレットのドックパネルを開きます'

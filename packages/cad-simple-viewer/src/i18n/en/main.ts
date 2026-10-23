@@ -1,6 +1,6 @@
 export default {
   newDrawing: {
-    layoutPrefix: 'Layout'
+    layoutPrefix: 'Page'
   },
   document: {
     untitled: 'Untitled'
@@ -115,9 +115,9 @@ export default {
     dimstyle: 'Parsing dimension styles ...',
     layer: 'Parsing layers ...',
     vport: 'Parsing viewports ...',
-    blockrecord: 'Parsing block record ...',
+    blockrecord: 'Parsing symbol definitions ...',
     header: 'Parsing header ...',
-    block: 'Parsing blocks ...',
+    block: 'Parsing symbols ...',
     entity: 'Parsing entities ...',
     object: 'Parsing named dictionaries ...',
     rendering: 'Rendering drawing ...',

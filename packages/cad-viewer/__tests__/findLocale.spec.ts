@@ -63,7 +63,7 @@ describe('Find palette locale messages (cad-viewer)', () => {
       messages: { en: { main: enMain }, xx: { main: { toolPalette: {} } } }
     }).global
     expect(i18n.t('main.toolPalette.find.kind.table')).toBe('Table')
-    expect(i18n.t('main.toolPalette.find.kind.block')).toBe('Block text')
+    expect(i18n.t('main.toolPalette.find.kind.block')).toBe('Symbol text')
   })
 
   it.each(Object.keys(mains) as Array<keyof typeof mains>)(
@@ -83,17 +83,17 @@ describe('Find palette locale messages (cad-viewer)', () => {
   )
 
   it.each(['hint', 'hintLayout'] as Array<keyof Find>)(
-    'the %s message names blocks, dimensions, leaders and tables',
+    'the %s message names symbols, dimensions, leaders and tables',
     key => {
       expect(enMain.toolPalette.find[key]).toMatch(
-        /blocks, dimensions, leaders and tables/
+        /symbols, dimensions, leaders and tables/
       )
     }
   )
 
   it('the FIND command description is no longer attribute-only', () => {
     expect(enCommand.ACAD.find.description).toMatch(
-      /blocks, dimensions, leaders and tables/
+      /symbols, dimensions, leaders and tables/
     )
   })
 })
@@ -124,8 +124,8 @@ describe('Arabic Find pluralization', () => {
     expect(count(103)).toBe('تم العثور على 103 نتائج')
     expect(truncated(1)).toBe('تم عرض أول نتيجة — قم بتضييق البحث')
     expect(truncated(500)).toBe('تم عرض أول 500 نتيجة — قم بتضييق البحث')
-    expect(layouts(2)).toBe('تم العثور على نتيجتين (عدد التخطيطات: 3)')
-    expect(layouts(7)).toBe('تم العثور على 7 نتائج (عدد التخطيطات: 3)')
+    expect(layouts(2)).toBe('تم العثور على نتيجتين (عدد صفحات الطباعة: 3)')
+    expect(layouts(7)).toBe('تم العثور على 7 نتائج (عدد صفحات الطباعة: 3)')
   })
 
   it('does not change single-form messages of other locales', () => {

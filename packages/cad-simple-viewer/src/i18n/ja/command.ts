@@ -2,10 +2,10 @@ export default {
   ACAD: {
     '-hatch': {
       description:
-        'リボン UI を使わずにコマンドラインのオプションでハッチングを作成します'
+        'リボン UI を使わずにコマンドラインのオプションで塗りつぶしを作成します'
     },
     '-layer': {
-      description: 'コマンドラインのオプションで画層を管理します'
+      description: 'コマンドラインのオプションでレイヤーを管理します'
     },
     about: {
       description: 'mlightcad の情報を表示します'
@@ -45,10 +45,10 @@ export default {
       description: '新しく作成するオブジェクトの既定の色を設定します'
     },
     celtscale: {
-      description: '新しく作成するオブジェクトの線種尺度を設定します'
+      description: '新しく作成するオブジェクトの線の種類の尺度を設定します'
     },
     celtype: {
-      description: '新しく作成するオブジェクトの線種を設定します'
+      description: '新しく作成するオブジェクトの線の種類を設定します'
     },
     celweight: {
       description: '新しく作成するオブジェクトの既定の線の太さを設定します'
@@ -64,7 +64,8 @@ export default {
       description: '中心と半径を指定して円を作成します'
     },
     clayer: {
-      description: '新しいオブジェクトと編集操作に使う現在の画層を設定します'
+      description:
+        '新しいオブジェクトと編集操作に使う現在のレイヤーを設定します'
     },
     cmleaderstyle: {
       description: '現在のマルチ引出線スタイルの名前を設定します'
@@ -121,10 +122,10 @@ export default {
       prompt: 'オブジェクトを選択'
     },
     extmax: {
-      description: 'モデル空間の図面範囲の右上隅を保持します (読み取り専用)'
+      description: 'キャンバスの図面範囲の右上隅を保持します (読み取り専用)'
     },
     extmin: {
-      description: 'モデル空間の図面範囲の左下隅を保持します (読み取り専用)'
+      description: 'キャンバスの図面範囲の左下隅を保持します (読み取り専用)'
     },
     entout: {
       description: '選択したオブジェクトをまとめたプレビュー画像を書き出します',
@@ -135,14 +136,14 @@ export default {
       prompt: 'オブジェクトを選択'
     },
     imageattach: {
-      description: 'ラスター画像を外部参照として現在の図面にアタッチします'
+      description: 'ラスター画像をリンクとして現在の図面にアタッチします'
     },
     '-insert': {
-      description: 'ブロック定義を現在の図面に挿入します (コマンドライン)'
+      description: 'シンボル定義を現在の図面に挿入します (コマンドライン)'
     },
     xattach: {
       description:
-        'DWG または DXF 図面を外部参照として現在の図面にアタッチします'
+        'DWG または DXF 図面をリンク図面として現在の図面にアタッチします'
     },
     gripcolor: {
       description:
@@ -163,96 +164,95 @@ export default {
     },
     hatch: {
       description:
-        '閉じた領域または選択したオブジェクトをハッチングパターンで塗り潰します'
+        '閉じた領域または選択したオブジェクトをパターンで塗りつぶします'
     },
     ipdf: {
       description: 'PDF ファイルからベクトル図形を読み込みます'
     },
     hpang: {
       description:
-        '新しく作成するハッチングパターンの既定の角度 (ラジアン) を設定します'
+        '新しく作成する塗りつぶしパターンの既定の角度 (ラジアン) を設定します'
     },
     hpassoc: {
-      description: '新しく作成するハッチングを自動調整にするかを制御します'
+      description: '新しく作成する塗りつぶしを自動調整にするかを制御します'
     },
     hpbackgroundcolor: {
-      description: '新しく作成するハッチングパターンの既定の背景色を設定します'
+      description: '新しく作成する塗りつぶしパターンの既定の背景色を設定します'
     },
     hpcolor: {
-      description: '新しく作成するハッチングの既定の色を設定します'
+      description: '新しく作成する塗りつぶしの既定の色を設定します'
     },
     hpdouble: {
-      description: 'ユーザー定義のハッチングパターンを二重にするかを制御します'
+      description: 'ユーザー定義の塗りつぶしパターンを二重にするかを制御します'
     },
     hpislanddetection: {
-      description: '新しく作成するハッチング境界内の島の扱いを制御します'
+      description: '新しく作成する塗りつぶし境界内の島の扱いを制御します'
     },
     hplayer: {
-      description: '新しく作成するハッチングと塗り潰しの既定の画層を設定します'
+      description: '新しく作成する塗りつぶしの既定のレイヤーを設定します'
     },
     hpname: {
       description:
-        'このセッションで新しく作成するハッチングの既定のパターン名を設定します'
+        'このセッションで新しく作成する塗りつぶしの既定のパターン名を設定します'
     },
     hpscale: {
-      description: '新しく作成するハッチングパターンの既定の尺度を設定します'
+      description: '新しく作成する塗りつぶしパターンの既定の尺度を設定します'
     },
     hpseparate: {
       description:
-        '複数の境界に対してハッチングを 1 つにするか個別に作成するかを制御します'
+        '複数の境界に対して塗りつぶしを 1 つにするか個別に作成するかを制御します'
     },
     hptransparency: {
-      description:
-        '新しく作成するハッチングと塗り潰しの既定の透過性を設定します'
+      description: '新しく作成する塗りつぶしの既定の透過性を設定します'
     },
     insunits: {
       description:
-        '挿入するブロック、イメージ、外部参照を自動的に尺度調整するための図面単位を指定します'
+        '挿入するシンボル、イメージ、リンク図面を自動的に尺度調整するための図面単位を指定します'
     },
     jpgout: {
       description: 'JPEG に書き出します'
     },
     laycur: {
-      description: '選択したオブジェクトの画層を現在の画層に変更します',
-      prompt: '現在の画層に変更するオブジェクトを選択'
+      description: '選択したオブジェクトのレイヤーを現在のレイヤーに変更します',
+      prompt: '現在のレイヤーに変更するオブジェクトを選択'
     },
     laydel: {
-      description: '画層とその画層上のすべてのオブジェクトを削除します'
+      description: 'レイヤーとそのレイヤー上のすべてのオブジェクトを削除します'
     },
     layerclose: {
-      description: '画層プロパティ管理を閉じます'
+      description: 'レイヤープロパティ管理を閉じます'
     },
     layerp: {
-      description: '画層設定に対する直前の変更を元に戻します'
+      description: 'レイヤー設定に対する直前の変更を元に戻します'
     },
     layfrz: {
-      description: '選択したオブジェクトの画層をフリーズします',
-      prompt: 'フリーズする画層上のオブジェクトを選択'
+      description: '選択したオブジェクトのレイヤーをフリーズします',
+      prompt: 'フリーズするレイヤー上のオブジェクトを選択'
     },
     layiso: {
-      description: '選択したオブジェクトの画層を選択表示します',
-      prompt: '選択表示する画層上のオブジェクトを選択'
+      description: '選択したオブジェクトのレイヤーを選択表示します',
+      prompt: '選択表示するレイヤー上のオブジェクトを選択'
     },
     laylck: {
-      description: '選択したオブジェクトの画層をロックします',
-      prompt: 'ロックする画層上のオブジェクトを選択'
+      description: '選択したオブジェクトのレイヤーをロックします',
+      prompt: 'ロックするレイヤー上のオブジェクトを選択'
     },
     layoff: {
-      description: '選択したオブジェクトの画層を非表示にします',
-      prompt: '非表示にする画層上のオブジェクトを選択'
+      description: '選択したオブジェクトのレイヤーを非表示にします',
+      prompt: '非表示にするレイヤー上のオブジェクトを選択'
     },
     layon: {
-      description: '図面内のすべての画層を表示します'
+      description: '図面内のすべてのレイヤーを表示します'
     },
     laythw: {
-      description: '図面内のフリーズされたすべての画層をフリーズ解除します'
+      description: '図面内のフリーズされたすべてのレイヤーをフリーズ解除します'
     },
     layulk: {
-      description: '選択したオブジェクトの画層のロックを解除します',
-      prompt: 'ロックを解除する画層上のオブジェクトを選択'
+      description: '選択したオブジェクトのレイヤーのロックを解除します',
+      prompt: 'ロックを解除するレイヤー上のオブジェクトを選択'
     },
     layuniso: {
-      description: 'LAYISO で非表示またはロックされた画層を元に戻します'
+      description: 'LAYISO で非表示またはロックされたレイヤーを元に戻します'
     },
     line: {
       description: '点と点の間に線分を作成します'
@@ -261,7 +261,7 @@ export default {
       description: 'デバッグ情報をコンソールに出力します'
     },
     ltscale: {
-      description: '図面の線種尺度を設定します'
+      description: '図面の線の種類の尺度を設定します'
     },
     lunits: {
       description: '座標と距離の表示形式を設定します'
@@ -273,10 +273,10 @@ export default {
       description: '図面に線の太さを表示するかを制御します'
     },
     clearmeasurements: {
-      description: '現在のレイアウトのすべての計測を削除します'
+      description: '現在の印刷ページのすべての計測を削除します'
     },
     measurementvis: {
-      description: '現在のレイアウトの計測を表示/非表示にします'
+      description: '現在の印刷ページの計測を表示/非表示にします'
     },
     measurementpanel: {
       description: '計測パレットを開きます'
@@ -314,7 +314,7 @@ export default {
       description: '計測の表示に使う色を設定します'
     },
     modelbkcolor: {
-      description: 'モデル空間の作図領域の背景色を設定します'
+      description: 'キャンバスの作図領域の背景色を設定します'
     },
     mline: {
       description: '複数の平行線を 1 つのマルチラインとして作成します'
@@ -350,7 +350,7 @@ export default {
       description: '表示方向や倍率を変えずに表示位置を移動します'
     },
     paperbkcolor: {
-      description: 'ペーパー空間 (レイアウト) の作図領域の背景色を設定します'
+      description: '印刷ページの作図領域の背景色を設定します'
     },
     pdmode: {
       description: '点オブジェクトの表示方法を設定します'
@@ -434,7 +434,7 @@ export default {
       description: 'マークアップを表示/非表示にします'
     },
     clearmarkups: {
-      description: '現在のレイアウトのすべてのマークアップを削除します'
+      description: '現在の印刷ページのすべてのマークアップを削除します'
     },
     markupexport: {
       description: 'マークアップをサイドカー JSON ファイルに書き出します'

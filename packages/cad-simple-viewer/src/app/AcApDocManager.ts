@@ -1738,7 +1738,7 @@ export class AcApDocManager {
 
   /**
    * Downloads the DXF drawing template and renames its paper-space layouts
-   * (`Layout1`, `Layout2`, …) to the active UI locale (e.g. `レイアウト1`).
+   * (`Layout1`, `Layout2`, …) to the active UI locale (e.g. `印刷ページ1`).
    *
    * @returns The localized template bytes, or `undefined` when the template
    *   cannot be fetched (callers then fall back to {@link AcApDocument.openUri}).

@@ -21,7 +21,9 @@
   - 其他文字按需从 **Google Fonts** 加载（Arial → Arimo，SimSun → Noto Serif SC，
     Malgun Gothic → Noto Sans KR 等）。
   - 界面文字：**Noto Sans JP**（通过 `@fontsource-variable/noto-sans-jp` 自托管）。
-- **新建图纸的布局名称本地化**：显示为当前界面语言的名称，而不是模板中固定的中文名称。
+- **新建图纸的打印页名称本地化**：显示为当前界面语言的名称，而不是模板中固定的中文名称。
+- **面向非 CAD 用户的通俗术语**：界面使用日常用语，例如 块 → 符号、块属性 → 符号属性、模型空间 → 画布、
+  布局 → 打印页、外部参照 → 链接图纸、快速选择 → 按条件选择 等。工具提示会在括号中保留 CAD 术语（所有语言）。
 - **导入 JWW（Jw_cad）** — 示例应用可打开 `.jww` 文件（`@mlightcad/cad-jww-converter`，MIT；
   解析器为 [ezjww](https://github.com/monozukuri-ai/ezjww)，Rust → WebAssembly，在 Web Worker 中运行）。
   坐标按图层组比例从图纸毫米换算为实际毫米，图纸幅面作为图形界限。

@@ -1,6 +1,6 @@
 export default {
   newDrawing: {
-    layoutPrefix: 'Rozvržení'
+    layoutPrefix: 'Stránka'
   },
   document: {
     untitled: 'Bez názvu'
@@ -114,9 +114,9 @@ export default {
     dimstyle: 'Načítám kótovací styly…',
     layer: 'Načítám hladiny…',
     vport: 'Načítám výřezy…',
-    blockrecord: 'Načítám záznamy bloků…',
+    blockrecord: 'Načítám definice symbolů…',
     header: 'Načítám hlavičku…',
-    block: 'Načítám bloky…',
+    block: 'Načítám symboly…',
     entity: 'Načítám objekty…',
     object: 'Načítám pojmenované slovníky…',
     rendering: 'Vykreslování výkresu ...',

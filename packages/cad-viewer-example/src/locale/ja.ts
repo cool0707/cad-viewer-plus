@@ -57,8 +57,8 @@ export default {
       off: 'オフ',
       progressiveOffHint: 'オブジェクトと文字の変換が完了するまで待ちます',
 
-      nonPlottable: '印刷しない画層',
-      nonPlottableLayers: '印刷しない画層',
+      nonPlottable: '印刷しないレイヤー',
+      nonPlottableLayers: '印刷しないレイヤー',
       hide: '非表示',
       hideHint: 'Web ビューアの既定',
       show: '表示',

@@ -356,11 +356,11 @@ export default {
     invalidSelection: '所选对象无效。',
     settingsPrompt: '输入要修改的 LAYFRZ 设置',
     viewportPrompt: '指定视口冻结行为',
-    blockSelectionPrompt: '指定嵌套块选择行为',
+    blockSelectionPrompt: '指定嵌套符号选择行为',
     vpfreezeFallback:
       '当前 viewer 不支持按视口冻结图层，已退化为普通 Freeze 行为。',
     nestedSelectionLimited:
-      '嵌套块选择设置会被保存，但当前拾取仍只能解析顶层对象所在图层。',
+      '嵌套符号选择设置会被保存，但当前拾取仍只能解析顶层对象所在图层。',
     layerNotFound: '未找到图层',
     cannotFreezeCurrent: '不能冻结当前图层。',
     alreadyFrozen: '图层已处于冻结状态',
@@ -384,8 +384,8 @@ export default {
         global: 'Viewports'
       },
       blockSelection: {
-        display: '块选择(B)',
-        local: '块选择',
+        display: '符号选择(B)',
+        local: '符号选择',
         global: 'BlockSelection'
       },
       freeze: {
@@ -399,8 +399,8 @@ export default {
         global: 'Vpfreeze'
       },
       block: {
-        display: '块(B)',
-        local: '块',
+        display: '符号(B)',
+        local: '符号',
         global: 'Block'
       },
       entity: {
@@ -478,11 +478,11 @@ export default {
     invalidSelection: '所选对象无效。',
     settingsPrompt: '输入要修改的 LAYOFF 设置',
     viewportPrompt: '指定视口行为',
-    blockSelectionPrompt: '指定嵌套块选择行为',
+    blockSelectionPrompt: '指定嵌套符号选择行为',
     vpfreezeFallback:
       '当前 viewer 不支持按视口关闭图层，已退化为普通 Off 行为。',
     nestedSelectionLimited:
-      '嵌套块选择设置会被保存，但当前拾取仍只能解析顶层对象所在图层。',
+      '嵌套符号选择设置会被保存，但当前拾取仍只能解析顶层对象所在图层。',
     layerNotFound: '未找到图层',
     cannotTurnOffCurrent: '不能关闭当前图层。',
     alreadyOff: '图层已处于关闭状态',
@@ -506,8 +506,8 @@ export default {
         global: 'Viewports'
       },
       blockSelection: {
-        display: '块选择(B)',
-        local: '块选择',
+        display: '符号选择(B)',
+        local: '符号选择',
         global: 'BlockSelection'
       },
       off: {
@@ -521,8 +521,8 @@ export default {
         global: 'Vpfreeze'
       },
       block: {
-        display: '块(B)',
-        local: '块',
+        display: '符号(B)',
+        local: '符号',
         global: 'Block'
       },
       entity: {
@@ -784,14 +784,14 @@ export default {
     decodeFailed: '无法读取所选图像文件。'
   },
   insert: {
-    blockName: '输入块名：',
+    blockName: '输入符号名：',
     insertionPoint: '指定插入点：',
     scale: '指定比例因子：',
     rotation: '指定旋转角度：',
     invalidScale: '比例因子必须大于 0。',
-    invalidBlockName: '无效的块名。',
-    blockNotFound: '未找到块',
-    xrefNotAllowed: '不能使用 -INSERT 插入外部参照。'
+    invalidBlockName: '无效的符号名。',
+    blockNotFound: '未找到符号',
+    xrefNotAllowed: '不能使用 -INSERT 插入链接图纸。'
   },
   xattach: {
     insertionPoint: '指定插入点：',
@@ -799,7 +799,7 @@ export default {
     rotation: '指定旋转角度：',
     invalidScale: '比例因子必须大于 0。',
     unsupportedFile: '请选择 DWG 或 DXF 文件。',
-    loading: '正在加载外部参照...',
+    loading: '正在加载链接图纸...',
     loadFailed: '无法读取所选图形文件。'
   },
   point: {
@@ -1226,7 +1226,7 @@ export default {
   chtml: {
     exportFormat: '导出格式',
     exportInvisibleLayers: '是否导出不可见图层',
-    exportLayouts: '是否导出布局',
+    exportLayouts: '是否导出打印页',
     initialView: '打开 HTML 时的初始视图',
     viewerMode: '离线查看器模式',
     chunkSizeMiB: '每个分片大小（MiB，多文件包）',
@@ -1275,8 +1275,8 @@ export default {
     }
   },
   cpdf: {
-    modelSpaceFit: '模型空间范围',
-    exportLayouts: '是否导出布局',
+    modelSpaceFit: '画布范围',
+    exportLayouts: '是否导出打印页',
     textMode: '文字渲染方式',
     keywords: {
       extents: {

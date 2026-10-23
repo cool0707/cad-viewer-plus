@@ -17,7 +17,7 @@ export const tr: Record<string, string> = {
   'toolbar.layer': 'Katman Yöneticisi',
   'toolbar.find': 'Bul',
   'toolbar.layerShort': 'Katman',
-  'toolbar.layout': 'Düzen',
+  'toolbar.layout': 'Baskı sayfası',
   'toolbar.settings': 'Ayarlar',
   'toolbar.simulatedMouseOn': 'Fare',
   'toolbar.simulatedMouseOff': 'Büyüteç',
@@ -142,24 +142,24 @@ export const tr: Record<string, string> = {
   'findPalette.input': 'Aranacak metin',
   'findPalette.find': 'Bul',
   'findPalette.matchCase': 'Büyük/küçük harf duyarlı',
-  'findPalette.currentLayoutOnly': 'Yalnızca geçerli yerleşim',
+  'findPalette.currentLayoutOnly': 'Yalnızca geçerli baskı sayfası',
   'findPalette.hint':
-    'Tüm çizimde (tüm yerleşimler) metin, çok satırlı metin, öznitelikler ile blok, ölçü, kılavuz ve tablolardaki metni aramak için Enter tuşuna basın.',
+    'Tüm çizimde (tüm baskı sayfaları) metin, çok satırlı metin, sembol özellikleri ile sembol, ölçü, kılavuz ve tablolardaki metni aramak için Enter tuşuna basın.',
   'findPalette.hintLayout':
-    'Geçerli yerleşimde metin, çok satırlı metin, öznitelikler ile blok, ölçü, kılavuz ve tablolardaki metni aramak için Enter tuşuna basın.',
+    'Geçerli baskı sayfasında metin, çok satırlı metin, sembol özellikleri ile sembol, ölçü, kılavuz ve tablolardaki metni aramak için Enter tuşuna basın.',
   'findPalette.noResults': 'Metin bulunamadı',
   'findPalette.count': '{count} sonuç',
-  'findPalette.countLayouts': '{layouts} yerleşimde {count} sonuç',
+  'findPalette.countLayouts': '{layouts} baskı sayfasında {count} sonuç',
   'findPalette.countTruncated':
     'İlk {count} sonuç gösteriliyor — aramayı daraltın',
   'findPalette.noDocument': 'Aramak için bir çizim açın',
-  'findPalette.layoutUnavailable': '"{layout}" yerleşimi açılamadı',
+  'findPalette.layoutUnavailable': '"{layout}" baskı sayfası açılamadı',
   'findPalette.kind.text': 'Metin',
   'findPalette.kind.mtext': 'Çok satırlı metin',
-  'findPalette.kind.attribute': 'Öznitelik',
-  'findPalette.kind.block': 'Blok metni',
+  'findPalette.kind.attribute': 'Sembol özelliği',
+  'findPalette.kind.block': 'Sembol metni',
   'findPalette.kind.dimension': 'Ölçü',
   'findPalette.kind.leader': 'Kılavuz',
   'findPalette.kind.table': 'Tablo',
-  'findPalette.unnamedLayout': '(adsız yerleşim)'
+  'findPalette.unnamedLayout': '(adsız baskı sayfası)'
 }

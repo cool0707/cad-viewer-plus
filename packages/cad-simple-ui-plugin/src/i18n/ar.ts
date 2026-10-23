@@ -14,7 +14,7 @@ export const ar: Record<string, string> = {
   'toolbar.layer': 'مدير الطبقات',
   'toolbar.find': 'بحث',
   'toolbar.layerShort': 'الطبقات',
-  'toolbar.layout': 'المخطط',
+  'toolbar.layout': 'صفحة الطباعة',
   'toolbar.settings': 'الإعدادات',
   'toolbar.simulatedMouseOn': 'ماوس',
   'toolbar.simulatedMouseOff': 'عدسة',
@@ -170,24 +170,24 @@ export const ar: Record<string, string> = {
   'findPalette.input': 'نص البحث',
   'findPalette.find': 'بحث',
   'findPalette.matchCase': 'مطابقة حالة الأحرف',
-  'findPalette.currentLayoutOnly': 'التخطيط الحالي فقط',
+  'findPalette.currentLayoutOnly': 'صفحة الطباعة الحالية فقط',
   'findPalette.hint':
-    'اضغط Enter للبحث عن النصوص والنصوص متعددة الأسطر والسمات والنص داخل الكتل والأبعاد وخطوط الإشارة والجداول في الرسم بالكامل (كل التخطيطات).',
+    'اضغط Enter للبحث عن النصوص والنصوص متعددة الأسطر وخصائص الرموز والنص داخل الرموز والأبعاد وخطوط الإشارة والجداول في الرسم بالكامل (كل صفحات الطباعة).',
   'findPalette.hintLayout':
-    'اضغط Enter للبحث عن النصوص والنصوص متعددة الأسطر والسمات والنص داخل الكتل والأبعاد وخطوط الإشارة والجداول في التخطيط الحالي.',
+    'اضغط Enter للبحث عن النصوص والنصوص متعددة الأسطر وخصائص الرموز والنص داخل الرموز والأبعاد وخطوط الإشارة والجداول في صفحة الطباعة الحالية.',
   'findPalette.noResults': 'لم يتم العثور على نص',
   'findPalette.count': 'عدد النتائج: {count}',
-  'findPalette.countLayouts': 'عدد النتائج: {count} (عدد التخطيطات: {layouts})',
+  'findPalette.countLayouts': 'عدد النتائج: {count} (عدد صفحات الطباعة: {layouts})',
   'findPalette.countTruncated':
     'تم عرض النتائج الأولى فقط (الحد الأقصى: {count}) — قم بتضييق البحث',
   'findPalette.noDocument': 'افتح رسمًا للبحث',
-  'findPalette.layoutUnavailable': 'تعذر فتح التخطيط "{layout}"',
+  'findPalette.layoutUnavailable': 'تعذر فتح صفحة الطباعة "{layout}"',
   'findPalette.kind.text': 'نص',
   'findPalette.kind.mtext': 'نص متعدد الأسطر',
-  'findPalette.kind.attribute': 'سمة',
-  'findPalette.kind.block': 'نص كتلة',
+  'findPalette.kind.attribute': 'خاصية الرمز',
+  'findPalette.kind.block': 'نص رمز',
   'findPalette.kind.dimension': 'بُعد',
   'findPalette.kind.leader': 'خط إشارة',
   'findPalette.kind.table': 'جدول',
-  'findPalette.unnamedLayout': '(تخطيط بلا اسم)'
+  'findPalette.unnamedLayout': '(صفحة طباعة بلا اسم)'
 }

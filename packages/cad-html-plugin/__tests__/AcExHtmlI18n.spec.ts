@@ -112,7 +112,7 @@ describe('AcExHtmlI18n', () => {
     expect(i18n.localeBadge).toBe('EN')
 
     expect(i18n.toggleLocale()).toBe('ja')
-    expect(i18n.t('layers.title')).toBe('画層')
+    expect(i18n.t('layers.title')).toBe('レイヤー')
     expect(i18n.localeBadge).toBe('日')
 
     expect(i18n.toggleLocale()).toBe('zh')

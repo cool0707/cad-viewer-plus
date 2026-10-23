@@ -1,6 +1,6 @@
 export default {
   newDrawing: {
-    layoutPrefix: '布局'
+    layoutPrefix: '打印页'
   },
   document: {
     untitled: '未命名'
@@ -112,7 +112,7 @@ export default {
     vport: '正在解析视口...',
     blockrecord: '正在解析BTRs...',
     header: '正在解析文件头...',
-    block: '正在解析块..',
+    block: '正在解析符号..',
     entity: '正在解析图元...',
     object: '正在解析NODs...',
     rendering: '正在渲染图纸 ...',

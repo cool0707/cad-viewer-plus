@@ -9,7 +9,7 @@ export default {
     '-hatch': {
       ...enCommand.ACAD['-hatch'],
       description:
-        'إنشاء تعبئة تهشير باستخدام خيارات سطر الأوامر دون واجهة الشريط'
+        'إنشاء تعبئة بنمط باستخدام خيارات سطر الأوامر دون واجهة الشريط'
     },
 
     '-layer': {
@@ -235,13 +235,13 @@ export default {
     extmax: {
       ...enCommand.ACAD.extmax,
       description:
-        'عرض الركن العلوي الأيمن لحدود الرسم في مساحة النموذج (للقراءة فقط)'
+        'عرض الركن العلوي الأيمن لحدود الرسم في لوحة الرسم (للقراءة فقط)'
     },
 
     extmin: {
       ...enCommand.ACAD.extmin,
       description:
-        'عرض الركن السفلي الأيسر لحدود الرسم في مساحة النموذج (للقراءة فقط)'
+        'عرض الركن السفلي الأيسر لحدود الرسم في لوحة الرسم (للقراءة فقط)'
     },
 
     entout: {
@@ -263,19 +263,19 @@ export default {
     imageattach: {
       ...enCommand.ACAD.imageattach,
       description:
-        'إرفاق صورة نقطية كمرجع خارجي إلى الرسم الحالي'
+        'إرفاق صورة نقطية كرابط إلى الرسم الحالي'
     },
 
     '-insert': {
       ...enCommand.ACAD['-insert'],
       description:
-        'إدراج تعريف كتلة داخل الرسم الحالي باستخدام سطر الأوامر'
+        'إدراج تعريف رمز داخل الرسم الحالي باستخدام سطر الأوامر'
     },
 
     xattach: {
       ...enCommand.ACAD.xattach,
       description:
-        'إرفاق رسم DWG أو DXF كمرجع خارجي إلى الرسم الحالي'
+        'إرفاق رسم DWG أو DXF كرسم مرتبط إلى الرسم الحالي'
     },
 
     gripcolor: {
@@ -311,7 +311,7 @@ export default {
     hatch: {
       ...enCommand.ACAD.hatch,
       description:
-        'ملء منطقة مغلقة أو عناصر محددة بنمط تهشير'
+        'ملء منطقة مغلقة أو عناصر محددة بنمط'
     },
 
     ipdf: {
@@ -323,73 +323,73 @@ export default {
     hpang: {
       ...enCommand.ACAD.hpang,
       description:
-        'تحديد الزاوية الافتراضية بالراديان لأنماط التهشير الجديدة'
+        'تحديد الزاوية الافتراضية بالراديان لأنماط التعبئة الجديدة'
     },
 
     hpassoc: {
       ...enCommand.ACAD.hpassoc,
       description:
-        'التحكم في كون التهشير الجديد ترابطيًا'
+        'التحكم في كون التعبئة بالنمط الجديدة ترابطية'
     },
 
     hpbackgroundcolor: {
       ...enCommand.ACAD.hpbackgroundcolor,
       description:
-        'تحديد لون الخلفية الافتراضي لأنماط التهشير الجديدة'
+        'تحديد لون الخلفية الافتراضي لأنماط التعبئة الجديدة'
     },
 
     hpcolor: {
       ...enCommand.ACAD.hpcolor,
       description:
-        'تحديد اللون الافتراضي للتهشير الجديد'
+        'تحديد اللون الافتراضي للتعبئة بالنمط الجديدة'
     },
 
     hpdouble: {
       ...enCommand.ACAD.hpdouble,
       description:
-        'التحكم في مضاعفة أنماط التهشير المعرفة بواسطة المستخدم'
+        'التحكم في مضاعفة أنماط التعبئة المعرفة بواسطة المستخدم'
     },
 
     hpislanddetection: {
       ...enCommand.ACAD.hpislanddetection,
       description:
-        'التحكم في كيفية التعامل مع الجزر داخل حدود التهشير الجديدة'
+        'التحكم في كيفية التعامل مع الجزر داخل حدود التعبئة بالنمط الجديدة'
     },
 
     hplayer: {
       ...enCommand.ACAD.hplayer,
       description:
-        'تحديد الطبقة الافتراضية للتهشير والتعبئة الجديدة'
+        'تحديد الطبقة الافتراضية للتعبئة الجديدة'
     },
 
     hpname: {
       ...enCommand.ACAD.hpname,
       description:
-        'تحديد اسم نمط التهشير الافتراضي للعناصر الجديدة في الجلسة الحالية'
+        'تحديد اسم نمط التعبئة الافتراضي للعناصر الجديدة في الجلسة الحالية'
     },
 
     hpscale: {
       ...enCommand.ACAD.hpscale,
       description:
-        'تحديد معامل المقياس الافتراضي لأنماط التهشير الجديدة'
+        'تحديد معامل المقياس الافتراضي لأنماط التعبئة الجديدة'
     },
 
     hpseparate: {
       ...enCommand.ACAD.hpseparate,
       description:
-        'التحكم في إنشاء عنصر تهشير واحد أو عناصر منفصلة عند وجود عدة حدود'
+        'التحكم في إنشاء عنصر تعبئة بنمط واحد أو عناصر منفصلة عند وجود عدة حدود'
     },
 
     hptransparency: {
       ...enCommand.ACAD.hptransparency,
       description:
-        'تحديد الشفافية الافتراضية للتهشير والتعبئة الجديدة'
+        'تحديد الشفافية الافتراضية للتعبئة الجديدة'
     },
 
     insunits: {
       ...enCommand.ACAD.insunits,
       description:
-        'تحديد وحدات الرسم المستخدمة في التحجيم التلقائي للكتل والصور والمراجع الخارجية عند الإدراج'
+        'تحديد وحدات الرسم المستخدمة في التحجيم التلقائي للرموز والصور والرسومات المرتبطة عند الإدراج'
     },
 
     jpgout: {
@@ -521,13 +521,13 @@ export default {
     clearmeasurements: {
       ...enCommand.ACAD.clearmeasurements,
       description:
-        'إزالة جميع القياسات من المخطط الحالي'
+        'إزالة جميع القياسات من صفحة الطباعة الحالية'
     },
 
     measurementvis: {
       ...enCommand.ACAD.measurementvis,
       description:
-        'إظهار أو إخفاء القياسات في المخطط الحالي'
+        'إظهار أو إخفاء القياسات في صفحة الطباعة الحالية'
     },
 
     measurementpanel: {
@@ -599,7 +599,7 @@ export default {
     modelbkcolor: {
       ...enCommand.ACAD.modelbkcolor,
       description:
-        'تحديد لون خلفية مساحة النموذج'
+        'تحديد لون خلفية لوحة الرسم'
     },
 
     mline: {
@@ -667,7 +667,7 @@ export default {
     paperbkcolor: {
       ...enCommand.ACAD.paperbkcolor,
       description:
-        'تحديد لون خلفية مساحة الورق أو المخطط'
+        'تحديد لون خلفية صفحة الطباعة'
     },
 
     pdmode: {
@@ -829,7 +829,7 @@ export default {
     clearmarkups: {
       ...enCommand.ACAD.clearmarkups,
       description:
-        'مسح جميع علامات المراجعة من المخطط الحالي'
+        'مسح جميع علامات المراجعة من صفحة الطباعة الحالية'
     },
 
     markupexport: {

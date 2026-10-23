@@ -27,8 +27,12 @@ del dispositivo del usuario.
     (Arial → Arimo, SimSun → Noto Serif SC, Malgun Gothic → Noto Sans KR, …).
   - Texto de la interfaz: **Noto Sans JP** (autoalojada con
     `@fontsource-variable/noto-sans-jp`).
-- **Nombres de presentaciones localizados** en los planos nuevos, en lugar de
+- **Nombres de páginas de impresión localizados** en los planos nuevos, en lugar de
   los nombres en chino de la plantilla.
+- **Términos sencillos para quien no usa CAD** — la interfaz usa palabras cotidianas: bloque → símbolo,
+  atributo de bloque → propiedad del símbolo, espacio modelo → lienzo, presentación → página de impresión,
+  sombreado → relleno de patrón, referencia externa → plano vinculado, selección rápida → seleccionar por criterios, etc.
+  Las descripciones emergentes mantienen el término CAD entre paréntesis (todos los idiomas).
 - **Importación de JWW (Jw_cad)** — la app de ejemplo abre archivos `.jww` con
   `@mlightcad/cad-jww-converter` (MIT; analizador [ezjww](https://github.com/monozukuri-ai/ezjww),
   Rust → WebAssembly, en un Web Worker). Las coordenadas pasan de milímetros de papel a
