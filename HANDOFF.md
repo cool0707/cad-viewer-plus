@@ -51,7 +51,8 @@
 - サンプル: `resources/cad-data/samples/jww-sample.jww` (`node tools/make-jww-sample.mjs` で ezjww の writer から生成、自作なのでライセンス問題なし)。テスト: `packages/cad-jww-converter/__tests__`、`cad-simple-viewer/__tests__/AcApDrawingFileTypes.spec.ts`、e2e `cad-viewer-example/e2e/tests/jww.spec.ts`。
 - ezjww リポジトリの `jww_samples/` (実際の Jw_cad 図面: マンション平面例、木造平面例など) でもブラウザ表示を確認済み (リポジトリには入れていない)。
 - 注意: Jest は data-model の CJS ビルドを読むので、data-model パッチ (`$LIMMIN` 読み込みなど) は Jest では効かない。`db.limmin` はブラウザでしか確認できない。
-- 未対応: JWC (旧形式、ezjww は `readJwcDocument` あり)、JWS、画像 (`^@BM`)、Worker 無しの main thread モードはテストのみで使用 (`wasmUrl` 指定で動く)。外部参照 (XATTACH) は DWG/DXF のまま。
+- **JWC (旧形式)** も同じコンバーターで読む (`jwc` にも登録)。`readJwcDocument` のヘッダー (レイヤグループ・縮尺・用紙 A0–A4) を JWW と同じ形 (`JwSource`) に正規化し、`readDxfDocument(…, { jwcCoordinates: 'paper_millimeters' })` (用紙中心原点の図寸 mm) を同じ writer に通す。JWC にはフォントが無いので ＭＳ ゴシック 扱い。ezjww が受け付ける JWC は 2 種類の固定ヘッダー形式だけで、それ以外はエラー。テスト用 JWC は ezjww の MIT サンプル (`packages/cad-jww-converter/__tests__/fixtures/`)。縮尺のテストはオフセット 1797 の f32 を書き換えて作っている。
+- 未対応: JWS、画像 (`^@BM`)、Worker 無しの main thread モードはテストのみで使用 (`wasmUrl` 指定で動く)。外部参照 (XATTACH) は DWG/DXF のまま。
 
 以下は着手前の調査メモ (JWW 部分は上記で対応済み)。
 

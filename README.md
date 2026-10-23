@@ -28,7 +28,7 @@ drawings never leave the user's device.
   - UI text: **Noto Sans JP** (self-hosted via `@fontsource-variable/noto-sans-jp`).
 - **Localized new drawings** — layout tabs show `モデル / レイアウト1 / レイアウト2`
   (or the active language) instead of the template's Chinese names.
-- **JWW (Jw_cad) import** — `.jww` files open in the example app through
+- **JWW / JWC (Jw_cad) import** — `.jww` and the older `.jwc` files open in the example app through
   `@mlightcad/cad-jww-converter` (MIT; parser: [ezjww](https://github.com/monozukuri-ai/ezjww),
   Rust → WebAssembly, in a Web Worker). Coordinates are converted from paper
   millimetres to real millimetres with the layer-group scale, the sheet becomes
@@ -128,9 +128,9 @@ DXF is parsed by the built-in MIT parser. DWG support is optional through
 the example apps register it explicitly. Check the GPL implications before
 distributing a product that includes it.
 
-## JWW support
+## JWW / JWC support
 
-`@mlightcad/cad-jww-converter` reads Jw_cad drawings (`.jww`). It parses the file
+`@mlightcad/cad-jww-converter` reads Jw_cad drawings (`.jww`, and the older `.jwc`). It parses the file
 with ezjww (MIT) in a Web Worker, converts it to DXF and loads it through the
 built-in DXF reader. Register it and deploy `jww-parser-worker.js` and
 `jww-parser.wasm` (both in the package's `dist/`) next to each other:
@@ -145,8 +145,8 @@ JWW stores coordinates in paper millimetres. By default everything is scaled by
 the scale of the main layer group (the one with the most entities), so the
 drawing looks as it does in Jw_cad and the main drawing measures in real
 millimetres. `scaleMode: 'layer-group'` scales each group by its own scale (like
-Jw_cad's DXF export) and `scaleMode: 'paper'` keeps paper millimetres. JWC (the
-old format) is not supported yet.
+Jw_cad's DXF export) and `scaleMode: 'paper'` keeps paper millimetres. JWC files are
+converted the same way (they have no font information, so text uses ＭＳ ゴシック).
 
 ## License
 

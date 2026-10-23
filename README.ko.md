@@ -23,7 +23,7 @@
     SimSun → Noto Serif SC, 맑은 고딕 → Noto Sans KR 등).
   - UI 문자: **Noto Sans JP**(`@fontsource-variable/noto-sans-jp`로 자체 호스팅).
 - **새 도면의 레이아웃 이름 현지화**: 템플릿의 중국어 이름 대신 현재 UI 언어의 이름을 표시합니다.
-- **JWW(Jw_cad) 가져오기** — 예제 앱에서 `.jww` 파일을 열 수 있습니다
+- **JWW / JWC(Jw_cad) 가져오기** — 예제 앱에서 `.jww` 및 구 형식 `.jwc` 파일을 열 수 있습니다
   (`@mlightcad/cad-jww-converter`, MIT. 파서는 [ezjww](https://github.com/monozukuri-ai/ezjww),
   Rust → WebAssembly, Web Worker에서 실행). 좌표는 레이어 그룹 축척으로 용지 mm에서
   실제 mm로 변환하고, 용지를 도면 한계로 설정합니다.
@@ -67,9 +67,9 @@ DXF는 내장된 MIT 파서로 읽습니다. DWG는 선택적으로
 [LibreDWG](https://github.com/LibreDWG/libredwg) 기반의 `@mlightcad/libredwg-converter`를
 사용할 수 있으며, 라이선스는 **GPL-3.0**입니다. 배포 전에 GPL 영향을 확인하세요.
 
-## JWW 지원
+## JWW / JWC 지원
 
-`@mlightcad/cad-jww-converter`는 Jw_cad 도면(`.jww`)을 읽습니다. Web Worker에서 ezjww(MIT)로
+`@mlightcad/cad-jww-converter`는 Jw_cad 도면(`.jww` / `.jwc`)을 읽습니다. Web Worker에서 ezjww(MIT)로
 파싱하고 DXF로 변환한 뒤 내장 DXF 리더로 불러옵니다. 등록한 다음 패키지 `dist/`의
 `jww-parser-worker.js`와 `jww-parser.wasm`을 같은 위치에 배포하세요.
 
@@ -82,7 +82,7 @@ registerJwwConverter('./assets/jww-parser-worker.js')
 JWW는 좌표를 용지 mm로 저장합니다. 기본적으로 주 레이어 그룹(엔티티가 가장 많은 그룹)의
 축척으로 전체를 확대하므로 Jw_cad와 같은 모양으로 보이고 주 도면은 실제 mm로 측정됩니다.
 `scaleMode: 'layer-group'`은 그룹별 축척을, `scaleMode: 'paper'`는 용지 mm를 그대로 사용합니다.
-구 형식 JWC는 아직 지원하지 않습니다.
+구 형식 JWC도 같은 방식으로 변환합니다(JWC에는 글꼴 정보가 없으므로 문자는 ＭＳ ゴシック으로 표시).
 
 ## 라이선스
 

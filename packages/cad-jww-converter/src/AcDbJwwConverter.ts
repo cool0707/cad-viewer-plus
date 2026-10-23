@@ -34,7 +34,7 @@ export interface AcDbJwwConverterConfig extends AcDbDatabaseConverterConfig {
 }
 
 /**
- * Reads Jw_cad drawings (`.jww`).
+ * Reads Jw_cad drawings (`.jww`, and the older `.jwc`).
  *
  * The file is parsed by ezjww (MIT, Rust → WebAssembly), converted to DXF in
  * real-world millimetres, and then loaded by the registered DXF converter, so

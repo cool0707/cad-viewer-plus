@@ -27,7 +27,7 @@ takže výkresy nikdy neopustí zařízení uživatele.
   - Text rozhraní: **Noto Sans JP** (hostováno pomocí
     `@fontsource-variable/noto-sans-jp`).
 - **Lokalizované názvy rozvržení** v nových výkresech místo čínských názvů ze šablony.
-- **Import JWW (Jw_cad)** — ukázková aplikace otevírá soubory `.jww` pomocí
+- **Import JWW / JWC (Jw_cad)** — ukázková aplikace otevírá soubory `.jww` a `.jwc` (starý formát) pomocí
   `@mlightcad/cad-jww-converter` (MIT; parser [ezjww](https://github.com/monozukuri-ai/ezjww),
   Rust → WebAssembly, ve Web Workeru). Souřadnice se převádějí z milimetrů na papíře na skutečné
   milimetry podle měřítka skupiny hladin a list se použije jako meze výkresu.
@@ -72,9 +72,9 @@ přes `@mlightcad/libredwg-converter` založený na
 [LibreDWG](https://github.com/LibreDWG/libredwg) s licencí **GPL-3.0**; před
 distribucí zvažte důsledky GPL.
 
-## Podpora JWW
+## Podpora JWW / JWC
 
-`@mlightcad/cad-jww-converter` čte výkresy Jw_cad (`.jww`): soubor zpracuje pomocí ezjww (MIT)
+`@mlightcad/cad-jww-converter` čte výkresy Jw_cad (`.jww` / `.jwc`): soubor zpracuje pomocí ezjww (MIT)
 ve Web Workeru, převede jej na DXF a načte vestavěnou čtečkou DXF. Zaregistrujte jej a umístěte
 `jww-parser-worker.js` a `jww-parser.wasm` (z `dist/` balíčku) do stejné složky:
 
@@ -87,7 +87,7 @@ registerJwwConverter('./assets/jww-parser-worker.js')
 JWW ukládá souřadnice v milimetrech na papíře. Ve výchozím stavu se vše zvětší měřítkem hlavní
 skupiny hladin (s nejvíce objekty), takže výkres vypadá jako v Jw_cad a hlavní výkres se měří ve
 skutečných milimetrech. `scaleMode: 'layer-group'` použije měřítko každé skupiny a
-`scaleMode: 'paper'` ponechá milimetry na papíře. Starý formát JWC zatím není podporován.
+`scaleMode: 'paper'` ponechá milimetry na papíře. Starý formát JWC se převádí stejně (neobsahuje písma, text se zobrazí jako ＭＳ ゴシック).
 
 ## Licence
 

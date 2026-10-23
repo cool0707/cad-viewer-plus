@@ -27,7 +27,7 @@
   - UI の文字：**Noto Sans JP**（`@fontsource-variable/noto-sans-jp` で同梱）。
 - **新規図面の名前を日本語化** — レイアウトのタブはテンプレートの中国語名ではなく
   「モデル／レイアウト1／レイアウト2」（表示言語に合わせた名前）になります。
-- **JWW（Jw_cad）の読み込み** — サンプルアプリで `.jww` を開けます
+- **JWW / JWC（Jw_cad）の読み込み** — サンプルアプリで `.jww` と旧形式の `.jwc` を開けます
   （`@mlightcad/cad-jww-converter`、MIT。解析は [ezjww](https://github.com/monozukuri-ai/ezjww)
   （Rust → WebAssembly）を Web Worker で実行）。座標はレイヤグループの縮尺で図寸から
   実寸 (mm) に変換し、用紙を図面範囲に、画層名を「`グループ-レイヤ 名前`」にします。
@@ -111,7 +111,7 @@ SHX フォントは同梱していません。SHX を使う文字は BIZ UD ゴ�
 | `@mlightcad/cad-html-plugin`、`cad-pdf-plugin`、`cad-svg-plugin` | HTML / PDF / SVG 書き出し |
 | `@mlightcad/cad-diff-viewer` | 図面の左右比較 |
 | `@mlightcad/three-renderer` | Three.js による描画 |
-| `@mlightcad/cad-jww-converter` | JWW（Jw_cad）の読み込み（ezjww、WebAssembly） |
+| `@mlightcad/cad-jww-converter` | JWW / JWC（Jw_cad）の読み込み（ezjww、WebAssembly） |
 
 パッケージ名はフォーク元の `@mlightcad/` スコープのままです。このフォークは npm には
 公開していません。
@@ -124,9 +124,9 @@ DXF は内蔵の MIT ライセンスのパーサーで読み込みます。DWG �
 **GPL-3.0** です。サンプルアプリでは明示的に登録しています。組み込んだ製品を配布する
 場合は GPL の影響を確認してください。
 
-## JWW 対応
+## JWW / JWC 対応
 
-`@mlightcad/cad-jww-converter` で Jw_cad の図面（`.jww`）を読み込めます。ezjww（MIT）で
+`@mlightcad/cad-jww-converter` で Jw_cad の図面（`.jww` と旧形式の `.jwc`）を読み込めます。ezjww（MIT）で
 Web Worker 内で解析し、DXF に変換してから内蔵の DXF リーダーで読み込みます。
 登録したうえで、パッケージの `dist/` にある `jww-parser-worker.js` と `jww-parser.wasm` を
 同じ場所に配置してください。
@@ -141,7 +141,7 @@ JWW の座標は図寸（用紙上の mm）で保存されています。既定�
 （要素数が最も多いグループ）の縮尺で全体を拡大するため、見た目は Jw_cad と同じで、
 主図面は実寸で計測できます。`scaleMode: 'layer-group'` ではグループごとの縮尺で拡大し
 （Jw_cad の DXF 書き出しと同じ）、`scaleMode: 'paper'` では図寸のままにします。
-旧形式の JWC にはまだ対応していません。
+JWC も同じように変換します（JWC にはフォント情報がないため、文字は ＭＳ ゴシック として表示します）。
 
 ## ライセンス
 

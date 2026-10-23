@@ -13,7 +13,7 @@ export default {
   example: {
     fileUpload: {
       title: 'Vyberte soubor CAD k zobrazení',
-      subtitle: 'Importujte výkresy DWG, DXF nebo JWW (Jw_cad) do prohlížeče',
+      subtitle: 'Importujte výkresy DWG, DXF nebo JWW / JWC (Jw_cad) do prohlížeče',
       fontCdnNotice:
         'Japanese fonts (BIZ UD) are bundled with this viewer. Fonts for other scripts (Chinese, Korean, Latin substitutes, etc.) are downloaded from Google Fonts when a drawing needs them; if Google Fonts is unreachable, that text may not display correctly.',
       newDrawing: 'Nový výkres',
@@ -83,7 +83,7 @@ export default {
       exportDisableHint: 'Skrýt příkazy exportu a položky nabídky File',
 
       invalidFileType:
-        'Neplatný typ souboru. Nahrajte soubory DWG, DXF nebo JWW.'
+        'Neplatný typ souboru. Nahrajte soubory DWG, DXF, JWW nebo JWC.'
     }
   }
 }

@@ -28,7 +28,7 @@ acontecem no cliente, então os desenhos nunca saem do dispositivo do usuário.
     `@fontsource-variable/noto-sans-jp`).
 - **Nomes de layout localizados** em novos desenhos, em vez dos nomes em chinês
   do modelo.
-- **Importação de JWW (Jw_cad)** — o app de exemplo abre arquivos `.jww` com
+- **Importação de JWW / JWC (Jw_cad)** — o app de exemplo abre arquivos `.jww` e `.jwc` (formato antigo) com
   `@mlightcad/cad-jww-converter` (MIT; analisador [ezjww](https://github.com/monozukuri-ai/ezjww),
   Rust → WebAssembly, em um Web Worker). As coordenadas passam de milímetros de papel para
   milímetros reais com a escala do grupo de camadas, e a folha vira os limites do desenho.
@@ -74,9 +74,9 @@ DXF é lido pelo analisador MIT embutido. DWG é opcional por meio do
 [LibreDWG](https://github.com/LibreDWG/libredwg) e licenciado sob **GPL-3.0**;
 verifique as implicações da GPL antes de distribuí-lo.
 
-## Suporte a JWW
+## Suporte a JWW / JWC
 
-`@mlightcad/cad-jww-converter` lê desenhos do Jw_cad (`.jww`): analisa o arquivo com ezjww (MIT)
+`@mlightcad/cad-jww-converter` lê desenhos do Jw_cad (`.jww` / `.jwc`): analisa o arquivo com ezjww (MIT)
 em um Web Worker, converte para DXF e carrega com o leitor DXF embutido. Registre-o e publique
 `jww-parser-worker.js` e `jww-parser.wasm` (em `dist/` do pacote) na mesma pasta:
 
@@ -89,7 +89,7 @@ registerJwwConverter('./assets/jww-parser-worker.js')
 O JWW guarda as coordenadas em milímetros de papel. Por padrão tudo é escalado pela escala do
 grupo de camadas principal (o que tem mais entidades), então o desenho fica igual ao Jw_cad e o
 desenho principal é medido em milímetros reais. `scaleMode: 'layer-group'` usa a escala de cada
-grupo e `scaleMode: 'paper'` mantém milímetros de papel. O formato antigo JWC ainda não é suportado.
+grupo e `scaleMode: 'paper'` mantém milímetros de papel. O formato antigo JWC é convertido da mesma forma (não guarda fontes, então o texto usa ＭＳ ゴシック).
 
 ## Licença
 

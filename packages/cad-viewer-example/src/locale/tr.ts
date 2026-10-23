@@ -13,7 +13,7 @@ export default {
   example: {
     fileUpload: {
       title: 'Görüntülenecek CAD Dosyasını Seçin',
-      subtitle: 'DWG, DXF veya JWW (Jw_cad) çizimlerini görüntüleyiciye aktarın',
+      subtitle: 'DWG, DXF veya JWW / JWC (Jw_cad) çizimlerini görüntüleyiciye aktarın',
       fontCdnNotice:
         'Japanese fonts (BIZ UD) are bundled with this viewer. Fonts for other scripts (Chinese, Korean, Latin substitutes, etc.) are downloaded from Google Fonts when a drawing needs them; if Google Fonts is unreachable, that text may not display correctly.',
       newDrawing: 'Yeni Çizim',
@@ -83,7 +83,7 @@ export default {
       exportDisableHint: 'Dışa aktarma komutlarını ve File menü öğelerini gizle',
 
       invalidFileType:
-        'Geçersiz dosya türü. Lütfen DWG, DXF veya JWW dosyaları yükleyin.'
+        'Geçersiz dosya türü. Lütfen DWG, DXF, JWW veya JWC dosyaları yükleyin.'
     }
   }
 }

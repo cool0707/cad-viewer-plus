@@ -1,4 +1,4 @@
-import type { DxfDocument, JwwDocument, JwwHeader } from 'ezjww'
+import type { DxfDocument, JwcDocument, JwwDocument } from 'ezjww'
 
 import { jwwPaperSize } from './jwwPaper'
 
@@ -10,9 +10,13 @@ import { jwwPaperSize } from './jwwPaper'
 export interface EzjwwApi {
   detectFileFormat(input: Uint8Array): unknown
   readDocument(input: Uint8Array): JwwDocument
+  readJwcDocument(input: Uint8Array): JwcDocument
   readDxfDocument(
     input: Uint8Array,
-    options?: { explodeInserts?: boolean }
+    options?: {
+      explodeInserts?: boolean
+      jwcCoordinates?: 'paper_millimeters' | 'model_millimeters'
+    }
   ): DxfDocument
 }
 
@@ -43,7 +47,7 @@ export interface JwwConversionResult {
   unsupportedEntities: string[]
 }
 
-/** Text style used when a JWW text record names no font. */
+/** Text style used when a JWW text record names no font (and for JWC). */
 const DEFAULT_FONT = 'ＭＳ ゴシック'
 
 /**
@@ -92,6 +96,83 @@ interface EzDxfEntity {
   [key: string]: unknown
 }
 
+/**
+ * What the writer needs from a JWW or JWC header and its entities, on top of
+ * ezjww's DXF conversion. Both formats store paper millimetres with the
+ * origin at the centre of the sheet.
+ */
+interface JwSource {
+  groups: {
+    name: string
+    scale: number
+    hidden: boolean
+    locked: boolean
+    layers: { name: string; hidden: boolean; locked: boolean }[]
+  }[]
+  paper?: { width: number; height: number }
+  writeGroup: number
+  /** Layer group of each top-level entity (to find the main scale). */
+  entityGroups: number[]
+  /** Fonts of text records (JWC stores none). */
+  texts: { content: unknown; x: unknown; y: unknown; font?: string }[]
+}
+
+function jwwSource(jww: JwwDocument): JwSource {
+  const header = jww.header
+  return {
+    groups: header.layer_groups.map(group => ({
+      name: group.name ?? '',
+      scale: group.scale,
+      hidden: group.state === 0,
+      locked: group.protect !== 0,
+      layers: group.layers.map(layer => ({
+        name: layer.name ?? '',
+        hidden: layer.state === 0,
+        locked: layer.protect !== 0
+      }))
+    })),
+    paper: jwwPaperSize(header.paper_size),
+    writeGroup: header.write_layer_group ?? 0,
+    entityGroups: jww.entities.map(e => e.base?.layer_group ?? 0),
+    texts: [
+      ...jww.entities,
+      ...(jww.block_defs ?? []).flatMap(def => def.entities ?? [])
+    ]
+      .filter(e => e.type === 'TEXT')
+      .map(e => ({
+        content: e.content,
+        x: e.start_x,
+        y: e.start_y,
+        font: e.font_name
+      }))
+  }
+}
+
+const JWC_PAPERS = ['A0', 'A1', 'A2', 'A3', 'A4']
+
+function jwcSource(jwc: JwcDocument): JwSource {
+  const header = jwc.header
+  return {
+    groups: header.layer_groups.map(group => ({
+      name: group.name?.text ?? '',
+      scale: group.scale,
+      hidden: !group.state.visible,
+      locked: group.state.protected,
+      layers: group.layers.map(layer => ({
+        name: layer.name?.text ?? '',
+        hidden: !layer.state.visible,
+        locked: layer.state.protected
+      }))
+    })),
+    paper: jwwPaperSize(JWC_PAPERS.indexOf(header.paper)),
+    writeGroup: header.write_layer_group ?? 0,
+    entityGroups: jwc.entities
+      .filter(e => e.type !== 'temporary_point')
+      .map(e => ('attributes' in e ? e.attributes.layer : e.layer).group),
+    texts: []
+  }
+}
+
 interface LayerInfo {
   /** DXF layer name written to the drawing. */
   name: string
@@ -101,8 +182,8 @@ interface LayerInfo {
 }
 
 /**
- * Converts a JWW (Jw_cad) file to DXF text that the native DXF converter can
- * read.
+ * Converts a Jw_cad file (JWW, or the older JWC) to DXF text that the native
+ * DXF converter can read.
  *
  * Geometry, pen colors, line types and blocks come from ezjww. On top of that
  * this function:
@@ -120,14 +201,21 @@ export function convertJwwToDxf(
   options: JwwConversionOptions = {}
 ): JwwConversionResult {
   const format = ez.detectFileFormat(data)
-  if (format !== 'jww') {
+  let source: JwSource
+  if (format === 'jww') {
+    source = jwwSource(ez.readDocument(data))
+  } else if (format === 'jwc') {
+    source = jwcSource(ez.readJwcDocument(data))
+  } else {
     throw new Error(
-      `Not a JWW (Jw_cad) file: detected format '${String(format ?? 'unknown')}'`
+      `Not a JWW / JWC (Jw_cad) file: detected format '${String(format ?? 'unknown')}'`
     )
   }
-  const jww = ez.readDocument(data)
-  const dxfDoc = ez.readDxfDocument(data, { explodeInserts: false })
-  const writer = new JwwDxfWriter(jww, dxfDoc, options.scaleMode ?? 'drawing')
+  const dxfDoc = ez.readDxfDocument(data, {
+    explodeInserts: false,
+    jwcCoordinates: 'paper_millimeters'
+  })
+  const writer = new JwwDxfWriter(source, dxfDoc, options.scaleMode ?? 'drawing')
   return {
     dxf: writer.write(),
     unsupportedEntities: [...(dxfDoc.unsupported_entities ?? [])]
@@ -136,12 +224,12 @@ export function convertJwwToDxf(
 
 /**
  * Rebuilds ezjww's layer naming (`layer_name_map` in ezjww-core `dxf.rs`) so
- * that each DXF layer name it emits can be traced back to its JWW layer group
- * and layer number.
+ * that each DXF layer name it emits can be traced back to its JWW / JWC layer
+ * group and layer number.
  */
-export function ezjwwLayerNames(
-  header: JwwHeader
-): Map<string, [number, number]> {
+export function ezjwwLayerNames(header: {
+  layer_groups: { layers: { name: string }[] }[]
+}): Map<string, [number, number]> {
   const result = new Map<string, [number, number]>()
   const used = new Set<string>(['0'])
   header.layer_groups.forEach((group, g) => {
@@ -220,41 +308,36 @@ class JwwDxfWriter {
   private readonly blockRecords = new Map<string, string>()
 
   constructor(
-    private readonly jww: JwwDocument,
+    private readonly source: JwSource,
     private readonly dxf: DxfDocument,
     private readonly scaleMode: JwwScaleMode
   ) {
-    const header = jww.header
-    this.groupScales = header.layer_groups.map(group =>
+    this.groupScales = source.groups.map(group =>
       Number.isFinite(group.scale) && group.scale > 0 ? group.scale : 1
     )
     this.mainScale = scaleMode === 'paper' ? 1 : this.findMainScale()
 
-    for (const [ezName, [g, l]] of ezjwwLayerNames(header)) {
-      const group = header.layer_groups[g]
+    for (const [ezName, [g, l]] of ezjwwLayerNames({
+      layer_groups: source.groups
+    })) {
+      const group = source.groups[g]
       const layer = group.layers[l]
       const label = [group.name, layer.name]
-        .map(s => tableName(s ?? ''))
+        .map(s => tableName(s))
         .filter(s => s !== '')
         .join(' - ')
       this.layersByEzName.set(ezName, {
         name: tableName(`${hex(g)}-${hex(l)}${label ? ` ${label}` : ''}`),
         group: g,
-        frozen: layer.state === 0 || group.state === 0,
-        locked: layer.protect !== 0 || group.protect !== 0
+        frozen: layer.hidden || group.hidden,
+        locked: layer.locked || group.locked
       })
     }
 
-    const texts = [
-      ...jww.entities,
-      ...(jww.block_defs ?? []).flatMap(def => def.entities ?? [])
-    ]
-    for (const entity of texts) {
-      if (entity.type !== 'TEXT') continue
-      const key = textKey(entity.content, entity.start_x, entity.start_y)
+    for (const text of source.texts) {
+      const key = textKey(text.content, text.x, text.y)
       const fonts = this.fontsByText.get(key)
-      const font =
-        (entity.font_name as string | undefined)?.trim() || DEFAULT_FONT
+      const font = text.font?.trim() || DEFAULT_FONT
       if (fonts) fonts.push(font)
       else this.fontsByText.set(key, [font])
     }
@@ -311,11 +394,10 @@ class JwwDxfWriter {
   /** Scale of the layer group with the most entities (the main drawing). */
   private findMainScale() {
     const counts = new Map<number, number>()
-    for (const entity of this.jww.entities) {
-      const g = entity.base?.layer_group ?? 0
+    for (const g of this.source.entityGroups) {
       counts.set(g, (counts.get(g) ?? 0) + 1)
     }
-    let best = this.jww.header.write_layer_group ?? 0
+    let best = this.source.writeGroup
     let bestCount = -1
     for (const [g, count] of counts) {
       if (count > bestCount) {
@@ -465,7 +547,7 @@ class JwwDxfWriter {
     this.variable('$CLAYER', 8, '0')
     this.variable('$CELTYPE', 6, 'BYLAYER')
     this.variable('$CECOLOR', 62, '256')
-    const paper = jwwPaperSize(this.jww.header.paper_size)
+    const paper = this.source.paper
     if (paper) {
       const hw = (paper.width / 2) * this.mainScale
       const hh = (paper.height / 2) * this.mainScale
