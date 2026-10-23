@@ -28,6 +28,10 @@ pnpm --filter @mlightcad/cad-viewer-example test:e2e   # Playwright e2e (fixture
 - `@mlightcad/data-model` / `libredwg-converter` / `geometry-engine` / `mtext-renderer` は **npm 依存** (このリポジトリにソースは無い)。直すときは pnpm patch (下記)。
 - `resources/cad-data/` — フォント (BIZ UD woff + fonts.json)・テンプレート・サンプル図面。ビルド時に各 example の `cad-data/` へコピーされる。
 - `demo/index.html` + `tools/build-demo.mjs` → `demo-dist/` → GitHub Pages (`.github/workflows/demo.yml`, gh-pages ブランチ)。
+  - `main` はサイトの直下、それ以外のブランチは `preview/<ブランチ名>/` に出る
+    (例: https://cool0707.github.io/cad-viewer-plus/preview/<ブランチ名>/ 。名前の `/` などは `-` になる)。
+    push してからビルドが終わるまで数分かかる。ブランチを削除するとプレビューも消える。
+    gh-pages の更新は `tools/publish-pages.sh` (main の更新でも `preview/` は残す)。
 
 ## 依存パッケージの修正 = pnpm patch
 
