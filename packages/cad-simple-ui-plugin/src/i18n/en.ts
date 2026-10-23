@@ -17,7 +17,7 @@ export const en: Record<string, string> = {
   'toolbar.layer': 'Layer Manager',
   'toolbar.find': 'Find',
   'toolbar.layerShort': 'Layers',
-  'toolbar.layout': 'Layout',
+  'toolbar.layout': 'Print page',
   'toolbar.settings': 'Settings',
   'toolbar.simulatedMouseOn': 'Mouse',
   'toolbar.simulatedMouseOff': 'Loupe',
@@ -142,24 +142,24 @@ export const en: Record<string, string> = {
   'findPalette.input': 'Search text',
   'findPalette.find': 'Find',
   'findPalette.matchCase': 'Match case',
-  'findPalette.currentLayoutOnly': 'Current layout only',
+  'findPalette.currentLayoutOnly': 'Current print page only',
   'findPalette.hint':
-    'Press Enter to search text, multiline text, attributes and the text in blocks, dimensions, leaders and tables in the whole drawing (all layouts).',
+    'Press Enter to search text, multiline text, symbol properties and the text in symbols, dimensions, leaders and tables in the whole drawing (all print pages).',
   'findPalette.hintLayout':
-    'Press Enter to search text, multiline text, attributes and the text in blocks, dimensions, leaders and tables in the current layout.',
+    'Press Enter to search text, multiline text, symbol properties and the text in symbols, dimensions, leaders and tables in the current print page.',
   'findPalette.noResults': 'No text found',
   'findPalette.count': '{count} found',
-  'findPalette.countLayouts': '{count} found in {layouts} layouts',
+  'findPalette.countLayouts': '{count} found in {layouts} print pages',
   'findPalette.countTruncated':
     'First {count} results shown — refine the search',
   'findPalette.noDocument': 'Open a drawing to search',
-  'findPalette.layoutUnavailable': 'Could not open layout "{layout}"',
+  'findPalette.layoutUnavailable': 'Could not open print page "{layout}"',
   'findPalette.kind.text': 'Text',
   'findPalette.kind.mtext': 'MText',
-  'findPalette.kind.attribute': 'Attribute',
-  'findPalette.kind.block': 'Block text',
+  'findPalette.kind.attribute': 'Symbol property',
+  'findPalette.kind.block': 'Symbol text',
   'findPalette.kind.dimension': 'Dimension',
   'findPalette.kind.leader': 'Leader',
   'findPalette.kind.table': 'Table',
-  'findPalette.unnamedLayout': '(unnamed layout)'
+  'findPalette.unnamedLayout': '(unnamed print page)'
 }

@@ -17,7 +17,7 @@ export default {
       insert: 'Vložit',
       review: 'Kontrola',
       measurement: 'Měření',
-      hatchContext: 'Šrafování',
+      hatchContext: 'Vzorová výplň',
       mtextEditorContext: 'Editor textu'
     },
     hatch: {
@@ -63,22 +63,22 @@ export default {
         off: 'Vypnuto'
       },
       tooltip: {
-        pickPoints: 'Určete vnitřní body pro vytvoření šrafovaných oblastí.',
-        selectObjects: 'Vyberte uzavřené hraniční objekty ke šrafování.',
-        pattern: 'Zvolte název vzoru šrafování.',
-        scale: 'Nastavte měřítko vzoru šrafování.',
-        angle: 'Nastavte úhel vzoru šrafování ve stupních.',
-        style: 'Určuje způsob detekce ostrůvků při šrafování.',
-        associative: 'Přepne asociativní režim šrafování.',
+        pickPoints: 'Určete vnitřní body pro vytvoření vyplněných oblastí.',
+        selectObjects: 'Vyberte uzavřené hraniční objekty k vyplnění.',
+        pattern: 'Zvolte název vzoru výplně.',
+        scale: 'Nastavte měřítko vzoru výplně.',
+        angle: 'Nastavte úhel vzoru výplně ve stupních.',
+        style: 'Určuje způsob detekce ostrůvků při vytváření vzorové výplně.',
+        associative: 'Přepne asociativní režim vzorové výplně.',
         fillType: 'Zvolte typ výplně: plná, vzor nebo přechod.',
         fillColor: 'Zvolte barvu výplně.',
         patternColor: 'Zvolte barvu čar vzoru.',
         gradient1Color: 'Zvolte první barvu přechodu.',
         backgroundColor: 'Zvolte barvu pozadí výplně vzorem.',
         gradient2Color: 'Zvolte druhou barvu přechodu.',
-        opacity: 'Nastavte průhlednost šrafování (0–90).',
+        opacity: 'Nastavte průhlednost vzorové výplně (0–90).',
         imageScale: 'Nastavte měřítko obrázkové výplně.',
-        close: 'Ukončí šrafování a zavře tuto kontextovou kartu.'
+        close: 'Ukončí vytváření vzorové výplně a zavře tuto kontextovou kartu.'
       }
     },
     mtext: {
@@ -220,12 +220,12 @@ export default {
       lengthUnits: 'Jednotky délky',
       angleUnits: 'Jednotky úhlu',
       reference: 'Reference',
-      block: 'Blok'
+      block: 'Symbol'
     },
     insertBlock: {
-      empty: 'Žádné bloky nejsou k dispozici',
+      empty: 'Žádné symboly nejsou k dispozici',
       currentDrawing: 'Aktuální výkres',
-      previewMenu: 'Galerie náhledů bloků'
+      previewMenu: 'Galerie náhledů symbolů'
     },
     property: {
       color: 'Barva',
@@ -283,7 +283,7 @@ export default {
       ellipse: 'Nakreslí elipsu nebo eliptický oblouk.',
       rect: 'Nakreslí obdélník nebo pravidelný mnohoúhelník.',
       point: 'Umístí do výkresu bod.',
-      hatch: 'Vyplní uzavřenou oblast vzorem šrafování.',
+      hatch: 'Vyplní uzavřenou oblast vzorem (šrafování).',
       text: 'Vytvoří ve výkresu víceřádkový text.',
       move: 'Posune vybrané objekty na novou pozici.',
       rotate: 'Otočí vybrané objekty kolem základního bodu.',
@@ -294,27 +294,27 @@ export default {
       redo: 'Zopakuje poslední vrácenou úpravu.',
       properties: 'Otevře paletu Vlastnosti pro aktuální výběr.',
       quickSelect:
-        'Otevře Rychlý výběr pro filtrování a výběr objektů podle kritérií.',
-      find: 'Otevře paletu Hledat pro hledání textu v celém výkresu nebo v aktuálním layoutu.',
-      countList: 'Otevře paletu Počet pro zobrazení a správu počtu bloků.',
+        'Otevře panel Výběr podle kritérií (rychlý výběr) pro filtrování a výběr objektů podle typu, hladiny a dalších kritérií.',
+      find: 'Otevře paletu Hledat pro hledání textu v celém výkresu nebo na aktuální tiskové stránce.',
+      countList: 'Otevře paletu Počet pro zobrazení a správu počtu symbolů (bloků).',
       missingResources:
-        'Otevře paletu Chybějící / externí zdroje pro fonty, obrázky a externí reference.',
+        'Otevře paletu Chybějící / externí zdroje pro fonty, obrázky a propojené výkresy (externí reference).',
       drawingUnits:
         'Otevře Jednotky výkresu pro nastavení formátu souřadnic, přesnosti a měřítka vkládání.',
       attachDwg:
-        'Připojí výkres DWG nebo DXF jako externí referenci (XATTACH).',
+        'Připojí výkres DWG nebo DXF jako propojený výkres (externí reference) (XATTACH).',
       attachImage:
-        'Připojí rastrový obrázek jako externí referenci (IMAGEATTACH).',
+        'Připojí rastrový obrázek jako odkaz (IMAGEATTACH).',
       insert:
-        'Otevře paletu Bloky pro procházení a vkládání definic bloků (INSERT).',
+        'Otevře paletu Symboly (bloky) pro procházení a vkládání definic symbolů (INSERT).',
       editAttributes:
-        'Otevře Rozšířený editor atributů pro úpravu hodnot a zobrazovacích vlastností atributů bloku (ATTEDIT).',
+        'Upraví hodnoty a nastavení zobrazení vlastností symbolu (atributů bloku) (ATTEDIT).',
       defineAttribute:
-        'Vytvoří definici atributu pro použití v bloku (ATTDEF).',
+        'Vytvoří vlastnost (definici atributu) pro použití v symbolu (ATTDEF).',
       agent:
         'Otevře kartu palety CAD Agent pro kreslení geometrie přirozeným jazykem.',
       propertyColor: 'Nastaví barvu nových nebo vybraných objektů.',
-      propertyLineType: 'Nastaví typ čáry nových nebo vybraných objektů.',
+      propertyLineType: 'Nastaví typ čáry (linetype) nových nebo vybraných objektů.',
       propertyLineWeight:
         'Nastaví tloušťku čáry nových nebo vybraných objektů.',
       layerAction: {
@@ -322,7 +322,7 @@ export default {
         isolate:
           'Zobrazí pouze vybranou hladinu a ostatní skryje, abyste se mohli soustředit na související objekty.',
         freeze:
-          'Zmrazí vybranou hladinu, takže se její objekty skryjí a přeskočí při regeneraci.',
+          'Zmrazí vybranou hladinu, takže se její objekty skryjí a přeskočí při obnovení zobrazení (regeneraci).',
         lock: 'Uzamkne vybranou hladinu, její objekty zůstanou viditelné, ale nelze je upravovat.',
         current:
           'Nastaví vybranou hladinu jako aktuální, nové objekty vzniknou na ní.',
@@ -330,7 +330,7 @@ export default {
           'Zapne všechny vypnuté hladiny. Zmrazené hladiny zůstanou zmrazené.',
         unisolate:
           'Obnoví hladiny skryté nebo uzamčené funkcí Izolovat a zachová pozdější změny hladin.',
-        thaw: 'Rozmrazí vybranou hladinu, její objekty budou opět viditelné a zahrnuté v regeneraci.',
+        thaw: 'Rozmrazí vybranou hladinu, její objekty budou opět viditelné a zahrnuté v obnovení zobrazení (regeneraci).',
         unlock:
           'Odemkne vybranou hladinu, její objekty lze opět vybírat a upravovat.',
         restore:
@@ -394,7 +394,7 @@ export default {
       polygon: 'Mnohoúhelník',
       point: 'Bod',
       divide: 'Rozdělit',
-      hatch: 'Šrafování',
+      hatch: 'Vzorová\nvýplň',
       text: 'Text',
       gradient: 'Přechod',
       move: 'Posunout',
@@ -405,15 +405,15 @@ export default {
       undo: 'Zpět',
       redo: 'Znovu',
       properties: 'Vlastnosti',
-      quickSelect: 'Rychlý\nvýběr',
+      quickSelect: 'Výběr podle\nkritérií',
       find: 'Hledat',
       countList: 'Počet',
       drawingUnits: 'Jednotky\nvýkresu',
       attachDwg: 'Připojit\nDWG',
       attachImage: 'Připojit\nobrázek',
       insert: 'Vložit',
-      editAttributes: 'Upravit\natributy',
-      defineAttribute: 'Definovat\natribut',
+      editAttributes: 'Upravit\nvlastnosti',
+      defineAttribute: 'Definovat\nvlastnost',
       agent: 'CAD\nAgent'
     }
   },
@@ -453,7 +453,7 @@ export default {
     },
     clearMeasurements: {
       text: 'Vymazat',
-      description: 'Odstraní všechna měření z aktuálního rozvržení'
+      description: 'Odstraní všechna měření z aktuální tiskové stránky'
     },
     measurementImport: {
       text: 'Importovat',
@@ -560,7 +560,7 @@ export default {
     },
     clearMarkups: {
       text: 'Vymazat',
-      description: 'Vymaže všechny poznámky na aktuálním rozvržení'
+      description: 'Vymaže všechny poznámky na aktuální tiskové stránce'
     },
     select: {
       text: 'Vybrat',
@@ -579,7 +579,7 @@ export default {
     zoomSaved: {
       text: 'Uložený',
       description:
-        'Obnoví uložený pohled AutoCAD (VPORT / limity rozvržení) nebo pohled při otevření'
+        'Obnoví uložený pohled AutoCAD (VPORT / limity tiskové stránky) nebo pohled při otevření'
     },
     zoomToExtent: {
       text: 'Rozsah',
@@ -653,8 +653,8 @@ export default {
     export: {
       tooltip: 'Exportovat obrázek jako PNG'
     },
-    modelTab: 'Model',
-    moreLayouts: 'Další rozvržení'
+    modelTab: 'Plátno',
+    moreLayouts: 'Další tiskové stránky'
   },
   toolPalette: {
     entityProperties: {
@@ -734,22 +734,22 @@ export default {
       input: 'Hledaný text',
       find: 'Hledat',
       matchCase: 'Rozlišovat velikost písmen',
-      currentLayoutOnly: 'Pouze aktuální layout',
-      hint: 'Stiskněte Enter pro hledání textu, víceřádkového textu, atributů a textu v blocích, kótách, odkazech a tabulkách v celém výkresu (všechny layouty).',
+      currentLayoutOnly: 'Pouze aktuální tisková stránka',
+      hint: 'Stiskněte Enter pro hledání textu, víceřádkového textu, vlastností symbolů a textu v symbolech, kótách, odkazech a tabulkách v celém výkresu (všechny tiskové stránky).',
       hintLayout:
-        'Stiskněte Enter pro hledání textu, víceřádkového textu, atributů a textu v blocích, kótách, odkazech a tabulkách v aktuálním layoutu.',
+        'Stiskněte Enter pro hledání textu, víceřádkového textu, vlastností symbolů a textu v symbolech, kótách, odkazech a tabulkách na aktuální tiskové stránce.',
       noResults: 'Nebyl nalezen žádný text',
       count: 'Nalezeno: {count}',
-      countLayouts: 'Nalezeno: {count} (layouty: {layouts})',
+      countLayouts: 'Nalezeno: {count} (tiskové stránky: {layouts})',
       countTruncated: 'Zobrazeno prvních {count} výsledků – upřesněte hledání',
       noDocument: 'Pro hledání otevřete výkres',
-      layoutUnavailable: 'Layout „{layout}“ se nepodařilo otevřít',
-      unnamedLayout: '(nepojmenovaný layout)',
+      layoutUnavailable: 'Tiskovou stránku „{layout}“ se nepodařilo otevřít',
+      unnamedLayout: '(nepojmenovaná tisková stránka)',
       kind: {
         text: 'Text',
         mtext: 'Mtext',
-        attribute: 'Atribut',
-        block: 'Text bloku',
+        attribute: 'Vlastnost symbolu',
+        block: 'Text symbolu',
         dimension: 'Kóta',
         leader: 'Odkaz',
         table: 'Tabulka'
@@ -758,13 +758,13 @@ export default {
     countList: {
       tab: 'Počet',
       title: 'Počet',
-      searchPlaceholder: 'Hledat název bloku',
+      searchPlaceholder: 'Hledat název symbolu',
       countInArea: 'Počet v oblasti',
       areaSet: 'Oblast počítání aktualizována',
-      areaCleared: 'Počítám celý modelový prostor',
-      blockName: 'Blok',
+      areaCleared: 'Počítám celé plátno',
+      blockName: 'Symbol',
       count: 'Počet',
-      empty: 'Nenalezeny žádné viditelné bloky',
+      empty: 'Nenalezeny žádné viditelné symboly',
       prompt: {
         firstCorner: 'Zadejte první roh oblasti počítání nebo [Celý]: ',
         secondCorner: 'Zadejte protilehlý roh: '
@@ -815,7 +815,7 @@ export default {
       title: 'Chybějící / externí zdroje',
       fontTab: 'Font',
       imageTab: 'Obrázek',
-      xrefTab: 'Externí reference',
+      xrefTab: 'Propojené výkresy',
       attach: 'Připojit',
       attachDwg: 'Připojit DWG/DXF…',
       attachImage: 'Připojit obrázek…',
@@ -852,7 +852,7 @@ export default {
       fromUrl: 'URL…',
       unload: 'Uvolnit',
       load: 'Načíst',
-      empty: 'V tomto výkresu nejsou žádné externí reference ani obrázky',
+      empty: 'V tomto výkresu nejsou žádné propojené výkresy ani obrázky',
       urlPrompt: 'Zadejte URL souboru výkresu (DWG, DXF apod.)',
       urlRequired: 'Zadejte prosím URL',
       loadFailed: 'Nepodařilo se načíst referenci „{name}“'
@@ -901,7 +901,7 @@ export default {
         fonts: 'Fonty'
       },
       columns: {
-        layout: 'Rozvržení',
+        layout: 'Tisková stránka',
         layer: 'Hladina',
         geometry: 'Geometrie',
         mapping: 'Mapování',
@@ -934,7 +934,7 @@ export default {
       midOpenPaints: 'Vykreslení během otevření',
       yields: 'Výnosy (yields)',
       cache: 'Cache renderování INSERT (top-level)',
-      slowBlocks: 'Nejpomalejší miss šablon bloků',
+      slowBlocks: 'Nejpomalejší miss šablon symbolů',
       total: 'Celkem',
       read: 'db.read',
       parse: 'PARSE',
@@ -951,26 +951,26 @@ export default {
         share: 'Podíl',
         metric: 'Metrika',
         value: 'Hodnota',
-        block: 'Blok',
+        block: 'Symbol',
         build: 'Build',
         compact: 'Compact'
       }
     },
     blocks: {
-      tab: 'Bloky',
-      title: 'Bloky',
+      tab: 'Symboly',
+      title: 'Symboly',
       tabCurrentDrawing: 'Aktuální výkres',
       tabRecent: 'Nedávné',
       tabFavorites: 'Oblíbené',
       tabLibraries: 'Knihovny',
-      sectionCurrentDrawing: 'Bloky aktuálního výkresu',
-      sectionRecent: 'Nedávno vložené bloky',
-      sectionFavorites: 'Oblíbené bloky',
-      sectionLibraries: 'Knihovny bloků',
+      sectionCurrentDrawing: 'Symboly aktuálního výkresu',
+      sectionRecent: 'Nedávno vložené symboly',
+      sectionFavorites: 'Oblíbené symboly',
+      sectionLibraries: 'Knihovny symbolů',
       filterPlaceholder: 'Filtrovat…',
-      empty: 'Nejsou k dispozici žádné bloky',
-      emptyRecent: 'Žádné nedávno vložené bloky',
-      emptyFavorites: 'Žádné oblíbené bloky',
+      empty: 'Nejsou k dispozici žádné symboly',
+      emptyRecent: 'Žádné nedávno vložené symboly',
+      emptyFavorites: 'Žádné oblíbené symboly',
       emptyLibraries: 'Nejsou nakonfigurovány žádné knihovny',
       toggleFavorite: 'Přepnout oblíbené',
       options: 'Možnosti',

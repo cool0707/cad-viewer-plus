@@ -170,11 +170,11 @@ export default {
   hatch: {
     prompt: 'Sınır nesnesini seçin veya',
     pickPoint: 'İç noktayı belirtin (bitirmek için Enter\'a basın)',
-    select: 'Tarama yapılacak nesneleri seçin',
-    patternName: 'Tarama deseni adını girin',
-    scale: 'Tarama deseni ölçeğini belirtin',
-    angle: 'Tarama deseni açısını belirtin',
-    style: 'Tarama stilini girin',
+    select: 'Doldurulacak nesneleri seçin',
+    patternName: 'Dolgu deseni adını girin',
+    scale: 'Dolgu deseni ölçeğini belirtin',
+    angle: 'Dolgu deseni açısını belirtin',
+    style: 'Desen dolgusu stilini girin',
     associative: 'İlişkiselliği belirtin',
     invalidBoundary: 'Seçilen nesneler kapalı bir sınır oluşturmuyor.',
     keywords: {
@@ -364,11 +364,11 @@ export default {
     invalidSelection: 'Geçersiz nesne seçildi.',
     settingsPrompt: 'Değiştirilecek LAYFRZ ayarını girin',
     viewportPrompt: 'Görüntü penceresi dondurma davranışını belirtin',
-    blockSelectionPrompt: 'İç içe blok seçim davranışını belirtin',
+    blockSelectionPrompt: 'İç içe sembol seçim davranışını belirtin',
     vpfreezeFallback:
       'Mevcut görüntüleyici, görüntü penceresi başına katman dondurmayı desteklemiyor; bunun yerine Dondur davranışı kullanılıyor.',
     nestedSelectionLimited:
-      'İç içe blok seçim ayarları kaydedildi, ancak mevcut seçim işlemi yine de üst düzey nesnenin katmanını çözümlüyor.',
+      'İç içe sembol seçim ayarları kaydedildi, ancak mevcut seçim işlemi yine de üst düzey nesnenin katmanını çözümlüyor.',
     layerNotFound: 'Katman bulunamadı',
     cannotFreezeCurrent: 'Geçerli katman dondurulamaz.',
     alreadyFrozen: 'Katman zaten donuk',
@@ -392,8 +392,8 @@ export default {
         global: 'Viewports'
       },
       blockSelection: {
-        display: 'Blok seçimi(B)',
-        local: 'Blok seçimi',
+        display: 'Sembol seçimi(B)',
+        local: 'Sembol seçimi',
         global: 'BlockSelection'
       },
       freeze: {
@@ -407,8 +407,8 @@ export default {
         global: 'Vpfreeze'
       },
       block: {
-        display: 'Blok(B)',
-        local: 'Blok',
+        display: 'Sembol(B)',
+        local: 'Sembol',
         global: 'Block'
       },
       entity: {
@@ -487,11 +487,11 @@ export default {
     invalidSelection: 'Geçersiz nesne seçildi.',
     settingsPrompt: 'Değiştirilecek LAYOFF ayarını girin',
     viewportPrompt: 'Görüntü penceresi davranışını belirtin',
-    blockSelectionPrompt: 'İç içe blok seçim davranışını belirtin',
+    blockSelectionPrompt: 'İç içe sembol seçim davranışını belirtin',
     vpfreezeFallback:
       'Mevcut görüntüleyici, görüntü penceresi başına katman kapatmayı desteklemiyor; bunun yerine Kapat davranışı kullanılıyor.',
     nestedSelectionLimited:
-      'İç içe blok seçim ayarları kaydedildi, ancak mevcut seçim işlemi yine de üst düzey nesnenin katmanını çözümlüyor.',
+      'İç içe sembol seçim ayarları kaydedildi, ancak mevcut seçim işlemi yine de üst düzey nesnenin katmanını çözümlüyor.',
     layerNotFound: 'Katman bulunamadı',
     cannotTurnOffCurrent: 'Geçerli katman kapatılamaz.',
     alreadyOff: 'Katman zaten kapalı',
@@ -515,8 +515,8 @@ export default {
         global: 'Viewports'
       },
       blockSelection: {
-        display: 'Blok seçimi(B)',
-        local: 'Blok seçimi',
+        display: 'Sembol seçimi(B)',
+        local: 'Sembol seçimi',
         global: 'BlockSelection'
       },
       off: {
@@ -530,8 +530,8 @@ export default {
         global: 'Vpfreeze'
       },
       block: {
-        display: 'Blok(B)',
-        local: 'Blok',
+        display: 'Sembol(B)',
+        local: 'Sembol',
         global: 'Block'
       },
       entity: {
@@ -794,14 +794,14 @@ export default {
     decodeFailed: 'Seçilen görüntü dosyası okunamadı.'
   },
   insert: {
-    blockName: 'Blok adını girin:',
+    blockName: 'Sembol adını girin:',
     insertionPoint: 'Ekleme noktasını belirtin:',
     scale: 'Ölçek faktörünü belirtin:',
     rotation: 'Döndürme açısını belirtin:',
     invalidScale: 'Ölçek faktörü 0 dan büyük olmalıdır.',
-    invalidBlockName: 'Geçersiz blok adı.',
-    blockNotFound: 'Blok bulunamadı',
-    xrefNotAllowed: 'Harici referans -INSERT ile eklenemez.'
+    invalidBlockName: 'Geçersiz sembol adı.',
+    blockNotFound: 'Sembol bulunamadı',
+    xrefNotAllowed: 'Bağlantılı çizim -INSERT ile eklenemez.'
   },
   xattach: {
     insertionPoint: 'Ekleme noktasını belirtin:',
@@ -809,7 +809,7 @@ export default {
     rotation: 'Döndürme açısını belirtin:',
     invalidScale: 'Ölçek faktörü 0 dan büyük olmalıdır.',
     unsupportedFile: 'Lütfen bir DWG veya DXF dosyası seçin.',
-    loading: 'Harici referans yükleniyor...',
+    loading: 'Bağlantılı çizim yükleniyor...',
     loadFailed: 'Seçilen çizim dosyası okunamadı.'
   },
   point: {
@@ -1238,7 +1238,7 @@ export default {
   chtml: {
     exportFormat: 'Dışa aktarma biçimi',
     exportInvisibleLayers: 'Görünmez katmanları dışa aktar',
-    exportLayouts: 'Yerleşimleri dışa aktar',
+    exportLayouts: 'Baskı sayfalarını dışa aktar',
     initialView: 'HTML açılırken başlangıç görünümü',
     viewerMode: 'Çevrimdışı görüntüleyici modu',
     chunkSizeMiB: 'Parça boyutu (MiB, çok dosyalı paket)',
@@ -1287,8 +1287,8 @@ export default {
     }
   },
   cpdf: {
-    modelSpaceFit: 'Model alanı çerçevesi',
-    exportLayouts: 'Yerleşimleri dışa aktar',
+    modelSpaceFit: 'Tuval çerçevesi',
+    exportLayouts: 'Baskı sayfalarını dışa aktar',
     textMode: 'Metin işleme',
     keywords: {
       extents: {

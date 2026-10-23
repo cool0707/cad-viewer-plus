@@ -1,29 +1,30 @@
 export default {
   ACAD: {
     hatch: {
-      description: 'Creates hatch fills with a ribbon-based contextual workflow'
+      description:
+        'Creates pattern fills with a ribbon-based contextual workflow'
     },
     layer: {
       description: 'Layer properties manager'
     },
     md: {
       description:
-        'Opens the Missing / External Resources palette for fonts, images, and xrefs'
+        'Opens the Missing / External Resources palette for fonts, images, and linked drawings'
     },
     xref: {
       description:
-        'Opens the Missing / External Resources palette on the Xrefs tab'
+        'Opens the Missing / External Resources palette on the Linked drawings tab'
     },
     properties: {
       description: 'Entity properties palette'
     },
     find: {
       description:
-        'Opens the Find palette to search text, multiline text, attributes and text in blocks, dimensions, leaders and tables across layouts'
+        'Opens the Find palette to search text, multiline text, symbol properties and text in symbols, dimensions, leaders and tables across print pages'
     },
     countlist: {
       description:
-        'Opens the Count palette to display and manage counted blocks'
+        'Opens the Count palette to display and manage counted symbols'
     },
     mem: {
       description:
@@ -45,11 +46,10 @@ export default {
         'Creates, modifies, or specifies text styles for text and multiline text'
     },
     attedit: {
-      description:
-        'Edits attribute values and display properties of a block reference'
+      description: 'Edits the property values and display settings of a symbol'
     },
     attdef: {
-      description: 'Creates an attribute definition for a block'
+      description: 'Creates a symbol property definition for a symbol'
     }
   },
   USER: {}

@@ -394,7 +394,7 @@ describe('AcUiFindPaletteView', () => {
         view.element.querySelectorAll('.ml-ex-ui-find-layout')
       ).map(el => el.textContent)
       expect(badges).toEqual(['Model', 'Planta', 'Alçados'])
-      expect(status(view)).toBe('3 found in 3 layouts')
+      expect(status(view)).toBe('3 found in 3 print pages')
       view.destroy()
     })
 
@@ -533,7 +533,7 @@ describe('AcUiFindPaletteView', () => {
       view.search('nota')
       expect(rows(view)).toHaveLength(2)
       expect(meta(view, 0)).toBe('Leader · NOTES · (5, 6)')
-      expect(meta(view, 1)).toBe('Block text · BLOCKS · (1, 0)')
+      expect(meta(view, 1)).toBe('Symbol text · BLOCKS · (1, 0)')
       view.destroy()
     })
 
@@ -544,7 +544,7 @@ describe('AcUiFindPaletteView', () => {
       const view = createView()
       view.search('nota')
       expect(meta(view, 0)).toBe('خط إشارة · NOTES · (5, 6)')
-      expect(meta(view, 1)).toBe('نص كتلة · BLOCKS · (1, 0)')
+      expect(meta(view, 1)).toBe('نص رمز · BLOCKS · (1, 0)')
       view.destroy()
     })
 
@@ -581,12 +581,12 @@ describe('AcUiFindPaletteView', () => {
         view.element.querySelectorAll<HTMLElement>('.ml-ex-ui-find-layout')
       )
       expect(badges.map(el => el.textContent)).toEqual([
-        '(unnamed layout)',
-        '(unnamed layout)'
+        '(unnamed print page)',
+        '(unnamed print page)'
       ])
       expect(badges.map(el => el.title)).toEqual([
-        '(unnamed layout)',
-        '(unnamed layout)'
+        '(unnamed print page)',
+        '(unnamed print page)'
       ])
       // Hits keep the real layout id and name; only the display changes.
       expect(view.hits.map(h => [h.layoutId, h.layoutName])).toEqual([

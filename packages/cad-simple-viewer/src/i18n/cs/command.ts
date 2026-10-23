@@ -2,7 +2,7 @@ export default {
   ACAD: {
     '-hatch': {
       description:
-        'Vytváří šrafování pomocí voleb příkazového řádku bez rozhraní pásu karet'
+        'Vytváří vzorové výplně pomocí voleb příkazového řádku bez rozhraní pásu karet'
     },
     '-layer': {
       description: 'Spravuje hladiny pomocí voleb příkazového řádku'
@@ -125,11 +125,11 @@ export default {
     },
     extmax: {
       description:
-        'Ukládá pravý horní roh rozsahu výkresu v modelovém prostoru (pouze pro čtení)'
+        'Ukládá pravý horní roh rozsahu výkresu na plátně (pouze pro čtení)'
     },
     extmin: {
       description:
-        'Ukládá levý dolní roh rozsahu výkresu v modelovém prostoru (pouze pro čtení)'
+        'Ukládá levý dolní roh rozsahu výkresu na plátně (pouze pro čtení)'
     },
     entout: {
       description: 'Exportuje sloučený náhledový obrázek vybraných objektů',
@@ -141,15 +141,15 @@ export default {
     },
     imageattach: {
       description:
-        'Připojí rastrový obrázek jako externí referenci k aktuálnímu výkresu'
+        'Připojí rastrový obrázek jako odkaz k aktuálnímu výkresu'
     },
     '-insert': {
       description:
-        'Vloží definici bloku do aktuálního výkresu (příkazový řádek)'
+        'Vloží definici symbolu do aktuálního výkresu (příkazový řádek)'
     },
     xattach: {
       description:
-        'Připojí výkres DWG nebo DXF jako externí referenci k aktuálnímu výkresu'
+        'Připojí výkres DWG nebo DXF jako propojený výkres k aktuálnímu výkresu'
     },
     gripcolor: {
       description:
@@ -170,55 +170,55 @@ export default {
     },
     hatch: {
       description:
-        'Vyplní uzavřenou oblast nebo vybrané objekty vzorem šrafování'
+        'Vyplní uzavřenou oblast nebo vybrané objekty vzorem'
     },
     ipdf: {
       description: 'Importuje vektorovou geometrii ze souboru PDF'
     },
     hpang: {
       description:
-        'Nastaví výchozí úhel v radiánech pro nově vytvářené vzory šrafování'
+        'Nastaví výchozí úhel v radiánech pro nově vytvářené vzory výplně'
     },
     hpassoc: {
-      description: 'Řídí, zda jsou nově vytvářená šrafování asociativní'
+      description: 'Řídí, zda jsou nově vytvářené vzorové výplně asociativní'
     },
     hpbackgroundcolor: {
       description:
-        'Nastaví výchozí barvu pozadí pro nově vytvářené vzory šrafování'
+        'Nastaví výchozí barvu pozadí pro nově vytvářené vzory výplně'
     },
     hpcolor: {
-      description: 'Nastaví výchozí barvu pro nově vytvářená šrafování'
+      description: 'Nastaví výchozí barvu pro nově vytvářené vzorové výplně'
     },
     hpdouble: {
       description:
-        'Řídí, zda jsou uživatelsky definované vzory šrafování zdvojené'
+        'Řídí, zda jsou uživatelsky definované vzory výplně zdvojené'
     },
     hpislanddetection: {
       description:
-        'Řídí, jak se nakládá s ostrůvky uvnitř nově vytvářených hranic šrafování'
+        'Řídí, jak se nakládá s ostrůvky uvnitř hranic nově vytvářených vzorových výplní'
     },
     hplayer: {
       description:
-        'Nastaví výchozí hladinu pro nově vytvářená šrafování a výplně'
+        'Nastaví výchozí hladinu pro nově vytvářené výplně'
     },
     hpname: {
       description:
-        'Nastaví výchozí název vzoru pro nově vytvářená šrafování v této relaci'
+        'Nastaví výchozí název vzoru pro nově vytvářené vzorové výplně v této relaci'
     },
     hpscale: {
-      description: 'Nastaví výchozí měřítko pro nově vytvářené vzory šrafování'
+      description: 'Nastaví výchozí měřítko pro nově vytvářené vzory výplně'
     },
     hpseparate: {
       description:
-        'Řídí, zda se pro více hranic vytvoří jeden nebo samostatné objekty šrafování'
+        'Řídí, zda se pro více hranic vytvoří jeden nebo samostatné objekty vzorové výplně'
     },
     hptransparency: {
       description:
-        'Nastaví výchozí průhlednost pro nově vytvářená šrafování a výplně'
+        'Nastaví výchozí průhlednost pro nově vytvářené výplně'
     },
     insunits: {
       description:
-        'Určuje jednotky výkresu pro automatické měřítko vkládaných bloků, obrázků nebo externích referencí'
+        'Určuje jednotky výkresu pro automatické měřítko vkládaných symbolů, obrázků nebo propojených výkresů'
     },
     jpgout: {
       description: 'Exportuje do JPEG'
@@ -286,10 +286,10 @@ export default {
       description: 'Řídí, zda se ve výkresu zobrazují tloušťky čar'
     },
     clearmeasurements: {
-      description: 'Odstraní všechna měření z aktuálního rozvržení'
+      description: 'Odstraní všechna měření z aktuální tiskové stránky'
     },
     measurementvis: {
-      description: 'Zobrazí nebo skryje měření na aktuálním rozvržení'
+      description: 'Zobrazí nebo skryje měření na aktuální tiskové stránce'
     },
     measurementpanel: {
       description: 'Otevře paletu měření'
@@ -327,7 +327,7 @@ export default {
       description: 'Nastaví barvu použitou pro překryvy měření'
     },
     modelbkcolor: {
-      description: 'Nastaví barvu pozadí kreslicí oblasti modelového prostoru'
+      description: 'Nastaví barvu pozadí kreslicí oblasti plátna'
     },
     mline: {
       description:
@@ -366,7 +366,7 @@ export default {
     },
     paperbkcolor: {
       description:
-        'Nastaví barvu pozadí kreslicí oblasti výkresového prostoru (rozvržení)'
+        'Nastaví barvu pozadí kreslicí oblasti tiskové stránky'
     },
     pdmode: {
       description: 'Řídí způsob zobrazení bodových entit POINT'
@@ -453,7 +453,7 @@ export default {
       description: 'Zobrazí nebo skryje poznámky'
     },
     clearmarkups: {
-      description: 'Vymaže všechny poznámky na aktuálním rozvržení'
+      description: 'Vymaže všechny poznámky na aktuální tiskové stránce'
     },
     markupexport: {
       description: 'Exportuje poznámky do sidecar JSON souboru'

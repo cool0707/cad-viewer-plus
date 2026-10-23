@@ -1,6 +1,6 @@
 export default {
   newDrawing: {
-    layoutPrefix: 'レイアウト'
+    layoutPrefix: '印刷ページ'
   },
   document: {
     untitled: '無題'
@@ -36,7 +36,7 @@ export default {
     secondCorner: 'もう一方のコーナーを指定 または'
   },
   message: {
-    onLockedLayer: 'はロックされた画層上にあります。',
+    onLockedLayer: 'はロックされたレイヤー上にあります。',
     fetchingDrawingFile: 'ファイルを取得しています...',
     exportingDxf: 'DXF を書き出しています...',
     exportingPdf: 'PDF を書き出しています...',
@@ -111,14 +111,14 @@ export default {
     start: 'ファイルの解析を開始しています...',
     parse: 'ファイルを解析しています...',
     font: '図面に必要なフォントをダウンロードしています...',
-    ltype: '線種を解析しています...',
+    ltype: '線の種類を解析しています...',
     style: '文字スタイルを解析しています...',
     dimstyle: '寸法スタイルを解析しています...',
-    layer: '画層を解析しています...',
+    layer: 'レイヤーを解析しています...',
     vport: 'ビューポートを解析しています...',
-    blockrecord: 'ブロックレコードを解析しています...',
+    blockrecord: 'シンボルの定義を解析しています...',
     header: 'ヘッダーを解析しています...',
-    block: 'ブロックを解析しています...',
+    block: 'シンボルを解析しています...',
     entity: 'オブジェクトを解析しています...',
     object: '名前付きディクショナリを解析しています...',
     rendering: '図面を描画しています...',

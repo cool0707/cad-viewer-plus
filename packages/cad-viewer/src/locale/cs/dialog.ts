@@ -93,10 +93,10 @@ export default {
     exportInvisibleLayers: 'Exportovat neviditelné hladiny',
     exportInvisibleLayersHint:
       'Zahrnout do exportovaného souboru geometrii na vypnutých nebo zmrazených hladinách',
-    layoutsSection: 'Rozvržení',
-    exportLayouts: 'Exportovat rozvržení',
+    layoutsSection: 'Tiskové stránky',
+    exportLayouts: 'Exportovat tiskové stránky',
     exportLayoutsHint:
-      'Zahrnout rozvržení výkresového prostoru do exportovaného souboru',
+      'Zahrnout tiskové stránky do exportovaného souboru',
     yes: 'Ano',
     no: 'Ne',
     initialView: 'Počáteční pohled',
@@ -130,16 +130,16 @@ export default {
   },
   exportPdfDlg: {
     title: 'Exportovat do PDF',
-    modelSpaceSection: 'Modelový prostor',
+    modelSpaceSection: 'Plátno',
     modelSpaceDisplay: 'Zobrazení',
     modelSpaceDisplayHint: 'Exportovat obsah aktuálně zobrazený ve výřezu',
     modelSpaceExtents: 'Rozsah',
     modelSpaceExtentsHint:
       'Exportovat rozsah všech objektů v aktuálním prostoru',
     paperSpaceSection: 'Výkresový prostor',
-    exportLayouts: 'Exportovat rozvržení',
+    exportLayouts: 'Exportovat tiskové stránky',
     exportLayoutsHint:
-      'Zahrnout rozvržení výkresového prostoru jako další stránky PDF',
+      'Zahrnout tiskové stránky jako další stránky PDF',
     textModeSection: 'Text',
     textMode: 'Vykreslení textu',
     textModeText: 'Textové objekty',
@@ -152,7 +152,7 @@ export default {
     no: 'Ne'
   },
   quickSelectDlg: {
-    title: 'Rychlý výběr',
+    title: 'Výběr podle kritérií',
     applyTo: 'Použít na',
     applyToEntireDrawing: 'Celý výkres',
     applyToCurrentSelection: 'Aktuální výběr',
@@ -215,11 +215,11 @@ export default {
     setCurrentDone: 'Aktuální textový styl nastaven na „{name}“.'
   },
   attEditDlg: {
-    title: 'Rozšířený editor atributů',
-    block: 'Blok:',
+    title: 'Upravit vlastnosti symbolu',
+    block: 'Symbol:',
     tag: 'Značka:',
-    selectBlock: 'Vybrat blok',
-    tabAttribute: 'Atribut',
+    selectBlock: 'Vybrat symbol',
+    tabAttribute: 'Vlastnost',
     tabTextOptions: 'Možnosti textu',
     tabProperties: 'Vlastnosti',
     colTag: 'Značka',
@@ -241,9 +241,9 @@ export default {
     color: 'Barva:',
     lineweight: 'Tloušťka čáry:',
     plotStyle: 'Styl tisku:',
-    promptSelectBlock: 'Vyberte blok s atributy:',
-    rejectSelectBlock: 'Objekt musí být blok s atributy.',
-    noAttributes: 'Vybraný blok nemá žádné atributy.',
+    promptSelectBlock: 'Vyberte symbol s vlastnostmi:',
+    rejectSelectBlock: 'Objekt musí být symbol s vlastnostmi.',
+    noAttributes: 'Vybraný symbol nemá žádné vlastnosti.',
     justify: {
       left: 'Vlevo',
       center: 'Na střed',
@@ -263,7 +263,7 @@ export default {
     }
   },
   attDefDlg: {
-    title: 'Definice atributu',
+    title: 'Definice vlastnosti symbolu',
     modeSection: 'Režim',
     invisible: 'Neviditelný',
     constant: 'Konstantní',
@@ -273,7 +273,7 @@ export default {
     multipleLines: 'Více řádků',
     insertionSection: 'Bod vložení',
     specifyOnScreen: 'Určit na obrazovce',
-    attributeSection: 'Atribut',
+    attributeSection: 'Vlastnost',
     tag: 'Značka:',
     prompt: 'Výzva:',
     default: 'Výchozí:',
@@ -284,9 +284,9 @@ export default {
     height: 'Výška textu:',
     rotation: 'Otočení:',
     boundaryWidth: 'Šířka hranice:',
-    alignBelow: 'Zarovnat pod předchozí definici atributu',
-    tagRequired: 'Značka atributu je povinná.',
-    noPrevious: 'Nebyla nalezena předchozí definice atributu.',
+    alignBelow: 'Zarovnat pod předchozí definici vlastnosti',
+    tagRequired: 'Značka vlastnosti je povinná.',
+    noPrevious: 'Nebyla nalezena předchozí definice vlastnosti.',
     promptInsertionPoint: 'Zadejte počáteční bod:',
     promptHeight: 'Zadejte výšku:',
     promptRotation: 'Zadejte úhel otočení:',

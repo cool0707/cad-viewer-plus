@@ -46,10 +46,10 @@ describe('Find palette locale messages', () => {
   )
 
   it.each(['hint', 'hintLayout'])(
-    'the %s message names the text found in blocks, dimensions, leaders and tables',
+    'the %s message names the text found in symbols, dimensions, leaders and tables',
     name => {
       expect(en[`findPalette.${name}`]).toMatch(
-        /blocks, dimensions, leaders and tables/
+        /symbols, dimensions, leaders and tables/
       )
     }
   )

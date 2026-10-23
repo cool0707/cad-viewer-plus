@@ -43,10 +43,10 @@ export default {
       description: '设置新创建对象的当前默认颜色'
     },
     celtscale: {
-      description: '控制新创建对象的线型比例系数'
+      description: '控制新创建对象的线条类型比例系数'
     },
     celtype: {
-      description: '设置新创建对象的线型'
+      description: '设置新创建对象的线条类型'
     },
     celweight: {
       description: '设置新创建对象的默认线宽'
@@ -114,10 +114,10 @@ export default {
       prompt: '选择对象'
     },
     extmax: {
-      description: '存储模型空间图形范围的右上角（只读）'
+      description: '存储画布图形范围的右上角（只读）'
     },
     extmin: {
-      description: '存储模型空间图形范围的左下角（只读）'
+      description: '存储画布图形范围的左下角（只读）'
     },
     entout: {
       description: '导出所选对象的合并预览图',
@@ -128,13 +128,13 @@ export default {
       prompt: '选择对象'
     },
     imageattach: {
-      description: '将光栅图像作为外部参照附着到当前图形'
+      description: '将光栅图像作为链接附着到当前图形'
     },
     '-insert': {
-      description: '将块定义插入到当前图形（命令行）'
+      description: '将符号定义插入到当前图形（命令行）'
     },
     xattach: {
-      description: '将 DWG 或 DXF 图形作为外部参照附着到当前图形'
+      description: '将 DWG 或 DXF 图形作为链接图纸附着到当前图形'
     },
     gripcolor: {
       description: '设置所选对象上未选中夹点的颜色'
@@ -191,7 +191,7 @@ export default {
       description: '设置新创建填充和填充区域的默认透明度'
     },
     insunits: {
-      description: '指定插入块、图像或外部参照时用于自动缩放的图形单位'
+      description: '指定插入符号、图像或链接图纸时用于自动缩放的图形单位'
     },
     jpgout: {
       description: '导出为 JPEG 图片'
@@ -245,7 +245,7 @@ export default {
       description: '在控制台输出调试信息'
     },
     ltscale: {
-      description: '设置图形的全局线型比例系数'
+      description: '设置图形的全局线条类型比例系数'
     },
     lunits: {
       description: '设置坐标和距离的显示格式'
@@ -257,10 +257,10 @@ export default {
       description: '用于控制是否在图纸中显示线宽效果'
     },
     clearmeasurements: {
-      description: '清除当前布局上的所有测量标注'
+      description: '清除当前打印页上的所有测量标注'
     },
     measurementvis: {
-      description: '显示或隐藏当前布局上的测量标注'
+      description: '显示或隐藏当前打印页上的测量标注'
     },
     measurementpanel: {
       description: '打开测量面板'
@@ -296,7 +296,7 @@ export default {
       description: '设置测量标注覆盖图形使用的颜色'
     },
     modelbkcolor: {
-      description: '设置模型空间绘图区域的背景颜色'
+      description: '设置画布绘图区域的背景颜色'
     },
     mline: {
       description: '创建由多条平行线组成的多线对象'
@@ -330,7 +330,7 @@ export default {
       description: '平移视图'
     },
     paperbkcolor: {
-      description: '设置图纸空间（布局）绘图区域的背景颜色'
+      description: '设置打印页绘图区域的背景颜色'
     },
     pdmode: {
       description: '控制点对象的显示样式'
@@ -411,7 +411,7 @@ export default {
       description: '显示或隐藏批注'
     },
     clearmarkups: {
-      description: '清除当前布局上的所有批注'
+      description: '清除当前打印页上的所有批注'
     },
     markupexport: {
       description: '将批注导出为 sidecar JSON 文件'

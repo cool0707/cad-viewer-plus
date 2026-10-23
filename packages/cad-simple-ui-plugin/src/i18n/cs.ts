@@ -17,7 +17,7 @@ export const cs: Record<string, string> = {
   'toolbar.layer': 'Správce hladin',
   'toolbar.find': 'Hledat',
   'toolbar.layerShort': 'Hladiny',
-  'toolbar.layout': 'Rozvržení',
+  'toolbar.layout': 'Tisková stránka',
   'toolbar.settings': 'Nastavení',
   'toolbar.simulatedMouseOn': 'Myš',
   'toolbar.simulatedMouseOff': 'Lupa',
@@ -142,24 +142,25 @@ export const cs: Record<string, string> = {
   'findPalette.input': 'Hledaný text',
   'findPalette.find': 'Hledat',
   'findPalette.matchCase': 'Rozlišovat velikost písmen',
-  'findPalette.currentLayoutOnly': 'Pouze aktuální layout',
+  'findPalette.currentLayoutOnly': 'Pouze aktuální tisková stránka',
   'findPalette.hint':
-    'Stiskněte Enter pro hledání textu, víceřádkového textu, atributů a textu v blocích, kótách, odkazech a tabulkách v celém výkresu (všechny layouty).',
+    'Stiskněte Enter pro hledání textu, víceřádkového textu, vlastností symbolů a textu v symbolech, kótách, odkazech a tabulkách v celém výkresu (všechny tiskové stránky).',
   'findPalette.hintLayout':
-    'Stiskněte Enter pro hledání textu, víceřádkového textu, atributů a textu v blocích, kótách, odkazech a tabulkách v aktuálním layoutu.',
+    'Stiskněte Enter pro hledání textu, víceřádkového textu, vlastností symbolů a textu v symbolech, kótách, odkazech a tabulkách na aktuální tiskové stránce.',
   'findPalette.noResults': 'Nebyl nalezen žádný text',
   'findPalette.count': 'Nalezeno: {count}',
-  'findPalette.countLayouts': 'Nalezeno: {count} (layouty: {layouts})',
+  'findPalette.countLayouts': 'Nalezeno: {count} (tiskové stránky: {layouts})',
   'findPalette.countTruncated':
     'Zobrazeno prvních {count} výsledků – upřesněte hledání',
   'findPalette.noDocument': 'Pro hledání otevřete výkres',
-  'findPalette.layoutUnavailable': 'Layout „{layout}“ se nepodařilo otevřít',
+  'findPalette.layoutUnavailable':
+    'Tiskovou stránku „{layout}“ se nepodařilo otevřít',
   'findPalette.kind.text': 'Text',
   'findPalette.kind.mtext': 'Mtext',
-  'findPalette.kind.attribute': 'Atribut',
-  'findPalette.kind.block': 'Text bloku',
+  'findPalette.kind.attribute': 'Vlastnost symbolu',
+  'findPalette.kind.block': 'Text symbolu',
   'findPalette.kind.dimension': 'Kóta',
   'findPalette.kind.leader': 'Odkaz',
   'findPalette.kind.table': 'Tabulka',
-  'findPalette.unnamedLayout': '(nepojmenovaný layout)'
+  'findPalette.unnamedLayout': '(nepojmenovaná tisková stránka)'
 }

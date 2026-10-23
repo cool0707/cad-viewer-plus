@@ -170,11 +170,11 @@ export default {
   hatch: {
     prompt: 'Vyberte objekt hranice nebo',
     pickPoint: 'Zadejte vnitřní bod (nebo stiskněte Enter pro dokončení)',
-    select: 'Vyberte objekty k šrafování',
-    patternName: 'Zadejte název vzoru šrafování',
-    scale: 'Zadejte měřítko vzoru šrafování',
-    angle: 'Zadejte úhel vzoru šrafování',
-    style: 'Zadejte styl šrafování',
+    select: 'Vyberte objekty k vyplnění',
+    patternName: 'Zadejte název vzoru výplně',
+    scale: 'Zadejte měřítko vzoru výplně',
+    angle: 'Zadejte úhel vzoru výplně',
+    style: 'Zadejte styl vzorové výplně',
     associative: 'Zadejte asociativitu',
     invalidBoundary: 'Vybrané objekty netvoří uzavřenou hranici.',
     keywords: {
@@ -363,11 +363,11 @@ export default {
     invalidSelection: 'Vybrán neplatný objekt.',
     settingsPrompt: 'Zadejte nastavení LAYFRZ ke změně',
     viewportPrompt: 'Zadejte chování zmrazení ve výřezu',
-    blockSelectionPrompt: 'Zadejte chování výběru vnořeného bloku',
+    blockSelectionPrompt: 'Zadejte chování výběru vnořeného symbolu',
     vpfreezeFallback:
       'Aktuální prohlížeč nepodporuje zmrazení hladiny podle výřezu; místo toho se použije chování Zmrazit.',
     nestedSelectionLimited:
-      'Nastavení výběru vnořeného bloku se uloží, ale aktuální výběr stále vyhodnocuje hladinu entity nejvyšší úrovně.',
+      'Nastavení výběru vnořeného symbolu se uloží, ale aktuální výběr stále vyhodnocuje hladinu entity nejvyšší úrovně.',
     layerNotFound: 'Hladina nenalezena',
     cannotFreezeCurrent: 'Nelze zmrazit aktuální hladinu.',
     alreadyFrozen: 'Hladina je již zmrazená',
@@ -391,8 +391,8 @@ export default {
         global: 'Viewports'
       },
       blockSelection: {
-        display: 'Výběr bloku(B)',
-        local: 'Výběr bloku',
+        display: 'Výběr symbolu(B)',
+        local: 'Výběr symbolu',
         global: 'BlockSelection'
       },
       freeze: {
@@ -406,8 +406,8 @@ export default {
         global: 'Vpfreeze'
       },
       block: {
-        display: 'Blok(B)',
-        local: 'Blok',
+        display: 'Symbol(B)',
+        local: 'Symbol',
         global: 'Block'
       },
       entity: {
@@ -486,11 +486,11 @@ export default {
     invalidSelection: 'Vybrán neplatný objekt.',
     settingsPrompt: 'Zadejte nastavení LAYOFF ke změně',
     viewportPrompt: 'Zadejte chování výřezu',
-    blockSelectionPrompt: 'Zadejte chování výběru vnořeného bloku',
+    blockSelectionPrompt: 'Zadejte chování výběru vnořeného symbolu',
     vpfreezeFallback:
       'Aktuální prohlížeč nepodporuje vypnutí hladiny podle výřezu; místo toho se použije chování Vypnout.',
     nestedSelectionLimited:
-      'Nastavení výběru vnořeného bloku se uloží, ale aktuální výběr stále vyhodnocuje hladinu entity nejvyšší úrovně.',
+      'Nastavení výběru vnořeného symbolu se uloží, ale aktuální výběr stále vyhodnocuje hladinu entity nejvyšší úrovně.',
     layerNotFound: 'Hladina nenalezena',
     cannotTurnOffCurrent: 'Nelze vypnout aktuální hladinu.',
     alreadyOff: 'Hladina je již vypnutá',
@@ -514,8 +514,8 @@ export default {
         global: 'Viewports'
       },
       blockSelection: {
-        display: 'Výběr bloku(B)',
-        local: 'Výběr bloku',
+        display: 'Výběr symbolu(B)',
+        local: 'Výběr symbolu',
         global: 'BlockSelection'
       },
       off: {
@@ -529,8 +529,8 @@ export default {
         global: 'Vpfreeze'
       },
       block: {
-        display: 'Blok(B)',
-        local: 'Blok',
+        display: 'Symbol(B)',
+        local: 'Symbol',
         global: 'Block'
       },
       entity: {
@@ -793,14 +793,14 @@ export default {
     decodeFailed: 'Nepodařilo se načíst vybraný soubor obrázku.'
   },
   insert: {
-    blockName: 'Zadejte název bloku:',
+    blockName: 'Zadejte název symbolu:',
     insertionPoint: 'Zadejte bod vložení:',
     scale: 'Zadejte faktor měřítka:',
     rotation: 'Zadejte úhel otočení:',
     invalidScale: 'Faktor měřítka musí být větší než 0.',
-    invalidBlockName: 'Neplatný název bloku.',
-    blockNotFound: 'Blok nenalezen',
-    xrefNotAllowed: 'Nelze vložit externí referenci pomocí -INSERT.'
+    invalidBlockName: 'Neplatný název symbolu.',
+    blockNotFound: 'Symbol nenalezen',
+    xrefNotAllowed: 'Nelze vložit propojený výkres pomocí -INSERT.'
   },
   xattach: {
     insertionPoint: 'Zadejte bod vložení:',
@@ -808,7 +808,7 @@ export default {
     rotation: 'Zadejte úhel otočení:',
     invalidScale: 'Faktor měřítka musí být větší než 0.',
     unsupportedFile: 'Vyberte soubor DWG nebo DXF.',
-    loading: 'Načítám externí referenci...',
+    loading: 'Načítám propojený výkres...',
     loadFailed: 'Nepodařilo se načíst vybraný soubor výkresu.'
   },
   point: {
@@ -1235,7 +1235,7 @@ export default {
   chtml: {
     exportFormat: 'Formát exportu',
     exportInvisibleLayers: 'Exportovat neviditelné hladiny',
-    exportLayouts: 'Exportovat rozvržení',
+    exportLayouts: 'Exportovat tiskové stránky',
     initialView: 'Počáteční pohled při otevření HTML',
     viewerMode: 'Režim offline prohlížeče',
     chunkSizeMiB: 'Velikost části v MiB (vícesouborový balíček)',
@@ -1284,8 +1284,8 @@ export default {
     }
   },
   cpdf: {
-    modelSpaceFit: 'Rám modelového prostoru',
-    exportLayouts: 'Exportovat rozvržení',
+    modelSpaceFit: 'Rám plátna',
+    exportLayouts: 'Exportovat tiskové stránky',
     textMode: 'Vykreslení textu',
     keywords: {
       extents: {

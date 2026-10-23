@@ -217,16 +217,16 @@ export default {
       lengthUnits: '长度单位',
       angleUnits: '角度单位',
       reference: '参照',
-      block: '块'
+      block: '符号'
     },
     insertBlock: {
-      empty: '没有可用的块',
+      empty: '没有可用的符号',
       currentDrawing: '当前图形',
-      previewMenu: '块预览画廊'
+      previewMenu: '符号预览画廊'
     },
     property: {
       color: '颜色',
-      lineType: '线型',
+      lineType: '线条类型',
       lineWeight: '线宽'
     },
     layerTools: {
@@ -280,7 +280,7 @@ export default {
       ellipse: '绘制椭圆或椭圆弧。',
       rect: '绘制矩形或正多边形。',
       point: '在图纸中放置点对象。',
-      hatch: '用填充图案填充闭合区域。',
+      hatch: '用图案填充闭合区域（图案填充）。',
       text: '在图纸中创建多行文字标注。',
       move: '将选中的对象移动到新位置。',
       rotate: '围绕基点旋转选中的对象。',
@@ -290,31 +290,31 @@ export default {
       undo: '撤销上一次编辑操作。',
       redo: '重做上一次撤销的操作。',
       properties: '打开当前所选对象的属性面板。',
-      quickSelect: '打开快速选择对话框，按条件筛选并选择图元。',
-      find: '打开查找面板，在整个图纸或当前布局中搜索文字。',
-      countList: '打开计数面板以查看并管理块计数。',
-      missingResources: '打开缺失/外部资源面板以处理字体、图片和外部参照。',
+      quickSelect: '打开“按条件选择”（快速选择），按类型、图层等条件筛选并选择图元。',
+      find: '打开查找面板，在整个图纸或当前打印页中搜索文字。',
+      countList: '打开计数面板以查看并管理符号（块）计数。',
+      missingResources: '打开缺失/外部资源面板以处理字体、图片和链接图纸（外部参照）。',
       drawingUnits: '打开图形单位对话框，设置坐标格式、精度与插入缩放单位。',
-      attachDwg: '将 DWG 或 DXF 图纸作为外部参照附着（XATTACH）。',
-      attachImage: '将光栅图像作为外部参照附着（IMAGEATTACH）。',
-      insert: '打开块工具选项板以浏览并插入块定义（INSERT）。',
-      editAttributes: '打开增强属性编辑器，编辑块属性值与显示特性（ATTEDIT）。',
-      defineAttribute: '创建用于块的属性定义（ATTDEF）。',
+      attachDwg: '将 DWG 或 DXF 图纸作为链接图纸（外部参照）附着（XATTACH）。',
+      attachImage: '将光栅图像作为链接附着（IMAGEATTACH）。',
+      insert: '打开符号（块）面板以浏览并插入符号定义（INSERT）。',
+      editAttributes: '编辑符号属性（块属性）的值与显示特性（ATTEDIT）。',
+      defineAttribute: '创建用于符号的属性（属性定义）（ATTDEF）。',
       agent: '打开 CAD Agent 工具面板，使用自然语言描述并绘制图形。',
       propertyColor: '设置新建对象或当前选中对象使用的颜色。',
-      propertyLineType: '设置新建对象或当前选中对象使用的线型。',
+      propertyLineType: '设置新建对象或当前选中对象使用的线条类型（线型）。',
       propertyLineWeight: '设置新建对象或当前选中对象使用的线宽。',
       layerAction: {
         off: '关闭当前选中的图层，使该图层上的对象隐藏，但不会冻结该图层。',
         isolate: '仅显示当前选中的图层，并隐藏其他图层，方便专注处理相关对象。',
-        freeze: '冻结当前选中的图层，使其对象隐藏，并在重生成时跳过该图层。',
+        freeze: '冻结当前选中的图层，使其对象隐藏，并在刷新显示（重生成）时跳过该图层。',
         lock: '锁定当前选中的图层，使其对象保持可见，但不能被编辑。',
         current:
           '将当前选中的图层设为当前图层，之后新建对象会默认放在该图层上。',
         allOn: '打开所有已关闭的图层；已冻结的图层会继续保持冻结状态。',
         unisolate:
           '恢复被图层隔离隐藏或锁定的图层，同时保留隔离之后的其他图层更改。',
-        thaw: '解冻当前选中的图层，使其对象重新显示并重新参与重生成。',
+        thaw: '解冻当前选中的图层，使其对象重新显示并重新参与刷新显示（重生成）。',
         unlock: '解锁当前选中的图层，使其对象可以再次被选择和编辑。',
         restore: '恢复此 Ribbon 中最近一次图层操作之前的图层状态。'
       },
@@ -375,7 +375,7 @@ export default {
       undo: '撤销',
       redo: '重做',
       properties: '属性',
-      quickSelect: '快速选择',
+      quickSelect: '按条件选择',
       find: '查找',
       countList: '计数',
       drawingUnits: '图形单位',
@@ -422,7 +422,7 @@ export default {
     },
     clearMeasurements: {
       text: '清除',
-      description: '清除当前布局上的所有测量标注'
+      description: '清除当前打印页上的所有测量标注'
     },
     measurementImport: {
       text: '导入',
@@ -526,7 +526,7 @@ export default {
     },
     clearMarkups: {
       text: '清除',
-      description: '清除当前布局上的所有批注'
+      description: '清除当前打印页上的所有批注'
     },
     select: {
       text: '选择',
@@ -547,7 +547,7 @@ export default {
     },
     zoomSaved: {
       text: '保存的视图',
-      description: '恢复 AutoCAD 保存的视图（VPORT / 布局界限），或打开时的初始视口'
+      description: '恢复 AutoCAD 保存的视图（VPORT / 打印页界限），或打开时的初始视口'
     },
     zoomToExtent: {
       text: '范围',
@@ -620,8 +620,8 @@ export default {
     export: {
       tooltip: '导出图片为 PNG'
     },
-    modelTab: '模型',
-    moreLayouts: '更多布局'
+    modelTab: '画布',
+    moreLayouts: '更多打印页'
   },
   toolPalette: {
     entityProperties: {
@@ -684,7 +684,7 @@ export default {
         lock: '锁定',
         plot: '打印',
         color: '颜色',
-        linetype: '线型',
+        linetype: '线条类型',
         lineweight: '线宽',
         transparency: '透明度',
         description: '说明',
@@ -701,22 +701,22 @@ export default {
       input: '搜索文字',
       find: '查找',
       matchCase: '区分大小写',
-      currentLayoutOnly: '仅当前布局',
-      hint: '按回车键在整个图纸（所有布局）中搜索文字、多行文字、属性，以及块、标注、引线和表格中的文字。',
+      currentLayoutOnly: '仅当前打印页',
+      hint: '按回车键在整个图纸（所有打印页）中搜索文字、多行文字、符号属性，以及符号、标注、引线和表格中的文字。',
       hintLayout:
-        '按回车键在当前布局中搜索文字、多行文字、属性，以及块、标注、引线和表格中的文字。',
+        '按回车键在当前打印页中搜索文字、多行文字、符号属性，以及符号、标注、引线和表格中的文字。',
       noResults: '未找到文字',
       count: '找到 {count} 项',
-      countLayouts: '在 {layouts} 个布局中找到 {count} 项',
+      countLayouts: '在 {layouts} 个打印页中找到 {count} 项',
       countTruncated: '仅显示前 {count} 项结果，请缩小搜索范围',
       noDocument: '请先打开图纸再搜索',
-      layoutUnavailable: '无法打开布局“{layout}”',
-      unnamedLayout: '（未命名布局）',
+      layoutUnavailable: '无法打开打印页“{layout}”',
+      unnamedLayout: '（未命名打印页）',
       kind: {
         text: '文字',
         mtext: '多行文字',
-        attribute: '属性',
-        block: '块文字',
+        attribute: '符号属性',
+        block: '符号文字',
         dimension: '标注',
         leader: '引线',
         table: '表格'
@@ -725,13 +725,13 @@ export default {
     countList: {
       tab: '计数',
       title: '计数',
-      searchPlaceholder: '搜索块名称',
+      searchPlaceholder: '搜索符号名称',
       countInArea: '指定区域计数',
       areaSet: '计数区域已更新',
-      areaCleared: '正在对整个模型空间计数',
-      blockName: '块',
+      areaCleared: '正在对整个画布计数',
+      blockName: '符号',
       count: '数量',
-      empty: '未找到可见块',
+      empty: '未找到可见符号',
       prompt: {
         firstCorner: '指定计数区域的第一个角点或 [Entire(整个)]: ',
         secondCorner: '指定对角点: '
@@ -782,7 +782,7 @@ export default {
       title: '缺失 / 外部资源',
       fontTab: '字体',
       imageTab: '图片',
-      xrefTab: '外部参照',
+      xrefTab: '链接图纸',
       attach: '附着',
       attachDwg: '附着 DWG/DXF ...',
       attachImage: '附着图像 ...',
@@ -819,7 +819,7 @@ export default {
       fromUrl: 'URL…',
       unload: '卸载',
       load: '加载',
-      empty: '当前图纸没有外部参照或图像',
+      empty: '当前图纸没有链接图纸或图像',
       urlPrompt: '输入图纸文件（DWG、DXF 等）的 URL',
       urlRequired: '请输入 URL',
       loadFailed: '加载参照 "{name}" 失败'
@@ -867,7 +867,7 @@ export default {
         fonts: '字体'
       },
       columns: {
-        layout: '布局',
+        layout: '打印页',
         layer: '图层',
         geometry: '几何体',
         mapping: '映射',
@@ -900,7 +900,7 @@ export default {
       midOpenPaints: '打开中绘制次数',
       yields: '让出次数',
       cache: 'INSERT 渲染缓存（顶层）',
-      slowBlocks: '最慢块模板 miss',
+      slowBlocks: '最慢符号模板 miss',
       total: '打开总计',
       read: 'db.read',
       parse: 'PARSE',
@@ -917,27 +917,27 @@ export default {
         share: '占比',
         metric: '指标',
         value: '值',
-        block: '块',
+        block: '符号',
         build: '构建',
         compact: '压缩'
       }
     },
     blocks: {
-      tab: '块',
-      title: '块',
+      tab: '符号',
+      title: '符号',
       tabCurrentDrawing: '当前图形',
       tabRecent: '最近使用',
       tabFavorites: '收藏夹',
       tabLibraries: '库',
-      sectionCurrentDrawing: '当前图形中的块',
-      sectionRecent: '最近使用的块',
-      sectionFavorites: '收藏的块',
-      sectionLibraries: '块库',
+      sectionCurrentDrawing: '当前图形中的符号',
+      sectionRecent: '最近使用的符号',
+      sectionFavorites: '收藏的符号',
+      sectionLibraries: '符号库',
       filterPlaceholder: '过滤器...',
-      empty: '没有可用的块',
-      emptyRecent: '没有最近插入的块',
-      emptyFavorites: '没有收藏的块',
-      emptyLibraries: '尚未配置块库',
+      empty: '没有可用的符号',
+      emptyRecent: '没有最近插入的符号',
+      emptyFavorites: '没有收藏的符号',
+      emptyLibraries: '尚未配置符号库',
       toggleFavorite: '切换收藏',
       options: '选项',
       insertionPoint: '插入点',
@@ -953,7 +953,7 @@ export default {
     custom: '自定义'
   },
   lineTypeSelect: {
-    placeholder: '线型'
+    placeholder: '线条类型'
   },
   colorIndexPicker: {
     color: '颜色：',
@@ -964,11 +964,11 @@ export default {
   entityInfo: {
     color: '颜色',
     layer: '图层',
-    lineType: '线型'
+    lineType: '线条类型'
   },
   ribbonProperty: {
     color: '颜色',
-    lineType: '线型',
+    lineType: '线条类型',
     lineWeight: '线宽',
     layer: '图层'
   },
@@ -981,7 +981,7 @@ export default {
       visibility: '可见性',
       freeze: '冻结',
       lock: '锁定',
-      lineType: '线型',
+      lineType: '线条类型',
       color: '颜色',
       visible: '显示',
       hidden: '隐藏',

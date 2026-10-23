@@ -1,6 +1,6 @@
 export default {
   newDrawing: {
-    layoutPrefix: 'Düzen'
+    layoutPrefix: 'Sayfa'
   },
   document: {
     untitled: 'Adsız'
@@ -109,14 +109,14 @@ export default {
     start: 'Dosya ayrıştırma başlatılıyor ...',
     parse: 'Dosya ayrıştırılıyor ...',
     font: 'Bu çizim için gerekli yazı tipleri indiriliyor ...',
-    ltype: 'Çizgi tipleri ayrıştırılıyor ...',
+    ltype: 'Çizgi türleri ayrıştırılıyor ...',
     style: 'Metin stilleri ayrıştırılıyor ...',
     dimstyle: 'Ölçülendirme stilleri ayrıştırılıyor ...',
     layer: 'Katmanlar ayrıştırılıyor ...',
     vport: 'Görüntü portları ayrıştırılıyor ...',
-    blockrecord: 'Blok kaydı ayrıştırılıyor ...',
+    blockrecord: 'Sembol tanımları ayrıştırılıyor ...',
     header: 'Başlık ayrıştırılıyor ...',
-    block: 'Bloklar ayrıştırılıyor ...',
+    block: 'Semboller ayrıştırılıyor ...',
     entity: 'Nesneler ayrıştırılıyor ...',
     object: 'Adlandırılmış sözlükler ayrıştırılıyor ...',
     rendering: 'Çizim render ediliyor ...',

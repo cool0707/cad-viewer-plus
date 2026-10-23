@@ -120,7 +120,34 @@ Figma / Illustrator 風の「先に選ぶ → ドラッグ / 右サイドバー�
 
 各ステップの「起点」は、今のコードで最初に見るべき場所。調査済みの事実だけを書いている。
 
-### ステップ 1: 用語の変更 + クイック選択の名前変更
+### ステップ 1: 用語の変更 + クイック選択の名前変更 (済)
+- **実施内容 (結果)**:
+  - 方式は (b) 文字列の直接書き換え。プロファイル別辞書 (a) はステップ 6 でプロファイルを入れるときに検討する。
+  - 対象: cad-simple-viewer / cad-viewer / cad-viewer-example / cad-simple-ui-plugin / cad-html-core と README 8 言語。
+    cad-diff-viewer と cad-script-plugin (API 名に直結する開発者向け文言) は CAD 用語のまま残した。
+  - 各言語の訳語:
+    | CAD 用語 | en | zh | tr | cs | ar |
+    |---|---|---|---|---|---|
+    | ブロック → シンボル | Symbol | 符号 | Sembol | Symbol | رمز |
+    | ブロック属性 → シンボルのプロパティ | Symbol property | 符号属性 | Sembol özelliği | Vlastnost symbolu | خاصية الرمز |
+    | モデル空間 → キャンバス | Canvas | 画布 | Tuval | Plátno | لوحة الرسم |
+    | レイアウト → 印刷ページ | Print page | 打印页 | Baskı sayfası | Tisková stránka | صفحة الطباعة |
+    | 線種 → 線の種類 | Line type | 线条类型 | Çizgi türü | (typ čáry のまま) | (نوع الخط のまま) |
+    | ハッチング → 塗りつぶし | Pattern fill / Fill pattern | (填充 のまま) | Desen dolgusu | Vzorová výplň | تعبئة بنمط |
+    | 外部参照 → リンク図面 | Linked drawing | 链接图纸 | Bağlantılı çizim | Propojený výkres | رسم مرتبط |
+    | クイック選択 → 条件で選択 | Select by Criteria | 按条件选择 | Ölçüte Göre Seç | Výběr podle kritérií | تحديد حسب الشروط |
+    | 再作図 → 表示を更新 | display refresh | 刷新显示 | ekran yenileme | obnovení zobrazení | تحديث العرض |
+    - 画像の外部参照 (IMAGEATTACH) は「リンク図面」ではなく「リンク」とした。
+    - レイヤーは en / zh / tr / cs / ar ではもともと一般用語 (Layer / 图层 / Katman / Hladina / طبقة) なので変更なし。
+  - ツールチップ (cad-viewer `main.ribbon.tooltip.*` とツールバーの説明) には CAD 用語を括弧で併記した。
+  - 新規図面の印刷ページ名の接頭辞 (`main.newDrawing.layoutPrefix`) は ja「印刷ページ」、en「Page」、zh「打印页」、
+    tr「Sayfa」、cs「Stránka」、ar「صفحة」。これはファイルに保存されるデータ名になる。
+  - フリーズ関連の文言はステップ 2 で UI から消すので、用語の置き換えだけにとどめた。
+  - 用語に依存していた jest / e2e の期待値を更新した (findLocale, findPaletteLocale, AcUiFindPaletteView,
+    AcExHtmlI18n, find-layouts.spec.ts)。
+  - e2e のメモ: playwright.config.ts は既定で `channel: 'chrome'` を使う。Chrome が無い環境では
+    `/opt/pw-browsers/chromium-*/chrome-linux/chrome` を `launchOptions.executablePath` に指定した一時 config で実行する。
+- 以下は着手前の調査メモ:
 - 対象のロケールファイル (ja だけで「画層」が約 150 か所):
   - `packages/cad-simple-viewer/src/i18n/{en,ja,zh,tr,cs,ar}/` (command.ts, jig.ts, main.ts)
   - `packages/cad-viewer/src/locale/{…}/` (main.ts, dialog.ts, command.ts, entity.ts)

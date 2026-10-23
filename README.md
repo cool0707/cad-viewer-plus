@@ -26,8 +26,12 @@ drawings never leave the user's device.
   - Other scripts load on demand from **Google Fonts** (Arial → Arimo,
     SimSun → Noto Serif SC, Malgun Gothic → Noto Sans KR, …).
   - UI text: **Noto Sans JP** (self-hosted via `@fontsource-variable/noto-sans-jp`).
-- **Localized new drawings** — layout tabs show `モデル / レイアウト1 / レイアウト2`
+- **Localized new drawings** — print page tabs show `キャンバス / 印刷ページ1 / 印刷ページ2`
   (or the active language) instead of the template's Chinese names.
+- **Plain-language terms for non-CAD users** — the UI uses everyday words: Block → Symbol,
+  block attribute → symbol property, Model space → Canvas, Layout → Print page,
+  Hatch → Pattern fill, Xref → Linked drawing, Quick Select → Select by Criteria, and so on.
+  Tooltips keep the CAD term in parentheses (all locales).
 - **JWW (Jw_cad) import** — `.jww` files open in the example app through
   `@mlightcad/cad-jww-converter` (MIT; parser: [ezjww](https://github.com/monozukuri-ai/ezjww),
   Rust → WebAssembly, in a Web Worker). Coordinates are converted from paper

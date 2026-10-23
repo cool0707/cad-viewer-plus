@@ -17,7 +17,7 @@ export default {
       insert: '挿入',
       review: 'レビュー',
       measurement: '計測',
-      hatchContext: 'ハッチング',
+      hatchContext: '塗りつぶし',
       mtextEditorContext: '文字エディタ'
     },
     hatch: {
@@ -39,7 +39,7 @@ export default {
         angle: '角度',
         style: 'スタイル',
         associative: '自動調整',
-        fillType: '塗り潰しの種類',
+        fillType: '塗りつぶしの種類',
         fillColor: '色',
         patternColor: 'パターンの色',
         gradient1Color: 'グラデーション色 1',
@@ -63,23 +63,23 @@ export default {
         off: 'オフ'
       },
       tooltip: {
-        pickPoints: '内側の点をクリックしてハッチング領域を作成します。',
-        selectObjects: 'ハッチングする閉じた境界オブジェクトを選択します。',
-        pattern: 'ハッチングパターン名を選択します。',
-        scale: 'ハッチングパターンの尺度を設定します。',
-        angle: 'ハッチングパターンの角度 (度) を設定します。',
-        style: 'ハッチング作成時の島の検出スタイルを設定します。',
-        associative: '自動調整ハッチングのオン/オフを切り替えます。',
+        pickPoints: '内側の点をクリックして塗りつぶし領域を作成します。',
+        selectObjects: '塗りつぶす閉じた境界オブジェクトを選択します。',
+        pattern: '塗りつぶしパターン名を選択します。',
+        scale: '塗りつぶしパターンの尺度を設定します。',
+        angle: '塗りつぶしパターンの角度 (度) を設定します。',
+        style: '塗りつぶし作成時の島の検出スタイルを設定します。',
+        associative: '自動調整の塗りつぶしのオン/オフを切り替えます。',
         fillType:
-          '塗り潰しの種類 (ソリッド、パターン、グラデーション) を選択します。',
-        fillColor: '塗り潰しの色を選択します。',
+          '塗りつぶしの種類 (ソリッド、パターン、グラデーション) を選択します。',
+        fillColor: '塗りつぶしの色を選択します。',
         patternColor: 'パターンの線の色を選択します。',
         gradient1Color: 'グラデーションの 1 つ目の色を選択します。',
-        backgroundColor: 'パターン塗り潰しの背景色を選択します。',
+        backgroundColor: 'パターン塗りつぶしの背景色を選択します。',
         gradient2Color: 'グラデーションの 2 つ目の色を選択します。',
-        opacity: 'ハッチングの透過性 (0～90) を設定します。',
-        imageScale: '塗り潰しイメージの尺度を設定します。',
-        close: 'ハッチングの作成を終了し、このコンテキストタブを閉じます。'
+        opacity: '塗りつぶしの透過性 (0～90) を設定します。',
+        imageScale: '塗りつぶしイメージの尺度を設定します。',
+        close: '塗りつぶしの作成を終了し、このコンテキストタブを閉じます。'
       }
     },
     mtext: {
@@ -209,7 +209,7 @@ export default {
     group: {
       draw: '作成',
       modify: '修正',
-      layer: '画層',
+      layer: 'レイヤー',
       properties: 'プロパティ',
       utilities: 'ユーティリティ',
       annotation: '注釈',
@@ -219,30 +219,30 @@ export default {
       lengthUnits: '長さの単位',
       angleUnits: '角度の単位',
       reference: '参照',
-      block: 'ブロック'
+      block: 'シンボル'
     },
     insertBlock: {
-      empty: '使用できるブロックはありません',
+      empty: '使用できるシンボルはありません',
       currentDrawing: '現在の図面',
-      previewMenu: 'ブロックのプレビューギャラリー'
+      previewMenu: 'シンボルのプレビューギャラリー'
     },
     property: {
       color: '色',
-      lineType: '線種',
+      lineType: '線の種類',
       lineWeight: '線の太さ'
     },
     layerTools: {
-      select: '画層',
-      off: '画層非表示',
+      select: 'レイヤー',
+      off: 'レイヤー非表示',
       isolate: '選択表示',
-      freeze: '画層フリーズ',
-      lock: '画層ロック',
+      freeze: 'レイヤーフリーズ',
+      lock: 'レイヤーロック',
       current: '現在に設定',
-      allOn: '全画層表示',
+      allOn: '全レイヤー表示',
       unisolate: '選択表示解除',
-      thaw: '画層フリーズ解除',
-      unlock: '画層ロック解除',
-      restore: '画層を元に戻す'
+      thaw: 'レイヤーフリーズ解除',
+      unlock: 'レイヤーロック解除',
+      restore: 'レイヤーを元に戻す'
     },
     arc: {
       threePoint: '3 点',
@@ -283,7 +283,7 @@ export default {
       ellipse: '楕円または楕円弧を作成します。',
       rect: '長方形または正多角形を作成します。',
       point: '図面に点オブジェクトを配置します。',
-      hatch: '閉じた領域をハッチングパターンで塗り潰します。',
+      hatch: '閉じた領域をパターンで塗りつぶします (ハッチング)。',
       text: '図面にマルチテキストの注釈を作成します。',
       move: '選択したオブジェクトを新しい位置に移動します。',
       rotate: '選択したオブジェクトを基点を中心に回転します。',
@@ -294,46 +294,47 @@ export default {
       redo: '元に戻した編集操作をやり直します。',
       properties: '現在の選択のプロパティパレットを開きます。',
       quickSelect:
-        'クイック選択を開き、条件でオブジェクトを絞り込んで選択します。',
-      find: '検索パレットを開き、図面全体または現在のレイアウトの文字を検索します。',
+        '条件で選択 (クイック選択) を開き、種類やレイヤーなどの条件でオブジェクトを絞り込んで選択します。',
+      find: '検索パレットを開き、図面全体または現在の印刷ページの文字を検索します。',
       countList:
-        '個数カウントパレットを開き、ブロックの個数を確認・管理します。',
+        '個数カウントパレットを開き、シンボル (ブロック) の個数を確認・管理します。',
       missingResources:
-        'フォント、イメージ、外部参照の不足/外部リソースパレットを開きます。',
+        'フォント、イメージ、リンク図面 (外部参照) の不足/外部リソースパレットを開きます。',
       drawingUnits: '図面単位を開き、座標の形式、精度、挿入尺度を設定します。',
       attachDwg:
-        'DWG または DXF 図面を外部参照としてアタッチします (XATTACH)。',
-      attachImage: 'ラスター画像を外部参照としてアタッチします (IMAGEATTACH)。',
+        'DWG または DXF 図面をリンク図面 (外部参照) としてアタッチします (XATTACH)。',
+      attachImage: 'ラスター画像をリンクとしてアタッチします (IMAGEATTACH)。',
       insert:
-        'ブロックパレットを開き、ブロック定義を参照して挿入します (INSERT)。',
+        'シンボル (ブロック) パレットを開き、シンボルの定義を参照して挿入します (INSERT)。',
       editAttributes:
-        '拡張属性編集を開き、ブロック属性の値と表示プロパティを編集します (ATTEDIT)。',
-      defineAttribute: 'ブロックで使用する属性定義を作成します (ATTDEF)。',
+        'シンボルのプロパティ (ブロック属性) の値と表示設定を編集します (ATTEDIT)。',
+      defineAttribute:
+        'シンボルで使用するプロパティ (属性定義) を作成します (ATTDEF)。',
       agent:
         'CAD エージェントのパレットタブを開き、自然言語で図形を作成します。',
       propertyColor:
         '新しく作成するオブジェクトまたは選択したオブジェクトの色を設定します。',
       propertyLineType:
-        '新しく作成するオブジェクトまたは選択したオブジェクトの線種を設定します。',
+        '新しく作成するオブジェクトまたは選択したオブジェクトの線の種類 (線種) を設定します。',
       propertyLineWeight:
         '新しく作成するオブジェクトまたは選択したオブジェクトの線の太さを設定します。',
       layerAction: {
-        off: '選択した画層を非表示にします。画層はフリーズせずにオブジェクトだけを隠します。',
+        off: '選択したレイヤー (画層) を非表示にします。レイヤーはフリーズせずにオブジェクトだけを隠します。',
         isolate:
-          '選択した画層だけを表示し、他の画層を隠して関連するオブジェクトに集中できるようにします。',
+          '選択したレイヤーだけを表示し、他のレイヤーを隠して関連するオブジェクトに集中できるようにします。',
         freeze:
-          '選択した画層をフリーズします。オブジェクトは非表示になり、再作図の対象外になります。',
-        lock: '選択した画層をロックします。オブジェクトは表示されたまま編集できなくなります。',
+          '選択したレイヤーをフリーズします。オブジェクトは非表示になり、表示の更新 (再作図) の対象外になります。',
+        lock: '選択したレイヤーをロックします。オブジェクトは表示されたまま編集できなくなります。',
         current:
-          '選択した画層を現在の画層にし、新しいオブジェクトをその画層に作成します。',
+          '選択したレイヤーを現在のレイヤーにし、新しいオブジェクトをそのレイヤーに作成します。',
         allOn:
-          '非表示になっているすべての画層を表示します。フリーズされた画層はフリーズのままです。',
+          '非表示になっているすべてのレイヤーを表示します。フリーズされたレイヤーはフリーズのままです。',
         unisolate:
-          '選択表示で非表示またはロックされた画層を元に戻します。その後の画層の変更は保持されます。',
-        thaw: '選択した画層をフリーズ解除し、オブジェクトを再び表示して再作図の対象にします。',
+          '選択表示で非表示またはロックされたレイヤーを元に戻します。その後のレイヤーの変更は保持されます。',
+        thaw: '選択したレイヤーをフリーズ解除し、オブジェクトを再び表示して表示の更新 (再作図) の対象にします。',
         unlock:
-          '選択した画層のロックを解除し、オブジェクトを再び選択・修正できるようにします。',
-        restore: 'このリボンで直前に行った画層操作の前の状態に戻します。'
+          '選択したレイヤーのロックを解除し、オブジェクトを再び選択・修正できるようにします。',
+        restore: 'このリボンで直前に行ったレイヤー操作の前の状態に戻します。'
       },
       circleOption: {
         centerRadius: '中心点と半径を指定して円を作成します。',
@@ -383,7 +384,7 @@ export default {
       polygon: 'ポリゴン',
       point: '点',
       divide: '等分割',
-      hatch: 'ハッチング',
+      hatch: '塗りつぶし',
       text: '文字',
       gradient: 'グラデーション',
       move: '移動',
@@ -394,15 +395,15 @@ export default {
       undo: '元に戻す',
       redo: 'やり直し',
       properties: 'プロパティ',
-      quickSelect: 'クイック\n選択',
+      quickSelect: '条件で\n選択',
       find: '検索',
       countList: '個数',
       drawingUnits: '図面\n単位',
       attachDwg: 'DWG\nアタッチ',
       attachImage: 'イメージ\nアタッチ',
       insert: '挿入',
-      editAttributes: '属性\n編集',
-      defineAttribute: '属性\n定義',
+      editAttributes: 'プロパティ\n編集',
+      defineAttribute: 'プロパティ\n定義',
       agent: 'CAD\nエージェント'
     }
   },
@@ -442,7 +443,7 @@ export default {
     },
     clearMeasurements: {
       text: 'クリア',
-      description: '現在のレイアウトのすべての計測を削除します'
+      description: '現在の印刷ページのすべての計測を削除します'
     },
     measurementImport: {
       text: '読み込み',
@@ -457,8 +458,8 @@ export default {
       description: 'レビューツール'
     },
     layer: {
-      text: '画層',
-      description: '画層を管理します'
+      text: 'レイヤー',
+      description: 'レイヤー (画層) を管理します'
     },
     pan: {
       text: '画面移動',
@@ -548,7 +549,7 @@ export default {
     },
     clearMarkups: {
       text: 'クリア',
-      description: '現在のレイアウトのすべてのマークアップを削除します'
+      description: '現在の印刷ページのすべてのマークアップを削除します'
     },
     select: {
       text: '選択',
@@ -572,7 +573,7 @@ export default {
     zoomSaved: {
       text: '保存ビュー',
       description:
-        'AutoCAD の保存ビュー (VPORT / レイアウトの図面範囲)、または開いたときのビューに戻します'
+        'AutoCAD の保存ビュー (VPORT / 印刷ページの図面範囲)、または開いたときのビューに戻します'
     },
     zoomToExtent: {
       text: '範囲',
@@ -646,8 +647,8 @@ export default {
     export: {
       tooltip: '画像を PNG で書き出し'
     },
-    modelTab: 'モデル',
-    moreLayouts: 'その他のレイアウト'
+    modelTab: 'キャンバス',
+    moreLayouts: 'その他の印刷ページ'
   },
   toolPalette: {
     entityProperties: {
@@ -661,21 +662,21 @@ export default {
       }
     },
     layerManager: {
-      tab: '画層',
-      title: '画層管理',
-      currentLayerLabel: '現在の画層: {name}',
-      searchPlaceholder: '画層を検索',
+      tab: 'レイヤー',
+      title: 'レイヤー管理',
+      currentLayerLabel: '現在のレイヤー: {name}',
+      searchPlaceholder: 'レイヤーを検索',
       filters: 'フィルタ',
       collapseFilters: 'フィルタを折りたたむ',
       expandFilters: 'フィルタを展開',
       filterAll: 'すべて',
-      filterAllUsed: '使用中のすべての画層',
+      filterAllUsed: '使用中のすべてのレイヤー',
       toolbar: {
-        showFilters: '画層フィルタ',
+        showFilters: 'レイヤーフィルタ',
         newFilter: '新しいフィルタ',
         newFilterGroup: '新しいグループフィルタ',
-        newLayer: '新規画層',
-        deleteLayer: '画層を削除',
+        newLayer: '新規レイヤー',
+        deleteLayer: 'レイヤーを削除',
         setCurrent: '現在に設定'
       },
       prompts: {
@@ -683,8 +684,8 @@ export default {
         newFilterName: 'フィルタ名を入力',
         newFilterGroupTitle: '新しいグループフィルタ',
         newFilterGroupName: 'グループフィルタ名を入力',
-        newLayerTitle: '新規画層',
-        newLayerName: '画層名を入力',
+        newLayerTitle: '新規レイヤー',
+        newLayerName: 'レイヤー名を入力',
         confirm: 'OK',
         cancel: 'キャンセル'
       },
@@ -692,16 +693,16 @@ export default {
         filterCreated: 'フィルタ「{name}」を作成しました',
         filterExists: 'フィルタ「{name}」は既に存在します',
         filterCreateFailed: 'フィルタを作成できませんでした',
-        layerCreated: '画層「{name}」を作成しました',
-        layerExists: '画層「{name}」は既に存在します',
-        layerCreateFailed: '画層を作成できませんでした',
-        layerDeleted: '画層「{name}」を削除しました',
-        layerDeleteFailed: '画層「{name}」を削除できませんでした',
-        cannotDeleteLayer0: '画層「0」は削除できません',
-        cannotDeleteCurrent: '現在の画層は削除できません',
-        selectLayerFirst: '先に画層を選択してください',
-        setCurrentSuccess: '現在の画層を「{name}」に設定しました',
-        setCurrentFailed: '現在の画層を設定できませんでした'
+        layerCreated: 'レイヤー「{name}」を作成しました',
+        layerExists: 'レイヤー「{name}」は既に存在します',
+        layerCreateFailed: 'レイヤーを作成できませんでした',
+        layerDeleted: 'レイヤー「{name}」を削除しました',
+        layerDeleteFailed: 'レイヤー「{name}」を削除できませんでした',
+        cannotDeleteLayer0: 'レイヤー「0」は削除できません',
+        cannotDeleteCurrent: '現在のレイヤーは削除できません',
+        selectLayerFirst: '先にレイヤーを選択してください',
+        setCurrentSuccess: '現在のレイヤーを「{name}」に設定しました',
+        setCurrentFailed: '現在のレイヤーを設定できませんでした'
       },
       layerList: {
         name: '名前',
@@ -710,13 +711,13 @@ export default {
         lock: 'ロック',
         plot: '印刷',
         color: '色',
-        linetype: '線種',
+        linetype: '線の種類',
         lineweight: '線の太さ',
         transparency: '透過性',
         description: '説明',
-        currentLayer: '現在の画層',
-        newLayerPlaceholder: '画層名',
-        zoomToLayer: 'クリックした画層「{layer}」にズームしました',
+        currentLayer: '現在のレイヤー',
+        newLayerPlaceholder: 'レイヤー名',
+        zoomToLayer: 'クリックしたレイヤー「{layer}」にズームしました',
         lineWeightDefault: '既定'
       }
     },
@@ -727,23 +728,23 @@ export default {
       input: '検索する文字',
       find: '検索',
       matchCase: '大文字と小文字を区別',
-      currentLayoutOnly: '現在のレイアウトのみ',
-      hint: 'Enter を押すと、図面全体 (すべてのレイアウト) の文字、マルチテキスト、属性、およびブロック・寸法・引出線・表の中の文字を検索します。',
+      currentLayoutOnly: '現在の印刷ページのみ',
+      hint: 'Enter を押すと、図面全体 (すべての印刷ページ) の文字、マルチテキスト、シンボルのプロパティ、およびシンボル・寸法・引出線・表の中の文字を検索します。',
       hintLayout:
-        'Enter を押すと、現在のレイアウトの文字、マルチテキスト、属性、およびブロック・寸法・引出線・表の中の文字を検索します。',
+        'Enter を押すと、現在の印刷ページの文字、マルチテキスト、シンボルのプロパティ、およびシンボル・寸法・引出線・表の中の文字を検索します。',
       noResults: '文字が見つかりません',
       count: '{count} 件見つかりました',
-      countLayouts: '{layouts} 個のレイアウトで {count} 件見つかりました',
+      countLayouts: '{layouts} 個の印刷ページで {count} 件見つかりました',
       countTruncated:
         '最初の {count} 件を表示しています — 検索条件を絞り込んでください',
       noDocument: '検索するには図面を開いてください',
-      layoutUnavailable: 'レイアウト「{layout}」を開けませんでした',
-      unnamedLayout: '(名前のないレイアウト)',
+      layoutUnavailable: '印刷ページ「{layout}」を開けませんでした',
+      unnamedLayout: '(名前のない印刷ページ)',
       kind: {
         text: '文字',
         mtext: 'マルチテキスト',
-        attribute: '属性',
-        block: 'ブロックの文字',
+        attribute: 'シンボルのプロパティ',
+        block: 'シンボルの文字',
         dimension: '寸法',
         leader: '引出線',
         table: '表'
@@ -752,13 +753,13 @@ export default {
     countList: {
       tab: '個数',
       title: '個数カウント',
-      searchPlaceholder: 'ブロック名を検索',
+      searchPlaceholder: 'シンボル名を検索',
       countInArea: '範囲内をカウント',
       areaSet: 'カウント範囲を更新しました',
-      areaCleared: 'モデル空間全体をカウントしています',
-      blockName: 'ブロック',
+      areaCleared: 'キャンバス全体をカウントしています',
+      blockName: 'シンボル',
       count: '個数',
-      empty: '表示されているブロックはありません',
+      empty: '表示されているシンボルはありません',
       prompt: {
         firstCorner: 'カウント範囲の一方のコーナーを指定 または [全体]: ',
         secondCorner: 'もう一方のコーナーを指定: '
@@ -809,7 +810,7 @@ export default {
       title: '不足/外部リソース',
       fontTab: 'フォント',
       imageTab: 'イメージ',
-      xrefTab: '外部参照',
+      xrefTab: 'リンク図面',
       attach: 'アタッチ',
       attachDwg: 'DWG/DXF をアタッチ...',
       attachImage: 'イメージをアタッチ...',
@@ -846,7 +847,7 @@ export default {
       fromUrl: 'URL…',
       unload: 'アンロード',
       load: 'ロード',
-      empty: 'この図面に外部参照やイメージはありません',
+      empty: 'この図面にリンク図面やイメージはありません',
       urlPrompt: '図面ファイル (DWG / DXF など) の URL を入力してください',
       urlRequired: 'URL を入力してください',
       loadFailed: '参照「{name}」をロードできませんでした'
@@ -873,7 +874,7 @@ export default {
       fontStorageSummary: 'キャッシュ済みフォント {count} 個 · {size}',
       materialPoint: '点',
       materialLine: '線',
-      materialFill: '塗り潰し',
+      materialFill: '塗りつぶし',
       materialTotal: '合計',
       dataModelCounts:
         'オブジェクト {entities} 個 · 非図形 {objects} 個 · {total}',
@@ -896,8 +897,8 @@ export default {
         fonts: 'フォント'
       },
       columns: {
-        layout: 'レイアウト',
-        layer: '画層',
+        layout: '印刷ページ',
+        layer: 'レイヤー',
         geometry: '図形',
         mapping: 'マッピング',
         entities: 'オブジェクト',
@@ -930,7 +931,7 @@ export default {
       midOpenPaints: '読み込み中の描画',
       yields: '処理の譲渡',
       cache: 'INSERT 描画キャッシュ (最上位)',
-      slowBlocks: '最も遅いブロックテンプレートのミス',
+      slowBlocks: '最も遅いシンボルテンプレートのミス',
       total: '読み込み合計',
       read: 'db.read',
       parse: 'PARSE',
@@ -947,26 +948,26 @@ export default {
         share: '割合',
         metric: '指標',
         value: '値',
-        block: 'ブロック',
+        block: 'シンボル',
         build: '構築',
         compact: '圧縮'
       }
     },
     blocks: {
-      tab: 'ブロック',
-      title: 'ブロック',
+      tab: 'シンボル',
+      title: 'シンボル',
       tabCurrentDrawing: '現在の図面',
       tabRecent: '最近使用',
       tabFavorites: 'お気に入り',
       tabLibraries: 'ライブラリ',
-      sectionCurrentDrawing: '現在の図面のブロック',
-      sectionRecent: '最近使用したブロック',
-      sectionFavorites: 'お気に入りのブロック',
-      sectionLibraries: 'ブロックライブラリ',
+      sectionCurrentDrawing: '現在の図面のシンボル',
+      sectionRecent: '最近使用したシンボル',
+      sectionFavorites: 'お気に入りのシンボル',
+      sectionLibraries: 'シンボルライブラリ',
       filterPlaceholder: 'フィルタ...',
-      empty: '使用できるブロックはありません',
-      emptyRecent: '最近挿入したブロックはありません',
-      emptyFavorites: 'お気に入りのブロックはありません',
+      empty: '使用できるシンボルはありません',
+      emptyRecent: '最近挿入したシンボルはありません',
+      emptyFavorites: 'お気に入りのシンボルはありません',
       emptyLibraries: 'ライブラリが設定されていません',
       toggleFavorite: 'お気に入りの切り替え',
       options: 'オプション',
@@ -983,7 +984,7 @@ export default {
     custom: 'カスタム'
   },
   lineTypeSelect: {
-    placeholder: '線種'
+    placeholder: '線の種類'
   },
   colorIndexPicker: {
     color: '色: ',
@@ -993,25 +994,25 @@ export default {
   },
   entityInfo: {
     color: '色',
-    layer: '画層',
-    lineType: '線種'
+    layer: 'レイヤー',
+    lineType: '線の種類'
   },
   ribbonProperty: {
     color: '色',
-    lineType: '線種',
+    lineType: '線の種類',
     lineWeight: '線の太さ',
-    layer: '画層'
+    layer: 'レイヤー'
   },
   layerSelect: {
-    searchPlaceholder: '画層名を検索',
-    noLayerAvailable: '使用できる画層はありません',
-    noMatchedLayer: '一致する画層はありません',
+    searchPlaceholder: 'レイヤー名を検索',
+    noLayerAvailable: '使用できるレイヤーはありません',
+    noMatchedLayer: '一致するレイヤーはありません',
     tooltip: {
-      layer: '画層',
+      layer: 'レイヤー',
       visibility: '表示',
       freeze: 'フリーズ',
       lock: 'ロック',
-      lineType: '線種',
+      lineType: '線の種類',
       color: '色',
       visible: '表示',
       hidden: '非表示',

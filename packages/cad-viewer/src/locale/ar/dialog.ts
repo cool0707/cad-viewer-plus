@@ -121,10 +121,10 @@ export default {
     exportInvisibleLayersHint:
       'تضمين العناصر الموجودة على الطبقات المتوقفة أو المجمدة في الملف المُصدّر',
 
-    layoutsSection: 'المخططات',
-    exportLayouts: 'تصدير المخططات',
+    layoutsSection: 'صفحات الطباعة',
+    exportLayouts: 'تصدير صفحات الطباعة',
     exportLayoutsHint:
-      'تضمين مخططات مساحة الورق في الملف المُصدّر',
+      'تضمين صفحات الطباعة في الملف المُصدّر',
 
     yes: 'نعم',
     no: 'لا',
@@ -171,14 +171,14 @@ export default {
   exportPdfDlg: {
     ...enDialog.exportPdfDlg,
     title: 'تصدير إلى PDF',
-    modelSpaceSection: 'مساحة النموذج',
+    modelSpaceSection: 'لوحة الرسم',
     modelSpaceDisplay: 'العرض',
     modelSpaceDisplayHint: 'تصدير المحتوى المعروض حاليًا في نافذة العرض',
     modelSpaceExtents: 'الامتدادات',
     modelSpaceExtentsHint: 'تصدير امتدادات جميع الكائنات في المساحة الحالية',
-    paperSpaceSection: 'مساحة الورق',
-    exportLayouts: 'تصدير المخططات',
-    exportLayoutsHint: 'تضمين مخططات مساحة الورق كصفحات PDF إضافية',
+    paperSpaceSection: 'صفحة الطباعة',
+    exportLayouts: 'تصدير صفحات الطباعة',
+    exportLayoutsHint: 'تضمين صفحات الطباعة كصفحات PDF إضافية',
     textModeSection: 'النص',
     textMode: 'عرض النص',
     textModeText: 'كائنات نصية',
@@ -192,7 +192,7 @@ export default {
   quickSelectDlg: {
     ...enDialog.quickSelectDlg,
 
-    title: 'تحديد سريع',
+    title: 'تحديد حسب الشروط',
     applyTo: 'تطبيق على',
     applyToEntireDrawing: 'الرسم بالكامل',
     applyToCurrentSelection: 'التحديد الحالي',
@@ -280,13 +280,13 @@ export default {
   attEditDlg: {
     ...enDialog.attEditDlg,
 
-    title: 'محرر السمات المتقدم',
+    title: 'تعديل خصائص الرمز',
 
-    block: 'الكتلة:',
+    block: 'الرمز:',
     tag: 'الوسم:',
-    selectBlock: 'اختيار كتلة',
+    selectBlock: 'اختيار رمز',
 
-    tabAttribute: 'السمة',
+    tabAttribute: 'الخاصية',
     tabTextOptions: 'خيارات النص',
     tabProperties: 'الخصائص',
 
@@ -315,9 +315,9 @@ export default {
     lineweight: 'سُمك الخط:',
     plotStyle: 'نمط الطباعة:',
 
-    promptSelectBlock: 'حدد كتلة تحتوي على سمات:',
-    rejectSelectBlock: 'يجب أن يكون العنصر كتلة تحتوي على سمات.',
-    noAttributes: 'الكتلة المحددة لا تحتوي على سمات.',
+    promptSelectBlock: 'حدد رمزًا يحتوي على خصائص:',
+    rejectSelectBlock: 'يجب أن يكون العنصر رمزًا يحتوي على خصائص.',
+    noAttributes: 'الرمز المحدد لا يحتوي على خصائص.',
 
     justify: {
       ...enDialog.attEditDlg.justify,
@@ -345,7 +345,7 @@ export default {
   attDefDlg: {
     ...enDialog.attDefDlg,
 
-    title: 'تعريف السمة',
+    title: 'تعريف خاصية الرمز',
 
     modeSection: 'الوضع',
     invisible: 'غير مرئي',
@@ -358,7 +358,7 @@ export default {
     insertionSection: 'نقطة الإدراج',
     specifyOnScreen: 'تحديد على الشاشة',
 
-    attributeSection: 'السمة',
+    attributeSection: 'الخاصية',
     tag: 'الوسم:',
     prompt: 'المطالبة:',
     default: 'الافتراضي:',
@@ -372,10 +372,10 @@ export default {
     rotation: 'الدوران:',
     boundaryWidth: 'عرض الحدود:',
 
-    alignBelow: 'محاذاة أسفل تعريف السمة السابق',
+    alignBelow: 'محاذاة أسفل تعريف الخاصية السابق',
 
-    tagRequired: 'وسم السمة مطلوب.',
-    noPrevious: 'لم يتم العثور على تعريف سمة سابق.',
+    tagRequired: 'وسم الخاصية مطلوب.',
+    noPrevious: 'لم يتم العثور على تعريف خاصية سابق.',
 
     promptInsertionPoint: 'حدد نقطة البداية:',
     promptHeight: 'حدد الارتفاع:',
