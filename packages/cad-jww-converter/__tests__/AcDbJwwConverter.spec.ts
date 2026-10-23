@@ -11,7 +11,11 @@ import { readFileSync } from 'fs'
 import { resolve } from 'path'
 
 import { AcDbJwwConverter } from '../src/AcDbJwwConverter'
-import { convertJwwToDxf, ezjwwLayerNames } from '../src/jwwToDxf'
+import {
+  convertJwwToDxf,
+  ezjwwLayerNames,
+  jwwTextFontMetrics
+} from '../src/jwwToDxf'
 
 const SAMPLE = resolve(
   __dirname,
@@ -115,11 +119,25 @@ describe('AcDbJwwConverter', () => {
     )
     const room = texts.find(t => t.textString === '居間・食堂')
     expect(room).toBeDefined()
-    expect(room!.height).toBeCloseTo(400, 6) // 4 mm on paper at 1/100
+    // 4 mm on paper at 1/100 is a 400 mm character cell. The renderer draws
+    // the em at height x em / capHeight("A"), so the DXF height is the cap
+    // height of BIZ UD Gothic and full-width characters come out 400 mm.
+    const gothic = jwwTextFontMetrics('ＭＳ ゴシック')
+    expect(room!.height).toBeCloseTo(400 * gothic.capHeight, 6)
+    expect(room!.height / gothic.capHeight).toBeCloseTo(400, 6)
+    // The JWW point (y = 30 mm on paper) is the bottom of the cell; the
+    // baseline sits one descender above it.
+    expect(room!.position.y).toBeCloseTo(3000 + 400 * gothic.descender, 6)
+    expect(room!.position.x).toBeCloseTo(-6500, 6)
     expect(room!.styleName).toBe('STANDARD')
 
     const title = texts.find(t => t.textString === 'サンプル平面図')
     expect(title!.styleName).toBe('ＭＳ 明朝')
+    // Mincho has a lower capital "A" than Gothic (1587 vs 1617 / 2048).
+    expect(title!.height).toBeCloseTo(
+      500 * jwwTextFontMetrics('ＭＳ 明朝').capHeight,
+      6
+    )
     const style = db.tables.textStyleTable.getAt('ＭＳ 明朝')
     expect(style?.textStyle.font).toBe('ＭＳ 明朝')
   })

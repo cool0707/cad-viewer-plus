@@ -24,6 +24,7 @@ and the viewer's file dialogs accept `.jww`.
 | Layer group / layer | Layer `<group>-<layer> <group name> - <layer name>` (hex numbers as in Jw_cad); only used layers; hidden → frozen, protected → locked |
 | Pen color, line type, width | ACI color, LTYPE (pattern in paper mm, entity linetype scale = drawing scale), lineweight (from ezjww) |
 | Text font | Text style per font (ＭＳ ゴシック / ＭＳ 明朝 … → BIZ UD via `fonts.json`) |
+| Text size (character cell height) | DXF height = cell × cap height / em of the substituted BIZ UD font, baseline raised by the descender — the renderer sizes TrueType text by the capital "A", which would otherwise draw Japanese text ~1.27× too large |
 | Blocks | Block definitions + INSERT |
 | Dimensions, solids | Lines + text, SOLID (from ezjww) |
 

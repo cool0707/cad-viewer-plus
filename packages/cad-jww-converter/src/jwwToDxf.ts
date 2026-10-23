@@ -46,6 +46,29 @@ export interface JwwConversionResult {
 /** Text style used when a JWW text record names no font. */
 const DEFAULT_FONT = 'ＭＳ ゴシック'
 
+/**
+ * Metrics of the bundled BIZ UD fonts that replace ＭＳ ゴシック / ＭＳ 明朝
+ * (`resources/cad-data/fonts`), as fractions of the em.
+ *
+ * Jw_cad's text height is the height of the character cell (the em of a
+ * full-width character), but the renderer scales TrueType fonts so that the
+ * DXF text height equals the height of a capital "A". Without correction
+ * Japanese text is drawn about 1.27 times too large.
+ */
+const TEXT_FONT_METRICS = {
+  // bizudgothic / bizudpgothic: em 2048, "A" 1617, descender 246
+  gothic: { capHeight: 1617 / 2048, descender: 246 / 2048 },
+  // bizudmincho / bizudpmincho: em 2048, "A" 1587, descender 246
+  mincho: { capHeight: 1587 / 2048, descender: 246 / 2048 }
+}
+
+/** Metrics of the font the viewer substitutes for a Jw_cad font name. */
+export function jwwTextFontMetrics(font: string) {
+  return /明朝|mincho/i.test(font)
+    ? TEXT_FONT_METRICS.mincho
+    : TEXT_FONT_METRICS.gothic
+}
+
 /** Linetype patterns ezjww references without defining them (paper mm). */
 const BUILTIN_LINE_TYPES: Record<string, [string, number[]]> = {
   CONTINUOUS: ['Solid line', []],
@@ -325,7 +348,7 @@ class JwwDxfWriter {
       style = tableName(font) || `JW_FONT_${this.styles.size}`
       this.styles.set(font, style)
     }
-    return style
+    return { style, font }
   }
 
   private writeEntity(e: EzDxfEntity, s: number) {
@@ -363,12 +386,20 @@ class JwwDxfWriter {
         break
       case 'TEXT': {
         const content = String(e.content ?? '')
-        const style = this.styleFor(content, n('x'), n('y'))
+        const { style, font } = this.styleFor(content, n('x'), n('y'))
         const width =
           this.textWidths[this.textWidthIndex++] ?? (n('width_factor') || 1)
+        // The JWW point is the bottom of the character cell; the DXF point
+        // is the baseline, one descender above it.
+        const metrics = jwwTextFontMetrics(font)
+        const cell = n('height')
+        const angle = (n('rotation') * Math.PI) / 180
+        const rise = cell * metrics.descender
+        const x = n('x') - Math.sin(angle) * rise
+        const y = n('y') + Math.cos(angle) * rise
         this.entityHeader('TEXT', e, s)
-        this.point(10, n('x') * s, n('y') * s)
-        this.pair(40, fmt(n('height') * s))
+        this.point(10, x * s, y * s)
+        this.pair(40, fmt(cell * metrics.capHeight * s))
         this.pair(41, fmt(width))
         this.pair(1, oneLine(content))
         this.pair(50, fmt(n('rotation')))

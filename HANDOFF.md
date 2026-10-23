@@ -45,6 +45,7 @@
   - 用紙サイズ (`paper_size`: 0–4 = A0–A4、8–11 = 2A–5A、12–14 = 10m/50m/100m) → `$LIMMIN/$LIMMAX` (原点中心、主縮尺倍)。
   - 画層名を `<グループ>-<レイヤ> <グループ名> - <レイヤ名>` (16 進、Jw_cad と同じ) にし、使われている画層だけ作る。ezjww の画層名 → (グループ, レイヤ) は ezjww の `layer_name_map` を移植した `ezjwwLayerNames()` で逆引き。
   - 文字のフォント (ＭＳ ゴシック等) ごとに文字スタイルを作る (ezjww の DXF は全部 STANDARD)。
+  - **文字高さの補正**: mtext-renderer は TrueType を「DXF の文字高さ = 英大文字 A の高さ」(`unitsPerEm / A.yMax` 倍) で描く。Jw_cad の文字サイズは全角の文字枠 (em) の高さなので、そのままだと BIZ UD で 1.27 倍 (明朝 1.29 倍) になり枠からはみ出す。高さに `A.yMax / em` (ゴシック 1617/2048、明朝 1587/2048) を掛け、基点も descender (246/2048) 分上げて文字枠の下端に合わせている (`jwwTextFontMetrics()`)。同梱フォントを差し替えたらこの値も更新すること。DXF/DWG は AutoCAD 互換の挙動なので触っていない。
   - 線種パターンは図寸 mm なので、要素の線種尺度 (48) に縮尺を入れる。
 - 拡張子判定: `cad-simple-viewer/src/app/AcApDrawingFileTypes.ts` (`acapDrawingFileTypes()` など。DWG/DXF + `AcDbDatabaseConverterManager` に登録済みの形式)。`AcApDocument.openDocument`、ファイル選択パネル (タグ表示も)、ローカル/URL データソース、マークアップ/計測サイドカー名、example の `FileUpload.vue` が使う。`AcDbDatabase.openUri()` は元から未知の拡張子を converter type として渡すので変更不要。
 - サンプル: `resources/cad-data/samples/jww-sample.jww` (`node tools/make-jww-sample.mjs` で ezjww の writer から生成、自作なのでライセンス問題なし)。テスト: `packages/cad-jww-converter/__tests__`、`cad-simple-viewer/__tests__/AcApDrawingFileTypes.spec.ts`、e2e `cad-viewer-example/e2e/tests/jww.spec.ts`。
