@@ -6,7 +6,7 @@ import {
 } from './AcDbSxfConverter'
 
 /** File types (extensions) read by {@link AcDbSxfConverter}. */
-export const SXF_FILE_TYPES = ['sfc'] as const
+export const SXF_FILE_TYPES = ['sfc', 'p21'] as const
 
 /** Registers {@link AcDbSxfConverter} for SXF files. */
 export function registerSxfConverter(config: AcDbSxfConverterConfig = {}) {

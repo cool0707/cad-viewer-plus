@@ -1,3 +1,4 @@
+import { readP21Drawing } from './p21'
 import { readSfcDrawing } from './sfc'
 import { decodeSxfBytes } from './step'
 import { sxfDrawingToDxf, type SxfDxfOptions } from './sxfToDxf'
@@ -22,7 +23,7 @@ export function detectSxfFormat(text: string): 'sfc' | 'p21' | undefined {
   return 'p21'
 }
 
-/** Converts SXF file bytes (SFC) to DXF text. */
+/** Converts SXF file bytes (SFC or P21) to DXF text. */
 export function convertSxfToDxf(
   data: Uint8Array,
   options: SxfDxfOptions = {}
@@ -38,7 +39,8 @@ export function convertSxfToDxf(
     }
   }
   if (format === 'p21') {
-    throw new Error('SXF P21 files are not supported yet')
+    const drawing = readP21Drawing(text)
+    return { dxf: sxfDrawingToDxf(drawing, options), format, warnings: drawing.warnings }
   }
   throw new Error('Not an SXF (SFC / P21) file')
 }
