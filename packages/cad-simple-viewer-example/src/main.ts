@@ -15,6 +15,7 @@ import {
   AcApDocManager,
   acapFormatOpenFileErrorToastMessage,
   AcApI18n,
+  type AcApLocale,
   AcApOpenDatabaseOptions,
   acapRunDataSourceMenuAction,
   AcApSettingManager,
@@ -86,6 +87,22 @@ function isProgressiveOpenMode(): boolean {
 function isWorkerOpenMode(): boolean {
   return new URLSearchParams(window.location.search).has('worker')
 }
+
+/**
+ * Startup UI language: `?lang=ja|en|…` wins, otherwise the browser language
+ * (falls back to English).
+ */
+function applyStartupLocale(): void {
+  const supported: AcApLocale[] = ['en', 'ja', 'zh', 'tr', 'cs', 'ar']
+  const requested = new URLSearchParams(window.location.search).get('lang')
+  const browser = navigator.language.toLowerCase().slice(0, 2)
+  const locale = [requested, browser].find(
+    (value): value is AcApLocale =>
+      value != null && (supported as string[]).includes(value)
+  )
+  if (locale) AcApI18n.setCurrentLocale(locale)
+}
+applyStartupLocale()
 
 function installOpenProfConsoleCapture(): void {
   const w = window as Window & {

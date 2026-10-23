@@ -39,7 +39,9 @@ import {
   AcApDataSourceManager,
   type AcApDataSourceMenuItem,
   AcApDocManager,
+  AcApI18n,
   acapInvokeDataSourceMenuAction,
+  type AcApLocale,
   AcApOpenViewMode,
   acapRunDataSourceMenuAction,
   AcApSettingManager,
@@ -207,6 +209,25 @@ const openViewMode = ref<AcApOpenViewMode | undefined>(undefined)
 const circleSides = ref(ACDB_DRAW_CIRCLE_SIDES_DRAFT)
 const paperSpaceBackground = ref(ACGI_PAPER_SPACE_BACKGROUND)
 const disableExport = ref(false)
+
+// Demo deep links (used by the demo landing page):
+//   ?url=<drawing URL>  open a drawing (relative URLs resolve against the page)
+//   ?new=1              start a new drawing
+//   ?lang=ja|en|…       switch the UI language
+const startupParams = new URLSearchParams(window.location.search)
+const startupLang = startupParams.get('lang')
+if (
+  startupLang &&
+  ['en', 'ja', 'zh', 'tr', 'cs', 'ar'].includes(startupLang)
+) {
+  AcApI18n.setCurrentLocale(startupLang as AcApLocale)
+}
+const startupUrl = startupParams.get('url')
+if (startupUrl) {
+  store.selectedUrl = new URL(startupUrl, window.location.href).href
+} else if (startupParams.has('new')) {
+  store.isNewDrawing = true
+}
 
 const createNewDrawing = async () => {
   const success = await AcApDocManager.instance.newDocument({

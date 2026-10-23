@@ -1,0 +1,56 @@
+name: Demo
+
+# Builds the example apps and publishes the demo site (demo/ + example apps)
+# to the `gh-pages` branch. Enable GitHub Pages once in the repository
+# settings: Settings → Pages → Source: "Deploy from a branch", branch
+# `gh-pages`, folder `/ (root)`.
+
+on:
+  push:
+    branches:
+      - main
+      - ja-localization
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: demo-pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 10.33.4
+          cache: true
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        env:
+          NODE_OPTIONS: --max-old-space-size=4096
+        run: pnpm run build
+
+      - name: Assemble demo site
+        run: node tools/build-demo.mjs
+
+      - name: Publish to gh-pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./demo-dist
+          publish_branch: gh-pages
+          force_orphan: true

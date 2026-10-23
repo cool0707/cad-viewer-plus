@@ -30,3 +30,9 @@ URLs in `fonts.json` are supported through
 `acad.dxf` / `acadiso.dxf` are the new-drawing templates. Their paper-space
 layouts are named `Layout1` / `Layout2`; `AcApDocManager.newDocument()`
 renames them for the active UI language (e.g. `レイアウト1`).
+
+## samples/
+
+`fonts-sample.dxf` exercises the font mapping (ＭＳ ゴシック / 明朝 / Ｐゴシック,
+SHX + big font, Arial, 宋体, 맑은 고딕). The demo page opens it with
+`cad-viewer/?url=cad-data/samples/fonts-sample.dxf`.

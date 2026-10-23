@@ -18,6 +18,8 @@
     "build": "nx run-many -t build",
     "clean": "nx run-many -t clean",
     "copy:workers": "pnpm -r --filter \"./packages/**\" run copy:workers",
+    "demo": "node tools/serve-demo.mjs",
+    "demo:build": "pnpm build && node tools/build-demo.mjs",
     "dev": "nx run @mlightcad/cad-viewer-example:dev",
     "dev:simple": "nx run @mlightcad/cad-simple-viewer-example:dev",
     "dev:html-converter": "nx run @mlightcad/cad-simple-viewer-example:dev:html-converter",

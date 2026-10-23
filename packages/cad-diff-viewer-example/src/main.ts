@@ -14,7 +14,10 @@ import { registerLibreDwgConverter } from './registerLibreDwg'
 
 /** Picks an {@link AcApLocale} from `navigator.language`. */
 function detectLocale(): AcApLocale {
-  const lang = navigator.language.toLowerCase()
+  const lang = (
+    new URLSearchParams(window.location.search).get('lang') ??
+    navigator.language
+  ).toLowerCase()
   if (lang.startsWith('ja')) return 'ja'
   if (lang.startsWith('zh')) return 'zh'
   if (lang.startsWith('tr')) return 'tr'
