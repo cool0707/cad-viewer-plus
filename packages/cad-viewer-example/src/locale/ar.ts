@@ -30,6 +30,8 @@ export default {
       extentsHint: 'ملاءمة الرسم للعرض',
       saved: 'محفوظ',
       savedHint: 'العرض المحفوظ في AutoCAD',
+      limits: 'الحدود',
+      limitsHint: 'حدود الرسم / الورقة',
 
       accessMode: 'وضع الوصول',
       read: 'قراءة',

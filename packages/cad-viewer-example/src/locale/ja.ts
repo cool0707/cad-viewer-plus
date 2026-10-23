@@ -32,6 +32,8 @@ export default {
       extentsHint: '図面全体を表示',
       saved: '保存ビュー',
       savedHint: 'AutoCAD の保存ビュー',
+      limits: '図面範囲',
+      limitsHint: '図面範囲 (LIMITS) / 用紙',
 
       accessMode: 'アクセスモード',
       read: '閲覧',

@@ -93,6 +93,7 @@ import { AcApI18n } from '../i18n/AcApI18n'
 import { AcApPluginManager } from '../plugin/AcApPluginManager'
 import {
   acapCollectPaperViewportsBox,
+  acapLayoutLimitsBox,
   acapResolveLayoutFrameBox
 } from '../util/AcApLayoutViewFraming'
 import { isScriptQuitCommand, parseScriptLines } from '../util/AcApScriptParser'
@@ -2429,6 +2430,8 @@ export class AcApDocManager {
       //   viewport borders; LIMMIN/LIMMAX only when they contain those
       //   viewports (rejects unused template `(0,0)-(12,9)`).
       // - **Saved + model**: VPORT `*ACTIVE` via `getActiveVportBox`.
+      // - **Limits** (any space): layout LIMMIN/LIMMAX (drawing limits in
+      //   model space, the sheet in paper space), else Extents.
       // - **Extents** (any space): poll `zoomToFitDrawing` once geometry
       //   lands.
       //
@@ -2453,7 +2456,22 @@ export class AcApDocManager {
         view.requestOpenLineworkFrame()
       }
 
-      if (
+      const limitsBox =
+        openViewMode === AcApOpenViewMode.Limits && activeLayout
+          ? acapLayoutLimitsBox(activeLayout, db, {
+              isModelSpace: !isPaperSpaceActive,
+              isActivePaperLayout: isPaperSpaceActive
+            })
+          : undefined
+      if (openViewMode === AcApOpenViewMode.Limits) {
+        // LIMITS / paper area; layouts without usable limits fit the drawing.
+        if (limitsBox) {
+          view.zoomTo(limitsBox)
+          framedSynchronously = true
+        } else {
+          startExtentsFit()
+        }
+      } else if (
         isPaperSpaceActive &&
         openViewMode === AcApOpenViewMode.Saved
       ) {

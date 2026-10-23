@@ -205,3 +205,121 @@ index 2cce9fe775215b17f5d2a956818aec331db43811..4c6cb5bfd2ea33f69cf7409d695ef7bd
 +    return acdbMakeByteAsciiDxfPairReader(bytes, acdbGuessLegacyEncoding(bytes, legacyEncoding || declaredEncoding));
  }
  //# sourceMappingURL=AcDbDxfPairReader.js.map
+\ No newline at end of file
+diff --git a/lib/database/AcDbDatabase.d.ts b/lib/database/AcDbDatabase.d.ts
+index b0a0d5edc0d97a0cb3edb52367fc17460cdc20cf..57f31932eb81bc49cc4878aeaf47a47991db2c08 100644
+--- a/lib/database/AcDbDatabase.d.ts
++++ b/lib/database/AcDbDatabase.d.ts
+@@ -1138,6 +1138,26 @@ export declare class AcDbDatabase extends AcDbObject {
+      */
+     get extmax(): AcGePoint3d;
+     set extmax(value: AcGePoint3dLike);
++    /** Model-space drawing limits lower-left (`$LIMMIN`), when read. */
++    limmin?: {
++        x: number;
++        y: number;
++    };
++    /** Model-space drawing limits upper-right (`$LIMMAX`), when read. */
++    limmax?: {
++        x: number;
++        y: number;
++    };
++    /** Active paper layout limits lower-left (`$PLIMMIN`), when read. */
++    plimmin?: {
++        x: number;
++        y: number;
++    };
++    /** Active paper layout limits upper-right (`$PLIMMAX`), when read. */
++    plimmax?: {
++        x: number;
++        y: number;
++    };
+     /**
+      * The current Model Space EXTMIN value
+      */
+diff --git a/lib/dxf/AcDbDxfHeaderReader.js b/lib/dxf/AcDbDxfHeaderReader.js
+index f16c2f1927a7625c11baf5c05cb7cb005f8817cd..d9e389a5c523c4e6442af0f3182e15fca1a456db 100644
+--- a/lib/dxf/AcDbDxfHeaderReader.js
++++ b/lib/dxf/AcDbDxfHeaderReader.js
+@@ -153,6 +153,19 @@ function applyHeaderVar(filer, db, varName) {
+                 db.extmin = p;
+             break;
+         }
++        case '$LIMMIN':
++        case '$LIMMAX':
++        case '$PLIMMIN':
++        case '$PLIMMAX': {
++            // Drawing limits (model: LIMMIN/LIMMAX, active paper layout:
++            // PLIMMIN/PLIMMAX). Kept as plain XY points on the database so
++            // viewers can frame the limits ("図面範囲"); the model LAYOUT
++            // object usually still holds the template default (0,0)-(12,9).
++            var p = readHeaderPoint3d(filer);
++            if (p)
++                db[varName.slice(1).toLowerCase()] = { x: p.x, y: p.y };
++            break;
++        }
+         case '$INSUNITS': {
+             var n = readHeaderNumber(filer);
+             if (n != null)
+diff --git a/lib/dxf/AcDbNativeDxfConverter.js b/lib/dxf/AcDbNativeDxfConverter.js
+index 3eddc24da5bac086e4804a7a43abec90de574e90..12642f8ac0fa53f879fe29a8e2ccabf63430eb94 100644
+--- a/lib/dxf/AcDbNativeDxfConverter.js
++++ b/lib/dxf/AcDbNativeDxfConverter.js
+@@ -64,6 +64,9 @@ import { ACCM_DEFAULT_UI_YIELD_BUDGET_MS, AcCmUiYieldGate, accmYieldForPaint } f
+ import { AcDbDxfFiler } from '../base/AcDbDxfFiler.js';
+ import { AcDbDatabaseConverter } from '../database/AcDbDatabaseConverter.js';
+ import { AcDbDxfDocumentReader } from './AcDbDxfDocumentReader.js';
++import { AcCmColor } from '@mlightcad/common';
++import { DEFAULT_LINE_TYPE } from '../misc/AcDbConstants.js';
++import { AcDbLayerTableRecord } from '../database/AcDbLayerTableRecord.js';
+ /**
+  * Progress weights mirror typical open cost: a small PARSE slice, then most of
+  * the bar for ENTITY add/render (same idea as the old converter where ENTITY
+@@ -174,6 +177,11 @@ var AcDbNativeDxfConverter = /** @class */ (function (_super) {
+                         return [4 /*yield*/, reader.read(filer)];
+                     case 5:
+                         result = _b.sent();
++                        // Files without a TABLES section (minimal / R12 DXF written by
++                        // other tools) reference layers that were never declared. The
++                        // renderer looks layers up while entities are flushed below, so
++                        // create layer 0 and every referenced layer before flushing.
++                        acdbEnsureReferencedLayers(db);
+                         return [4 /*yield*/, emit(PARSE_END_PCT, 'PARSE', 'END', {
+                                 unknownEntityCount: result.unknownEntityCount
+                             })];
+@@ -246,3 +254,35 @@ var AcDbNativeDxfConverter = /** @class */ (function (_super) {
+ }(AcDbDatabaseConverter));
+ export { AcDbNativeDxfConverter };
+ //# sourceMappingURL=AcDbNativeDxfConverter.js.map
++/**
++ * Creates layer '0' and any layer referenced by an entity but missing from
++ * the layer table (white, continuous, plottable).
++ */
++function acdbEnsureReferencedLayers(db) {
++    var layerTable = db.tables.layerTable;
++    var addLayer = function (name) {
++        if (!name || layerTable.has(name))
++            return;
++        var color = new AcCmColor();
++        color.colorIndex = 7;
++        layerTable.add(new AcDbLayerTableRecord({
++            name: name,
++            standardFlags: 0,
++            linetype: DEFAULT_LINE_TYPE,
++            lineWeight: 0,
++            isOff: false,
++            color: color,
++            isPlottable: true
++        }));
++    };
++    addLayer('0');
++    var blocks = db.tables.blockTable.newIterator();
++    for (var b = blocks.next(); !b.done; b = blocks.next()) {
++        var entities = b.value.newIterator();
++        for (var e = entities.next(); !e.done; e = entities.next()) {
++            var layer = e.value && e.value.layer;
++            if (typeof layer === 'string')
++                addLayer(layer);
++        }
++    }
++}

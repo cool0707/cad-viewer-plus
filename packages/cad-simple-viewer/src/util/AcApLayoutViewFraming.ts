@@ -174,3 +174,87 @@ export function acapResolveLayoutFrameBox(
   }
   return undefined
 }
+
+/** Template default limits written for never-set-up layouts: (0,0)-(12,9). */
+function isTemplateDefaultLimits(box: AcApLayoutFrameBox): boolean {
+  return (
+    box.min.x === 0 &&
+    box.min.y === 0 &&
+    ((box.max.x === 12 && box.max.y === 9) ||
+      (box.max.x === 1000000 && box.max.y === 1000000))
+  )
+}
+
+function toLimitsFrameBox(
+  min: { x: number; y: number } | undefined,
+  max: { x: number; y: number } | undefined
+): AcApLayoutFrameBox | undefined {
+  if (!min || !max) return undefined
+  const box = toFrameBox({ min, max } as AcApLayoutFrameBox)
+  if (!box) return undefined
+  if (box.max.x - box.min.x <= 0 || box.max.y - box.min.y <= 0) {
+    return undefined
+  }
+  return box
+}
+
+function limitsOverlapExtents(
+  box: AcApLayoutFrameBox,
+  database: AcDbDatabase
+): boolean {
+  const extents = database.extents
+  if (!extents || extents.isEmpty()) return true
+  const { min, max } = extents
+  if (![min.x, min.y, max.x, max.y].every(Number.isFinite)) return true
+  return !(
+    max.x < box.min.x ||
+    min.x > box.max.x ||
+    max.y < box.min.y ||
+    min.y > box.max.y
+  )
+}
+
+/**
+ * Limits frame ("図面範囲") used by `AcApOpenViewMode.Limits`.
+ *
+ * - **Model space**: header `$LIMMIN`/`$LIMMAX` (the model LAYOUT object
+ *   usually still carries the template default), else non-default layout
+ *   limits; ignored when they do not overlap the model extents.
+ * - **Paper space**: the layout limits, which cover the sheet (paper size
+ *   with margins), else header `$PLIMMIN`/`$PLIMMAX` when this is the active
+ *   paper layout.
+ *
+ * @returns `undefined` when no usable limits exist (callers then fit the
+ *   drawing extents).
+ */
+export function acapLayoutLimitsBox(
+  layout: { limits?: AcGeBox2d | null },
+  database: AcDbDatabase,
+  options: { isModelSpace: boolean; isActivePaperLayout?: boolean }
+): AcGeBox2d | undefined {
+  const layoutLimits = toLimitsFrameBox(
+    layout.limits?.min,
+    layout.limits?.max
+  )
+  const usableLayoutLimits =
+    layoutLimits && !isTemplateDefaultLimits(layoutLimits)
+      ? layoutLimits
+      : undefined
+  let box: AcApLayoutFrameBox | undefined
+  if (options.isModelSpace) {
+    box =
+      toLimitsFrameBox(database.limmin, database.limmax) ?? usableLayoutLimits
+    // Limits that miss the drawing entirely (e.g. a template's 420x297 left
+    // untouched while the geometry sits at survey coordinates) would open
+    // on an empty screen, so fit the drawing instead.
+    if (box && !limitsOverlapExtents(box, database)) box = undefined
+  } else {
+    box =
+      usableLayoutLimits ??
+      (options.isActivePaperLayout
+        ? toLimitsFrameBox(database.plimmin, database.plimmax)
+        : undefined)
+    if (box && isTemplateDefaultLimits(box)) box = undefined
+  }
+  return box ? acapFrameBoxToGeBox2d(box) : undefined
+}

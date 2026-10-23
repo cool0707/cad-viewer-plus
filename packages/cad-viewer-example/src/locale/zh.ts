@@ -30,6 +30,8 @@ export default {
       extentsHint: '缩放到整图',
       saved: '保存的视图',
       savedHint: 'AutoCAD 保存的视图',
+      limits: '图形界限',
+      limitsHint: '图形界限 (LIMITS) / 图纸',
 
       accessMode: '访问模式',
       read: '只读',

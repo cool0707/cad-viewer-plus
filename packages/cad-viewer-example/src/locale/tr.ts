@@ -30,6 +30,8 @@ export default {
       extentsHint: 'Çizimi sığdır',
       saved: 'Kayıtlı',
       savedHint: 'AutoCAD kayıtlı görünümü',
+      limits: 'Sınırlar',
+      limitsHint: 'Çizim sınırları / kağıt',
 
       accessMode: 'Erişim modu',
       read: 'Oku',

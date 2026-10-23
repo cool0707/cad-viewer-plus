@@ -30,6 +30,8 @@ export default {
       extentsHint: 'Přizpůsobit výkres',
       saved: 'Uložený',
       savedHint: 'Uložený pohled AutoCADu',
+      limits: 'Meze',
+      limitsHint: 'Meze výkresu / papír',
 
       accessMode: 'Režim přístupu',
       read: 'Čtení',

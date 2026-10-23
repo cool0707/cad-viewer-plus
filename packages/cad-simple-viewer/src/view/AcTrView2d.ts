@@ -88,7 +88,10 @@ import type { AcTrLazySpatialChildren } from '../spatialIndex'
 import type { AcTrSpatialSearchOptions } from '../spatialIndex/AcTrSpatialIndex'
 import { AcTrGeometryUtil } from '../util'
 import { acapRunDatabaseEdit } from '../util/AcApDatabaseEdit'
-import { acapResolveLayoutFrameBox } from '../util/AcApLayoutViewFraming'
+import {
+  acapLayoutLimitsBox,
+  acapResolveLayoutFrameBox
+} from '../util/AcApLayoutViewFraming'
 import {
   collectTextStyleFontNames,
   planTextStyleFontPreload
@@ -2848,6 +2851,7 @@ export class AcTrView2d extends AcEdBaseView {
    * - **Saved + paper**: {@link acapResolveLayoutFrameBox} with limits
    *   trusted only when they contain real viewports (rejects template
    *   `(0,0)-(12,9)`), then viewports → layout extents → entity box.
+   * - **Limits**: layout LIMMIN/LIMMAX (sheet in paper space), else Extents.
    * - **Extents**: frame converted geometry (and paper viewports as a
    *   content proxy). Does not prefer LIMMIN/LIMMAX over drawable bounds.
    *
@@ -2885,6 +2889,14 @@ export class AcTrView2d extends AcEdBaseView {
   ): AcGeBox2d | undefined {
     const isModelSpace = btrId === this.modelSpaceBtrId
     const wantSaved = this._openViewMode === AcApOpenViewMode.Saved
+
+    if (this._openViewMode === AcApOpenViewMode.Limits) {
+      const db = AcApDocManager.instance.curDocument.database
+      // PLIMMIN/PLIMMAX belong to the paper layout active when the file was
+      // saved, so they are only used by the open-time framing.
+      const limitsBox = acapLayoutLimitsBox(layout, db, { isModelSpace })
+      if (limitsBox) return limitsBox
+    }
 
     if (wantSaved && isModelSpace) {
       const db = AcApDocManager.instance.curDocument.database

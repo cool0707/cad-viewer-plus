@@ -214,7 +214,15 @@ const disableExport = ref(false)
 //   ?url=<drawing URL>  open a drawing (relative URLs resolve against the page)
 //   ?new=1              start a new drawing
 //   ?lang=ja|en|…       switch the UI language
+//   ?view=extents|saved|limits  initial view (limits = drawing limits / sheet)
 const startupParams = new URLSearchParams(window.location.search)
+const startupView = startupParams.get('view')
+if (
+  startupView &&
+  (Object.values(AcApOpenViewMode) as string[]).includes(startupView)
+) {
+  openViewMode.value = startupView as AcApOpenViewMode
+}
 const startupLang = startupParams.get('lang')
 if (
   startupLang &&

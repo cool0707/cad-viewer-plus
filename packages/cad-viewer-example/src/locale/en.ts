@@ -30,6 +30,8 @@ export default {
       extentsHint: 'Fit drawing',
       saved: 'Saved',
       savedHint: 'AutoCAD saved view',
+      limits: 'Limits',
+      limitsHint: 'Drawing limits / paper sheet',
 
       accessMode: 'Access mode',
       read: 'Read',

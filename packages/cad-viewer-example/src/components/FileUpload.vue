@@ -489,6 +489,11 @@ const openViewModes = computed(() => [
     value: AcApOpenViewMode.Saved,
     label: t('example.fileUpload.saved'),
     description: t('example.fileUpload.savedHint')
+  },
+  {
+    value: AcApOpenViewMode.Limits,
+    label: t('example.fileUpload.limits'),
+    description: t('example.fileUpload.limitsHint')
   }
 ] as const)
 

@@ -3,6 +3,7 @@ import { AcGeBox2d } from '@mlightcad/data-model'
 import {
   acapBoxContains,
   acapFrameBoxToGeBox2d,
+  acapLayoutLimitsBox,
   acapResolveLayoutFrameBox,
   acapViewportPaperBox
 } from '../src/util/AcApLayoutViewFraming'
@@ -111,5 +112,65 @@ describe('acapResolveLayoutFrameBox', () => {
     const box = acapFrameBoxToGeBox2d(templateLimits)
     expect(box.min.x).toBe(0)
     expect(box.max.y).toBe(9)
+  })
+})
+
+describe('acapLayoutLimitsBox', () => {
+  const emptyExtents = { isEmpty: () => true }
+  const extentsOf = (minX: number, minY: number, maxX: number, maxY: number) => ({
+    isEmpty: () => false,
+    min: { x: minX, y: minY },
+    max: { x: maxX, y: maxY }
+  })
+  const db = (fields: Record<string, unknown>) =>
+    ({ extents: emptyExtents, ...fields }) as never
+  const stale = { limits: new AcGeBox2d({ x: 0, y: 0 }, { x: 12, y: 9 }) }
+
+  it('uses header LIMMIN/LIMMAX in model space over stale layout limits', () => {
+    const box = acapLayoutLimitsBox(
+      stale,
+      db({ limmin: { x: 0, y: 0 }, limmax: { x: 841, y: 594 } }),
+      { isModelSpace: true }
+    )
+    expect(box?.max.x).toBe(841)
+    expect(box?.max.y).toBe(594)
+  })
+
+  it('falls back to extents when model limits miss the drawing', () => {
+    const box = acapLayoutLimitsBox(
+      stale,
+      db({
+        limmin: { x: 0, y: 0 },
+        limmax: { x: 420, y: 297 },
+        extents: extentsOf(10000, 10000, 20000, 20000)
+      }),
+      { isModelSpace: true }
+    )
+    expect(box).toBeUndefined()
+  })
+
+  it('uses the paper layout limits (sheet) in paper space', () => {
+    const box = acapLayoutLimitsBox(
+      { limits: new AcGeBox2d({ x: -20, y: -7.5 }, { x: 277, y: 202.5 }) },
+      db({}),
+      { isModelSpace: false, isActivePaperLayout: true }
+    )
+    expect(box?.min.x).toBe(-20)
+    expect(box?.max.y).toBe(202.5)
+  })
+
+  it('uses PLIMMIN/PLIMMAX for the active paper layout without limits', () => {
+    const box = acapLayoutLimitsBox(
+      stale,
+      db({ plimmin: { x: 0, y: 0 }, plimmax: { x: 420, y: 297 } }),
+      { isModelSpace: false, isActivePaperLayout: true }
+    )
+    expect(box?.max.x).toBe(420)
+  })
+
+  it('returns undefined when only template defaults exist', () => {
+    expect(
+      acapLayoutLimitsBox(stale, db({}), { isModelSpace: false })
+    ).toBeUndefined()
   })
 })

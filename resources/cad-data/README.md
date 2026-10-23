@@ -40,3 +40,8 @@ SHX + big font, Arial, 宋体, 맑은 고딕). The demo page opens it with
 `sjis-sample.dxf` is a Shift_JIS DXF that declares `ANSI_1252` (as several
 Japanese tools do); it checks the encoding detection added in
 `patches/@mlightcad__data-model@1.15.14.patch`.
+
+`limits-sample.dxf` is a minimal R12 DXF without a TABLES section whose
+`$LIMMIN`/`$LIMMAX` (A1 sheet) leave out a circle far outside the sheet. Open
+it with `?view=limits` and `?view=extents` to compare the 図面範囲 (limits)
+and extents initial views.

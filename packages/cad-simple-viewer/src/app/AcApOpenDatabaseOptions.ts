@@ -12,7 +12,13 @@ export enum AcApOpenViewMode {
   /** Poll converted geometry and frame the full drawing (`zoomToFitDrawing`). */
   Extents = 'extents',
   /** Restore AutoCAD's saved view (layout limits or VPORT `*ACTIVE`). */
-  Saved = 'saved'
+  Saved = 'saved',
+  /**
+   * Frame the layout limits (LIMITS / 図面範囲): the drawing limits in model
+   * space and the paper (sheet) area in paper-space layouts. Falls back to
+   * {@link Extents} when the layout has no usable limits.
+   */
+  Limits = 'limits'
 }
 
 /**
@@ -117,6 +123,7 @@ export interface AcApOpenDatabaseOptions extends Omit<
    * the startup layout at open, and every other layout on its **first visit**.
    *
    * - {@link AcApOpenViewMode.Extents}: zoom to converted geometry.
+   * - {@link AcApOpenViewMode.Limits}: frame the layout limits / paper area.
    * - {@link AcApOpenViewMode.Saved}: restore AutoCAD's saved view (model
    *   VPORT `*ACTIVE`; paper uses layout limits only when they contain
    *   real viewports, otherwise the viewport box).
