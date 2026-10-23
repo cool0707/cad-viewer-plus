@@ -199,7 +199,7 @@ export default {
     or: 'or',
     dropFile: 'Drop a file here or',
     browse: 'browse',
-    dropOrBrowse: 'Drop a DWG or DXF file here, or browse',
+    dropOrBrowse: 'Drop a drawing file here, or browse',
     newDrawing: 'New Drawing',
     source: 'Source',
     unavailable: 'This source is not available yet.',

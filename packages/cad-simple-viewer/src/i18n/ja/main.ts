@@ -200,7 +200,7 @@ export default {
     or: 'または',
     dropFile: 'ここにファイルをドロップ または',
     browse: '参照',
-    dropOrBrowse: 'DWG / DXF ファイルをここにドロップ、または参照',
+    dropOrBrowse: '図面ファイルをここにドロップ、または参照',
     newDrawing: '新規図面',
     source: 'ソース',
     unavailable: 'このソースはまだ利用できません。',

@@ -8,6 +8,9 @@ import { visualizer } from 'rollup-plugin-visualizer'
 import vue from '@vitejs/plugin-vue'
 import { examplePeerPackageAliases, exampleRollupOutput } from '../vite-config/pluginRollupOutput'
 import {
+  JWW_CONVERTER_PACKAGE,
+  JWW_PARSER_WASM_FILE,
+  JWW_PARSER_WORKER_FILE,
   LIBREDWG_CONVERTER_PACKAGE,
   LIBREDWG_PARSER_WASM_FILE,
   LIBREDWG_PARSER_WORKER_FILE,
@@ -168,6 +171,8 @@ export default defineConfig(({ command, mode }) => {
     'dist',
     LIBREDWG_PARSER_WASM_FILE
   )
+  const jwwDist = `./node_modules/${JWW_CONVERTER_PACKAGE}/dist`
+
   const mtextWorkerSrc = linkLocalMtextRenderer
     ? LOCAL_MTEXT_RENDERER_WORKER
     : `./node_modules/@mlightcad/cad-simple-viewer/dist/${MTEXT_RENDERER_WORKER_FILE}`
@@ -202,6 +207,15 @@ export default defineConfig(({ command, mode }) => {
               }
             ]
           : []),
+        {
+          // JWW (Jw_cad) parser: ezjww worker + wasm (MIT).
+          src: [
+            `${jwwDist}/${JWW_PARSER_WORKER_FILE}`,
+            `${jwwDist}/${JWW_PARSER_WASM_FILE}`
+          ],
+          dest: 'assets',
+          rename: { stripBase: true }
+        },
         ...(hasViewerRuntime
           ? [
               {

@@ -1230,7 +1230,7 @@ export default {
         'لا توجد مراجع خارجية أو صور في هذا الرسم',
 
       urlPrompt:
-        'أدخل رابط URL لملف DWG أو DXF',
+        'أدخل رابط URL لملف رسم (DWG أو DXF وغيرها)',
 
       urlRequired:
         'يرجى إدخال رابط URL',

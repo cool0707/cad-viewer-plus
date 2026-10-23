@@ -1,3 +1,4 @@
+import { acapStripDrawingExtension } from '../../app/AcApDrawingFileTypes'
 import type { AcEdBaseView } from '../../editor'
 import {
   acapCssColor,
@@ -227,6 +228,6 @@ export function stringifyMeasurementSidecar(
  */
 export function measurementSidecarFileName(drawingName?: string): string {
   if (!drawingName) return 'drawing.measurement.json'
-  const base = drawingName.replace(/\.(dwg|dxf)$/i, '')
+  const base = acapStripDrawingExtension(drawingName)
   return `${base}.measurement.json`
 }

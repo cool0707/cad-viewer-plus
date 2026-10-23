@@ -23,6 +23,7 @@ import type {
   AcApLayerIsolationMode
 } from '../service/types'
 import { LAYER_LOCKED_FLAG } from '../service/types'
+import { acapDrawingFileType } from './AcApDrawingFileTypes'
 import type { AcApLayerPreviousSnapshot } from './AcApLayerSessionState'
 import { AcApOpenDatabaseOptions } from './AcApOpenDatabaseOptions'
 
@@ -115,7 +116,9 @@ export class AcApDocument {
   /**
    * Opens a CAD document from file content.
    *
-   * @param fileName - The name of the file (used to determine file type from extension)
+   * @param fileName - The name of the file. Its extension selects the
+   *   registered converter (`dwg`, `dxf`, `jww`, …); unknown extensions are
+   *   read as DXF.
    * @param content - The file content as string or ArrayBuffer
    * @param options - Options for opening the database
    * @returns Promise resolving to true if successful, false if failed
@@ -138,7 +141,6 @@ export class AcApDocument {
     this._openMode = options?.mode ?? AcEdOpenMode.Read
     const openErrorBefore = this._database.lastOpenError
     try {
-      const fileExtension = fileName.split('.').pop()?.toLocaleLowerCase()
       // Convert to base options for database method. Viewer-only fields
       // (`mode`, `progressiveRendering`, `openViewMode`, deprecated
       // `waitForTextGeometry`) are ignored by `AcDbDatabase`; `sysVars` may
@@ -151,7 +153,7 @@ export class AcApDocument {
       await this._database.read(
         content,
         baseOptions,
-        fileExtension == 'dwg' ? AcDbFileType.DWG : AcDbFileType.DXF
+        acapDrawingFileType(fileName) ?? AcDbFileType.DXF
       )
       this.docTitle = this._fileName
     } catch (error) {

@@ -1,5 +1,10 @@
 import { AcApDocManager } from '../app/AcApDocManager'
 import {
+  acapDrawingFileAccept,
+  acapDrawingFileTypes,
+  acapIsDrawingFileName
+} from '../app/AcApDrawingFileTypes'
+import {
   acapBuildDataSourceMenu,
   type AcApDataSourceMenuItem
 } from '../app/dataSource/acapBuildDataSourceMenu'
@@ -13,8 +18,6 @@ import {
   type AcEdUiTheme,
   resolveUiTheme} from '../editor/global/AcEdUiTheme'
 import { AcApI18n } from '../i18n/AcApI18n'
-
-const SUPPORTED_EXTENSIONS = ['.dxf', '.dwg'] as const
 
 const VIEW_LOCAL = 'local'
 const VIEW_URL = 'url'
@@ -183,7 +186,7 @@ export class AcUiFileOpenPanel {
 
     this.fileInput = document.createElement('input')
     this.fileInput.type = 'file'
-    this.fileInput.accept = options.accept ?? SUPPORTED_EXTENSIONS.join(',')
+    this.fileInput.accept = options.accept ?? acapDrawingFileAccept()
     this.fileInput.className = 'ml-ui-file-open-input-hidden'
     this.fileInput.addEventListener('change', () => {
       const file = this.fileInput.files?.[0]
@@ -217,7 +220,7 @@ export class AcUiFileOpenPanel {
     dropTitle.appendChild(dropLink)
     const tags = document.createElement('div')
     tags.className = 'ml-ui-file-open-tags'
-    for (const tag of ['DWG', 'DXF']) {
+    for (const tag of acapDrawingFileTypes().map(t => t.toUpperCase())) {
       const span = document.createElement('span')
       span.className = 'ml-ui-file-open-tag'
       span.textContent = tag
@@ -706,8 +709,7 @@ export class AcUiFileOpenPanel {
   }
 
   private isSupportedFileName(name: string): boolean {
-    const lower = name.toLowerCase()
-    return SUPPORTED_EXTENSIONS.some(ext => lower.endsWith(ext))
+    return acapIsDrawingFileName(name)
   }
 
   private emitLocal(file: File): void {

@@ -198,7 +198,7 @@ export default {
     or: 'nebo',
     dropFile: 'Přetáhněte soubor sem nebo',
     browse: 'procházet',
-    dropOrBrowse: 'Přetáhněte soubor DWG nebo DXF sem, nebo procházejte',
+    dropOrBrowse: 'Přetáhněte soubor výkresu sem, nebo procházejte',
     newDrawing: 'Nový výkres',
     source: 'Zdroj',
     unavailable: 'Tento zdroj zatím není k dispozici.',

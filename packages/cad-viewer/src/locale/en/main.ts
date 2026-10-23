@@ -866,7 +866,7 @@ export default {
       unload: 'Unload',
       load: 'Load',
       empty: 'No external references or images in this drawing',
-      urlPrompt: 'Enter a URL to a DWG or DXF file',
+      urlPrompt: 'Enter the URL of a drawing file (DWG, DXF, etc.)',
       urlRequired: 'Please enter a URL',
       loadFailed: 'Failed to load reference "{name}"'
     },

@@ -847,7 +847,7 @@ export default {
       unload: 'アンロード',
       load: 'ロード',
       empty: 'この図面に外部参照やイメージはありません',
-      urlPrompt: 'DWG または DXF ファイルの URL を入力してください',
+      urlPrompt: '図面ファイル (DWG / DXF など) の URL を入力してください',
       urlRequired: 'URL を入力してください',
       loadFailed: '参照「{name}」をロードできませんでした'
     },

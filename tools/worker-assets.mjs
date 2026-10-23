@@ -15,6 +15,15 @@ export const LIBREDWG_PARSER_WORKER_FILE = 'libredwg-parser-worker.js'
  */
 export const LIBREDWG_PARSER_WASM_FILE = 'libredwg-web.wasm'
 
+/** JWW (Jw_cad) parser worker from `@mlightcad/cad-jww-converter` (MIT, ezjww). */
+export const JWW_PARSER_WORKER_FILE = 'jww-parser-worker.js'
+
+/**
+ * ezjww wasm sibling of {@link JWW_PARSER_WORKER_FILE}.
+ * Must be deployed next to the worker.
+ */
+export const JWW_PARSER_WASM_FILE = 'jww-parser.wasm'
+
 /** MTEXT layout/shaping worker from `@mlightcad/mtext-renderer`. */
 export const MTEXT_RENDERER_WORKER_FILE = 'mtext-renderer-worker.js'
 
@@ -32,5 +41,6 @@ export const DWG_PARSER_WORKER_FILE = 'dwg-parser-worker.js'
 export const DWG_PARSER_MAIN_FILE = 'dwg-parser-main.js'
 
 export const LIBREDWG_CONVERTER_PACKAGE = '@mlightcad/libredwg-converter'
+export const JWW_CONVERTER_PACKAGE = '@mlightcad/cad-jww-converter'
 export const MTEXT_RENDERER_PACKAGE = '@mlightcad/mtext-renderer'
 export const DWG_CONVERTER_PACKAGE = '@mlightcad/dwg-converter'

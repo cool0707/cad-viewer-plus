@@ -198,7 +198,7 @@ export default {
     or: 'veya',
     dropFile: 'Dosyayı buraya bırakın veya',
     browse: 'göz atın',
-    dropOrBrowse: 'DWG veya DXF dosyasını buraya bırakın veya göz atın',
+    dropOrBrowse: 'Çizim dosyasını buraya bırakın veya göz atın',
     newDrawing: 'Yeni çizim',
     source: 'Kaynak',
     unavailable: 'Bu kaynak henüz kullanılamıyor.',

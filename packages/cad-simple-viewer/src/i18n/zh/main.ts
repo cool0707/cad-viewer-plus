@@ -194,7 +194,7 @@ export default {
     or: '或',
     dropFile: '将文件拖放到此处，或',
     browse: '浏览',
-    dropOrBrowse: '将 DWG 或 DXF 文件拖放到此处，或浏览选择',
+    dropOrBrowse: '将图纸文件拖放到此处，或浏览选择',
     newDrawing: '新建图纸',
     source: '数据源',
     unavailable: '该数据源暂不可用。',

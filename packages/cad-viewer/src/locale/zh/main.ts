@@ -820,7 +820,7 @@ export default {
       unload: '卸载',
       load: '加载',
       empty: '当前图纸没有外部参照或图像',
-      urlPrompt: '输入 DWG 或 DXF 文件的 URL',
+      urlPrompt: '输入图纸文件（DWG、DXF 等）的 URL',
       urlRequired: '请输入 URL',
       loadFailed: '加载参照 "{name}" 失败'
     },

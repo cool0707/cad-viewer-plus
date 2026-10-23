@@ -1,8 +1,8 @@
 # CLAUDE.md — cad-viewer-plus
 
 mlightcad/cad-viewer (MIT) を日本向けにフォークしたブラウザ CAD ビューア。
-次の大きな作業は **JWW / SXF (P21・SFC) 読み込み** — 詳細と経緯は
-[`HANDOFF.md`](./HANDOFF.md) を最初に読むこと。
+JWW 読み込みは実装済み (`packages/cad-jww-converter`)。次の大きな作業は
+**SXF (P21・SFC) 読み込み** — 詳細と経緯は [`HANDOFF.md`](./HANDOFF.md) を最初に読むこと。
 
 ## コマンド
 
@@ -23,6 +23,7 @@ pnpm --filter @mlightcad/cad-viewer-example test:e2e   # Playwright e2e (fixture
 
 - `packages/cad-simple-viewer` — フレームワーク非依存のコア (AcApDocManager, AcTrView2d, コマンド, i18n)。
 - `packages/cad-viewer` — Vue3 + Element Plus の UI。`packages/cad-viewer-example` がデモ本体。
+- `packages/cad-jww-converter` — JWW (Jw_cad) 読み込み。ezjww (MIT, wasm) を Worker で実行し DXF 経由で読む。example で opt-in 登録。
 - `@mlightcad/data-model` / `libredwg-converter` / `geometry-engine` / `mtext-renderer` は **npm 依存** (このリポジトリにソースは無い)。直すときは pnpm patch (下記)。
 - `resources/cad-data/` — フォント (BIZ UD woff + fonts.json)・テンプレート・サンプル図面。ビルド時に各 example の `cad-data/` へコピーされる。
 - `demo/index.html` + `tools/build-demo.mjs` → `demo-dist/` → GitHub Pages (`.github/workflows/demo.yml`, gh-pages ブランチ)。

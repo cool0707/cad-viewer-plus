@@ -42,6 +42,7 @@
     "@mlightcad/cad-agent-plugin": "workspace:*",
     "@mlightcad/cad-google-drive-plugin": "workspace:*",
     "@mlightcad/cad-html-plugin": "workspace:*",
+    "@mlightcad/cad-jww-converter": "workspace:*",
     "@mlightcad/cad-onedrive-plugin": "workspace:*",
     "@mlightcad/cad-pdf-plugin": "workspace:*",
     "@mlightcad/cad-script-plugin": "workspace:*",

@@ -1,0 +1,37 @@
+{
+  "name": "@mlightcad/cad-jww-converter",
+  "version": "1.7.7-preview.1",
+  "license": "MIT",
+  "type": "module",
+  "description": "Jw_cad (JWW) reader for the CAD viewer, powered by ezjww (Rust/WebAssembly)",
+  "files": [
+    "dist",
+    "lib",
+    "README.md",
+    "package.json"
+  ],
+  "main": "./dist/cad-jww-converter.js",
+  "module": "./dist/cad-jww-converter.js",
+  "types": "./lib/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "import": "./dist/cad-jww-converter.js"
+    }
+  },
+  "scripts": {
+    "clean": "rimraf dist lib tsconfig.tsbuildinfo",
+    "build": "tsc && vite build && vite build --config vite.worker.config.ts",
+    "lint": "eslint src/",
+    "lint:fix": "eslint --fix --quiet src/"
+  },
+  "devDependencies": {
+    "@mlightcad/data-model": "1.15.14"
+  },
+  "peerDependencies": {
+    "@mlightcad/data-model": "1.15.14"
+  },
+  "dependencies": {
+    "ezjww": "0.7.3"
+  }
+}

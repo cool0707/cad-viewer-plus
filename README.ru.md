@@ -27,7 +27,11 @@
   - Текст интерфейса: **Noto Sans JP** (размещается локально через
     `@fontsource-variable/noto-sans-jp`).
 - **Локализованные имена листов** в новых чертежах вместо китайских имён из шаблона.
-- В планах: импорт **JWW** (Jw_cad) и **SXF** (P21 / SFC).
+- **Импорт JWW (Jw_cad)** — демо-приложение открывает файлы `.jww` через
+  `@mlightcad/cad-jww-converter` (MIT; парсер [ezjww](https://github.com/monozukuri-ai/ezjww),
+  Rust → WebAssembly, в Web Worker). Координаты переводятся из миллиметров листа в реальные
+  миллиметры по масштабу группы слоёв, а лист становится границами чертежа.
+- В планах: импорт **SXF** (P21 / SFC).
 
 ## Демо
 
@@ -68,6 +72,23 @@ DXF читается встроенным парсером с лицензией
 опционально через `@mlightcad/libredwg-converter` на основе
 [LibreDWG](https://github.com/LibreDWG/libredwg) с лицензией **GPL-3.0**;
 перед распространением учтите требования GPL.
+
+## Поддержка JWW
+
+`@mlightcad/cad-jww-converter` читает чертежи Jw_cad (`.jww`): разбирает файл с помощью ezjww (MIT)
+в Web Worker, преобразует в DXF и загружает встроенным DXF-ридером. Зарегистрируйте его и
+разместите `jww-parser-worker.js` и `jww-parser.wasm` (из `dist/` пакета) в одной папке:
+
+```ts
+import { registerJwwConverter } from '@mlightcad/cad-jww-converter'
+
+registerJwwConverter('./assets/jww-parser-worker.js')
+```
+
+JWW хранит координаты в миллиметрах листа. По умолчанию всё масштабируется по масштабу основной
+группы слоёв (с наибольшим числом объектов), поэтому чертёж выглядит как в Jw_cad, а основной
+чертёж измеряется в реальных миллиметрах. `scaleMode: 'layer-group'` использует масштаб каждой
+группы, `scaleMode: 'paper'` оставляет миллиметры листа. Старый формат JWC пока не поддерживается.
 
 ## Лицензия
 
