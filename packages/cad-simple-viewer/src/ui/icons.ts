@@ -21,7 +21,7 @@ function elementPlusIcon(...pathDs: string[]): string {
 
 /** Select tool icon. */
 export const ICON_SELECT =
-  '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 20 20"><path fill="currentColor" d="M10.4379 15.2979h.002l4.86-4.86-9.722-4.86 4.86 9.72Zm7.562-5.298-3.434 3.434 3.2 3.2-1.132 1.132-3.2-3.2-3.434 3.434-7.6-15.6 15.6 7.6Z"/></svg>'
+  '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 20 20"><path fill="currentColor" stroke="currentColor" stroke-width="1" stroke-linejoin="round" d="M5 2.6v13.6l3.4-3.3 2.5 5.4 2.2-1-2.5-5.3h4.8Z"/></svg>'
 
 /** Pan tool icon. */
 export const ICON_PAN =

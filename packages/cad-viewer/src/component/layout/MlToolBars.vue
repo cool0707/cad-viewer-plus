@@ -57,15 +57,15 @@ import {
 import { useDocument, useSettings } from '../../composable'
 // Raw markup: AcUiToolbar takes SVG strings. (Rendering Vue icon components
 // while it builds buttons would flush pending watchers and re-enter it.)
-import arcThreePoints from '../../svg/arc/arcThreePoints.svg?raw'
-import circleCenterRadius from '../../svg/circle/circleCenterRadius.svg?raw'
-import ellipseCenter from '../../svg/ellipse/ellipseCenter.svg?raw'
-import hatch from '../../svg/hatch/hatch.svg?raw'
-import line from '../../svg/line.svg?raw'
-import move from '../../svg/move.svg?raw'
-import offset from '../../svg/offset.svg?raw'
-import polyline from '../../svg/polyline.svg?raw'
-import rect from '../../svg/rect.svg?raw'
+import arcThreePointsSvg from '../../svg/arc/arcThreePoints.svg?raw'
+import circleCenterRadiusSvg from '../../svg/circle/circleCenterRadius.svg?raw'
+import ellipseCenterSvg from '../../svg/ellipse/ellipseCenter.svg?raw'
+import hatchSvg from '../../svg/hatch/hatch.svg?raw'
+import lineSvg from '../../svg/line.svg?raw'
+import moveSvg from '../../svg/move.svg?raw'
+import offsetSvg from '../../svg/offset.svg?raw'
+import polylineSvg from '../../svg/polyline.svg?raw'
+import rectSvg from '../../svg/rect.svg?raw'
 
 const features = useSettings()
 const { isDocumentOpening, openMode: docOpenMode } = useDocument()
@@ -147,6 +147,22 @@ const handleLocaleChanged = () => {
   // vue-i18n is synced first (listener registered in locale/i18n.ts at module load).
   toolbar?.refreshLocale()
 }
+
+/**
+ * Ribbon SVGs leave most shapes without a fill (the ribbon colours them via
+ * CSS), which would render black here; default them to the text colour.
+ */
+const tinted = (svg: string) => svg.replace('<svg ', '<svg fill="currentColor" ')
+
+const arcThreePoints = tinted(arcThreePointsSvg)
+const circleCenterRadius = tinted(circleCenterRadiusSvg)
+const ellipseCenter = tinted(ellipseCenterSvg)
+const hatch = tinted(hatchSvg)
+const line = tinted(lineSvg)
+const move = tinted(moveSvg)
+const offset = tinted(offsetSvg)
+const polyline = tinted(polylineSvg)
+const rect = tinted(rectSvg)
 
 /** Element Plus glyph (1024 viewBox) as markup, matching the ribbon icons. */
 const epIcon = (d: string) =>
