@@ -418,6 +418,13 @@ export default {
     }
   },
   verticalToolbar: {
+    chrome: {
+      collapse: 'Collapse toolbar',
+      expand: 'Expand toolbar',
+      moreOverflow: 'More tools',
+      move: 'Drag to move (double-click to reset)',
+      orientation: 'Switch vertical / horizontal'
+    },
     measure: {
       text: 'Measure',
       description: 'Measurement tools'

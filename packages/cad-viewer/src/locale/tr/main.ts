@@ -422,6 +422,13 @@ export default {
     }
   },
   verticalToolbar: {
+    chrome: {
+      collapse: 'Araç çubuğunu daralt',
+      expand: 'Araç çubuğunu genişlet',
+      moreOverflow: 'Diğer araçlar',
+      move: 'Taşımak için sürükleyin (sıfırlamak için çift tıklayın)',
+      orientation: 'Dikey / yatay arasında geç'
+    },
     measure: {
       text: 'Ölç',
       description: 'Ölçüm araçları'

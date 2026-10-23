@@ -281,6 +281,14 @@ export const ICON_DOCK_CLOSE =
 export const ICON_DOCK_SIDE_MENU =
   '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 20 20"><circle cx="10" cy="4" r="1.5" fill="currentColor"/><circle cx="10" cy="10" r="1.5" fill="currentColor"/><circle cx="10" cy="16" r="1.5" fill="currentColor"/></svg>'
 
+/** Drag grip of a movable toolbar (six dots, laid out horizontally). */
+export const ICON_DRAG_HANDLE =
+  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" aria-hidden="true"><g fill="currentColor"><circle cx="6" cy="7.5" r="1.4"/><circle cx="10" cy="7.5" r="1.4"/><circle cx="14" cy="7.5" r="1.4"/><circle cx="6" cy="12.5" r="1.4"/><circle cx="10" cy="12.5" r="1.4"/><circle cx="14" cy="12.5" r="1.4"/></g></svg>'
+
+/** Switch a movable toolbar between vertical and horizontal. */
+export const ICON_TOOLBAR_ORIENTATION =
+  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" d="M15.6 8.2A6 6 0 0 0 5 6.2M4.4 11.8A6 6 0 0 0 15 13.8"/><path fill="currentColor" d="M3.6 3.4v4.8h4.8L3.6 3.4ZM16.4 16.6v-4.8h-4.8l4.8 4.8Z"/></svg>'
+
 /** Collapse toolbar (chevron toward compact edge). */
 export const ICON_CHEVRON_UP =
   '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" aria-hidden="true"><path fill="currentColor" d="M10 6.5 5.5 11h9L10 6.5Z"/></svg>'

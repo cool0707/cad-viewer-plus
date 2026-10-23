@@ -412,6 +412,13 @@ export default {
     }
   },
   verticalToolbar: {
+    chrome: {
+      collapse: 'Sbalit panel nástrojů',
+      expand: 'Rozbalit panel nástrojů',
+      moreOverflow: 'Další nástroje',
+      move: 'Přetažením přesunete (dvojklikem obnovíte)',
+      orientation: 'Přepnout svisle / vodorovně'
+    },
     measure: {
       text: 'Měření',
       description: 'Nástroje pro měření'

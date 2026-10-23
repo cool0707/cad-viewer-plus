@@ -402,6 +402,13 @@ export default {
     }
   },
   verticalToolbar: {
+    chrome: {
+      collapse: 'ツールバーを折りたたむ',
+      expand: 'ツールバーを展開',
+      moreOverflow: 'その他のツール',
+      move: 'ドラッグで移動 (ダブルクリックで元の位置に戻す)',
+      orientation: '縦置き / 横置きを切り替え'
+    },
     measure: {
       text: '計測',
       description: '計測ツール'

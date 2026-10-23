@@ -32,6 +32,9 @@ drawings never leave the user's device.
   block attribute → symbol property, Model space → Canvas, Layout → Print page,
   Hatch → Pattern fill, Xref → Linked drawing, Quick Select → Select by Criteria, and so on.
   Tooltips keep the CAD term in parentheses (all locales).
+- **Movable tool bar** — drag the grip (⠿) to move the tool bar anywhere, and switch it between
+  vertical and horizontal. Sub-menus open toward the centre of the screen; the position is
+  remembered, and double-clicking the grip puts it back on the right edge.
 - **JWW (Jw_cad) import** — `.jww` files open in the example app through
   `@mlightcad/cad-jww-converter` (MIT; parser: [ezjww](https://github.com/monozukuri-ai/ezjww),
   Rust → WebAssembly, in a Web Worker). Coordinates are converted from paper

@@ -384,6 +384,13 @@ export default {
     }
   },
   verticalToolbar: {
+    chrome: {
+      collapse: '收起工具栏',
+      expand: '展开工具栏',
+      moreOverflow: '更多工具',
+      move: '拖动以移动（双击恢复原位）',
+      orientation: '切换竖排 / 横排'
+    },
     measure: {
       text: '测量',
       description: '测量工具'

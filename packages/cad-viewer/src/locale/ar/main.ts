@@ -585,6 +585,13 @@ export default {
 },
   verticalToolbar: {
     ...enMain.verticalToolbar,
+    chrome: {
+      collapse: 'طي شريط الأدوات',
+      expand: 'توسيع شريط الأدوات',
+      moreOverflow: 'المزيد من الأدوات',
+      move: 'اسحب للنقل (انقر نقرًا مزدوجًا للاستعادة)',
+      orientation: 'التبديل بين الوضع العمودي والأفقي'
+    },
 
     measure: {
       ...enMain.verticalToolbar.measure,

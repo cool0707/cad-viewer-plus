@@ -8,6 +8,7 @@ import {
   AcApI18n,
   AcEdOpenMode,
   AcUiToolbar,
+  type AcUiToolbarFloatingLayout,
   type AcUiToolbarItem,
   ICON_ANNOTATION,
   ICON_ANNOTATION_HIDE,
@@ -81,10 +82,53 @@ const syncReadingMode = () => {
   }
 }
 
-/** Prefer AcApI18n; keys are resolved at runtime by AcUiToolbar. */
+/**
+ * Prefer AcApI18n; keys are resolved at runtime by AcUiToolbar. Its own chrome
+ * keys (`toolbar.collapse`, `toolbar.move`, …) live under
+ * `main.verticalToolbar.chrome`.
+ */
 const i18n = {
-  // eslint-disable-next-line @intlify/vue-i18n/no-dynamic-keys -- toolbar label keys are data-driven
-  t: (key: string) => AcApI18n.t(key)
+  t: (key: string) =>
+    // eslint-disable-next-line @intlify/vue-i18n/no-dynamic-keys -- toolbar label keys are data-driven
+    AcApI18n.t(
+      key.startsWith('toolbar.')
+        ? `main.verticalToolbar.chrome.${key.slice('toolbar.'.length)}`
+        : key
+    )
+}
+
+/** Where the user dragged the toolbar to (and its orientation). */
+const FLOATING_LAYOUT_STORAGE_KEY = 'ml-cad-viewer.toolbarLayout'
+
+const loadFloatingLayout = (): AcUiToolbarFloatingLayout | undefined => {
+  try {
+    const raw = localStorage.getItem(FLOATING_LAYOUT_STORAGE_KEY)
+    if (!raw) return undefined
+    const value = JSON.parse(raw) as Partial<AcUiToolbarFloatingLayout>
+    if (
+      (value.orientation === 'vertical' ||
+        value.orientation === 'horizontal') &&
+      typeof value.x === 'number' &&
+      typeof value.y === 'number'
+    ) {
+      return { orientation: value.orientation, x: value.x, y: value.y }
+    }
+  } catch {
+    // Storage blocked or corrupt: start docked.
+  }
+  return undefined
+}
+
+const saveFloatingLayout = (layout: AcUiToolbarFloatingLayout | undefined) => {
+  try {
+    if (layout) {
+      localStorage.setItem(FLOATING_LAYOUT_STORAGE_KEY, JSON.stringify(layout))
+    } else {
+      localStorage.removeItem(FLOATING_LAYOUT_STORAGE_KEY)
+    }
+  } catch {
+    // Storage blocked: the layout just is not remembered.
+  }
 }
 
 const handleLocaleChanged = () => {
@@ -374,6 +418,10 @@ const ensureToolbar = () => {
     items: buildItems(),
     i18n,
     collapsible: true,
+    // Drag the grip to move; sub-toolbars open toward the host centre.
+    movable: true,
+    floatingLayout: loadFloatingLayout(),
+    onFloatingLayoutChange: saveFloatingLayout,
     onCommand: command => {
       if (isDocumentOpening.value || !command) return
       if (command === 'switchbg' && readingModeEnabled.value) return
@@ -464,7 +512,7 @@ watch(isDocumentOpening, opening => {
 <style>
 /*
  * Keep the overlay host filling the canvas main area so syncPosition can
- * vertically center the bar on the right edge.
+ * vertically center the bar on the right edge (or place a dragged bar).
  */
 .ml-vertical-toolbar-host,
 .ml-vertical-toolbar-host.ml-ex-ui-toolbar-host {

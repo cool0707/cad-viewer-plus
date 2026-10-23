@@ -135,6 +135,79 @@ export function acuiEnsureToolbarStyles(): void {
   height: calc(var(--ml-ex-ui-toolbar-btn-size) / 2);
 }
 
+.ml-ex-ui-toolbar-grip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  box-sizing: border-box;
+  border-radius: 4px;
+  color: var(--ml-ui-text-secondary, #909399);
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+.ml-ex-ui-toolbar.is-dragging,
+.ml-ex-ui-toolbar.is-dragging .ml-ex-ui-toolbar-grip {
+  cursor: grabbing;
+}
+
+@media (hover: hover) {
+  .ml-ex-ui-toolbar-grip:hover {
+    background: var(--ml-ui-accent-soft, rgba(64, 158, 255, 0.12));
+    color: var(--ml-ui-accent, #409eff);
+  }
+}
+
+.ml-ex-ui-toolbar.is-vertical .ml-ex-ui-toolbar-grip {
+  height: 14px;
+  margin-top: -2px;
+}
+
+.ml-ex-ui-toolbar.is-horizontal .ml-ex-ui-toolbar-grip {
+  width: 14px;
+  align-self: stretch;
+  margin-left: -2px;
+}
+
+.ml-ex-ui-toolbar-grip .ml-ex-ui-icon {
+  display: inline-flex;
+}
+
+.ml-ex-ui-toolbar-grip .ml-ex-ui-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.ml-ex-ui-toolbar.is-horizontal .ml-ex-ui-toolbar-grip .ml-ex-ui-icon svg {
+  transform: rotate(90deg);
+}
+
+.ml-ex-ui-toolbar.is-collapsed .ml-ex-ui-toolbar-orientation-btn {
+  display: none;
+}
+
+.ml-ex-ui-toolbar-orientation-btn {
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.ml-ex-ui-toolbar.is-vertical .ml-ex-ui-toolbar-orientation-btn {
+  min-height: calc(var(--ml-ex-ui-toolbar-btn-size) * 0.75);
+  height: calc(var(--ml-ex-ui-toolbar-btn-size) * 0.75);
+}
+
+.ml-ex-ui-toolbar.is-horizontal .ml-ex-ui-toolbar-orientation-btn {
+  min-width: calc(var(--ml-ex-ui-toolbar-btn-size) * 0.75);
+  width: calc(var(--ml-ex-ui-toolbar-btn-size) * 0.75);
+}
+
+.ml-ex-ui-toolbar-orientation-btn .ml-ex-ui-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
 .ml-ex-ui-toolbar-separator {
   flex: 0 0 auto;
   background: var(--ml-ui-border, #dcdfe6);
