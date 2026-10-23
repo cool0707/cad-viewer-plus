@@ -571,9 +571,14 @@ export class AcEdMTextEditor {
         ? { initialAttachmentPoint: mtextAttachment }
         : {}),
       textStyle: defaultTextStyle,
+      // Width is in screen pixels. The library default (4px plus a 6px glow)
+      // looks far heavier than a word-processor caret, so draw a plain thin
+      // line instead.
       cursorStyle: {
         color: cursorColor,
         glowColor: cursorColor,
+        glowIntensity: 0,
+        width: 1.5,
         blinkSpeed: AcEdMTextEditor.caretBlinkSeconds
       },
       boundingBoxStyle: {
