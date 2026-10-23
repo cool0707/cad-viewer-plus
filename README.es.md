@@ -33,7 +33,10 @@ del dispositivo del usuario.
   `@mlightcad/cad-jww-converter` (MIT; analizador [ezjww](https://github.com/monozukuri-ai/ezjww),
   Rust → WebAssembly, en un Web Worker). Las coordenadas pasan de milímetros de papel a
   milímetros reales con la escala del grupo de capas y la hoja se usa como límites del dibujo.
-- Previsto: importación de **SXF** (P21 / SFC).
+- **Importación de SXF** (estándar japonés de intercambio CAD para obra pública) — la app de ejemplo abre
+  `.sfc`, `.p21` y sus versiones ZIP `.sfz` / `.p2z` con `@mlightcad/cad-sxf-converter` (MIT, TypeScript,
+  portado de [ezsxf](https://github.com/monozukuri-ai/ezsxf)). Los dibujos parciales se muestran a tamaño
+  real de la vista principal y la hoja se usa como límites del dibujo.
 
 ## Demo
 
@@ -92,6 +95,25 @@ grupo de capas principal (el que tiene más entidades), de modo que el dibujo se
 Jw_cad y el dibujo principal se mide en milímetros reales. `scaleMode: 'layer-group'` usa la
 escala de cada grupo y `scaleMode: 'paper'` conserva los milímetros de papel. El formato antiguo
 JWC se convierte igual (no guarda fuentes, así que el texto usa ＭＳ ゴシック).
+
+## Soporte SXF
+
+`@mlightcad/cad-sxf-converter` lee dibujos SXF Ver.3.1: SFC (`.sfc`), P21 (`.p21`, AP202) y sus versiones
+ZIP (`.sfz`, `.p2z`). El analizador está escrito en TypeScript (sin WebAssembly) y el tratamiento de las
+entidades está portado de ezsxf (MIT). El dibujo se convierte en líneas, curvas, textos, rellenos y
+sombreados y se carga con el lector DXF integrado.
+
+```ts
+import { registerSxfConverter } from '@mlightcad/cad-sxf-converter'
+
+registerSxfConverter()
+```
+
+Las coordenadas SXF están en milímetros de papel y los dibujos parciales se colocan con una escala. Por
+defecto todo se escala con la escala del dibujo parcial principal: la hoja se ve como impresa y la vista
+principal se mide en milímetros reales; `scaleMode: 'paper'` conserva los milímetros de papel. Círculos,
+arcos y elipses siguen siendo curvas y el texto se ajusta a su caja SXF. No se cargan atributos (SAF) ni
+imágenes raster.
 
 ## Licencia
 

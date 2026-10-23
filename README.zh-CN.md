@@ -25,7 +25,9 @@
 - **导入 JWW / JWC（Jw_cad）** — 示例应用可打开 `.jww` 及旧格式 `.jwc` 文件（`@mlightcad/cad-jww-converter`，MIT；
   解析器为 [ezjww](https://github.com/monozukuri-ai/ezjww)，Rust → WebAssembly，在 Web Worker 中运行）。
   坐标按图层组比例从图纸毫米换算为实际毫米，图纸幅面作为图形界限。
-- 计划中：导入 **SXF**（P21 / SFC）。
+- **导入 SXF**（日本公共工程 CAD 数据交换标准）— 示例应用可打开 `.sfc`、`.p21` 及其 ZIP 形式
+  `.sfz` / `.p2z`（`@mlightcad/cad-sxf-converter`，MIT，TypeScript，移植自
+  [ezsxf](https://github.com/monozukuri-ai/ezsxf)）。局部图按主视图比例以实际尺寸显示，图纸幅面作为图形界限。
 
 ## 演示
 
@@ -80,6 +82,22 @@ registerJwwConverter('./assets/jww-parser-worker.js')
 JWW 以图纸毫米保存坐标。默认按主图层组（实体最多的组）的比例整体放大，因此外观与 Jw_cad
 一致，主图可按实际毫米测量。`scaleMode: 'layer-group'` 按各组自身比例放大，
 `scaleMode: 'paper'` 保持图纸毫米。旧格式 JWC 以同样方式转换（JWC 不含字体信息，文字按 ＭＳ ゴシック 显示）。
+
+## SXF 支持
+
+`@mlightcad/cad-sxf-converter` 读取 SXF Ver.3.1 图纸：SFC（`.sfc`）、P21（`.p21`，AP202）及其 ZIP 形式
+（`.sfz`、`.p2z`）。解析器以 TypeScript 编写（无需 WebAssembly），要素处理移植自 ezsxf（MIT）。
+图纸被展开为线、曲线、文字、填充和图案线，并通过内置 DXF 读取器加载。
+
+```ts
+import { registerSxfConverter } from '@mlightcad/cad-sxf-converter'
+
+registerSxfConverter()
+```
+
+SXF 坐标为图纸毫米，局部图带比例放置。默认按主局部图的比例整体放大，外观与打印一致，主视图可按实际
+毫米测量；`scaleMode: 'paper'` 保持图纸毫米。圆、圆弧、椭圆保持为曲线，文字按 SXF 文字框尺寸显示。
+不读取属性文件（SAF）和光栅图像。
 
 ## 许可证
 

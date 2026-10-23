@@ -52,3 +52,10 @@ group 0 (grid lines in a chain line type, walls, a door, room names, a
 dimension, a north-arrow block) and a 1/1 title block in group 1. It is opened
 by the e2e test `packages/cad-viewer-example/e2e/tests/jww.spec.ts` and by the
 demo page (`?url=cad-data/samples/jww-sample.jww&view=limits`).
+
+`sxf-sample.sfc` / `.p21` / `.sfz` / `.p2z` are the same SXF drawing in the
+four SXF forms, generated with ezsxf (MIT) by `tools/make-sxf-sample.py`: an A3
+sheet with a 1/100 partial drawing (grid lines, walls, door, table, rug, column
+fill, hatched area, room names, dimension) and a 1/1 border and title. They are
+opened by `packages/cad-sxf-converter/__tests__` and the e2e test
+`packages/cad-viewer-example/e2e/tests/sxf.spec.ts`, and by the demo page.

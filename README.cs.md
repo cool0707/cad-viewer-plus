@@ -31,7 +31,10 @@ takže výkresy nikdy neopustí zařízení uživatele.
   `@mlightcad/cad-jww-converter` (MIT; parser [ezjww](https://github.com/monozukuri-ai/ezjww),
   Rust → WebAssembly, ve Web Workeru). Souřadnice se převádějí z milimetrů na papíře na skutečné
   milimetry podle měřítka skupiny hladin a list se použije jako meze výkresu.
-- Plánováno: import **SXF** (P21 / SFC).
+- **Import SXF** (japonský standard výměny dat CAD pro veřejné stavby) — ukázková aplikace otevírá `.sfc`,
+  `.p21` a jejich ZIP verze `.sfz` / `.p2z` pomocí `@mlightcad/cad-sxf-converter` (MIT, TypeScript,
+  převzato z [ezsxf](https://github.com/monozukuri-ai/ezsxf)). Dílčí výkresy se zobrazí ve skutečné velikosti
+  hlavního pohledu a list se použije jako meze výkresu.
 
 ## Ukázka
 
@@ -88,6 +91,23 @@ JWW ukládá souřadnice v milimetrech na papíře. Ve výchozím stavu se vše 
 skupiny hladin (s nejvíce objekty), takže výkres vypadá jako v Jw_cad a hlavní výkres se měří ve
 skutečných milimetrech. `scaleMode: 'layer-group'` použije měřítko každé skupiny a
 `scaleMode: 'paper'` ponechá milimetry na papíře. Starý formát JWC se převádí stejně (neobsahuje písma, text se zobrazí jako ＭＳ ゴシック).
+
+## Podpora SXF
+
+`@mlightcad/cad-sxf-converter` čte výkresy SXF Ver.3.1: SFC (`.sfc`), P21 (`.p21`, AP202) a jejich ZIP verze
+(`.sfz`, `.p2z`). Parser je napsán v TypeScriptu (bez WebAssembly) a zpracování prvků je převzato z ezsxf
+(MIT). Výkres se rozloží na čáry, křivky, texty, výplně a šrafy a načte se vestavěnou čtečkou DXF.
+
+```ts
+import { registerSxfConverter } from '@mlightcad/cad-sxf-converter'
+
+registerSxfConverter()
+```
+
+Souřadnice SXF jsou v milimetrech na papíře a dílčí výkresy se umisťují s měřítkem. Ve výchozím stavu se vše
+zvětší měřítkem hlavního dílčího výkresu: list vypadá jako vytištěný a hlavní pohled se měří ve skutečných
+milimetrech; `scaleMode: 'paper'` ponechá milimetry na papíře. Kružnice, oblouky a elipsy zůstávají
+křivkami a text odpovídá rámečku SXF. Atributy (SAF) a rastrové obrázky se nenačítají.
 
 ## Licence
 

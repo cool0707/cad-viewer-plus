@@ -13,7 +13,7 @@ export default {
   example: {
     fileUpload: {
       title: 'Select CAD File to View',
-      subtitle: 'Import DWG, DXF or JWW / JWC (Jw_cad) drawings into the viewer',
+      subtitle: 'Import DWG, DXF, JWW / JWC (Jw_cad) or SXF drawings into the viewer',
       fontCdnNotice:
         'Japanese fonts (BIZ UD) are bundled with this viewer. Fonts for other scripts (Chinese, Korean, Latin substitutes, etc.) are downloaded from Google Fonts when a drawing needs them; if Google Fonts is unreachable, that text may not display correctly.',
       newDrawing: 'New Drawing',
@@ -83,7 +83,7 @@ export default {
       exportDisableHint: 'Hide export commands and File menu items',
 
       invalidFileType:
-        'Invalid file type. Please upload DWG, DXF, JWW or JWC files.'
+        'Invalid file type. Please upload DWG, DXF, JWW, JWC or SXF (SFC / P21 / SFZ / P2Z) files.'
     }
   }
 }

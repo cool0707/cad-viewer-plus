@@ -17,7 +17,8 @@
 | `f384068` | NURBS 評価の高速化 (canteen.dwg 5.4s → 3.1s) |
 | `0564556` | DXF の Shift_JIS 等の自動判定 (コードページ宣言が ANSI_1252 でも化けない) |
 | `641b60b` | 初期表示「図面範囲」(モデル = LIMITS、レイアウト = 用紙枠)、TABLES の無い DXF で画層を自動作成 |
-| (このブランチ) | **JWW 読み込み** (`packages/cad-jww-converter`)、拡張子判定の一般化 (`AcApDrawingFileTypes`) |
+| `7bb415d` (PR #1) | **JWW 読み込み** (`packages/cad-jww-converter`)、拡張子判定の一般化 (`AcApDrawingFileTypes`) |
+| (このブランチ) | JWW 文字サイズ補正、**JWC**、**SXF (SFC / P21 / SFZ / P2Z)** (`packages/cad-sxf-converter`) |
 
 デモ: <https://cool0707.github.io/cad-viewer-plus/> (`?url=` `?new=1` `?lang=` `?view=extents|saved|limits` が使える)
 
@@ -33,7 +34,7 @@
 
 ---
 
-## 2. JWW (済) / SXF (次の作業)
+## 2. JWW / JWC / SXF (済)
 
 ### 2.0 JWW でやったこと (2026-10-23)
 
@@ -115,6 +116,23 @@ i18n: ファイル選択画面などの「DWG / DXF」表記 (`packages/cad-simp
 
 ### 2.3 SXF (P21 / SFC / P2Z / SFZ)
 
+**実装済み (2026-10-23)** — `packages/cad-sxf-converter` (MIT、TypeScript のみ、wasm・Worker なし、ZIP は fflate)。
+
+- ezsxf (MIT) のうち、仕様の実装部分を TS に移植した: `features.rs` (各 feature の引数位置)、`document.rs` (コード表の採番と、
+  「部品は定義 (sfig_org / composite_curve_org / drawing_sheet) より前に並ぶ」階層規則)、`_drawing_*.py` (スタイル解決・複合図形の展開・
+  寸法・ハッチ)、`_p21_drawing.py` (AP202 の表現グラフ)。ezsxf の DXF 出力は全部ポリライン化するので、出力側 (`sxfToDxf.ts`) は自前:
+  - 円・円弧・楕円は共役半径 (u, v) で持ち、DXF では主軸に直して CIRCLE / ARC / ELLIPSE にする (非等倍の配置でも正確)。
+  - 縮尺: 図寸 (用紙 mm) で展開し、各プリミティブに配置倍率を持たせ、最も多いものを主縮尺として全体を拡大 (`scaleMode: 'drawing'`、JWW と同じ考え方)。
+  - 文字: SXF の高さ・幅は文字枠 (幅は文字列全体)。JWW と同じ BIZ UD の補正 (高さ × A の高さ/em、基点を descender 分上げる) と、枠幅に合う幅係数。基点 1–9 は自前で左下ベースラインに換算 (DXF の 72/73 配置には頼らない)。
+  - 黒・白は ACI 7 (背景に応じて反転)。それ以外は 420 の True Color。
+  - DXF 読み込み側 (data-model) は `100 AcDbCircle` などのサブクラスマーカーが無いと `100 AcDbEntity` 以降の値を読まない。エンティティには必ず正しいマーカーを書く。
+- ezsxf と意図的に変えた点: 部分図 (sfig 種別 1・2、P21 の `$$SXF_FM_` / `$$SXF_FG_`) の配置では子要素の画層を上書きしない (ezsxf は配置画層が 0 以外なら上書き。ezsxf の writer は配置に画層 1 を付けるので、そのままだと平面図の画層がすべて図枠画層になる)。
+- サンプル: `tools/make-sxf-sample.py` (ezsxf の作成 API、`pip install ezsxf==0.3.4`) で `sxf-sample.sfc/.p21/.sfz/.p2z` を生成。SFC 版と P21 版が同じ図形になることをテストで確認している。
+- ezsxf リポジトリの `data/D0LS004Z*` (ABC-CAD 出力の実データ、配布条件不明なのでコミットしない) で SFC / P21 とも同じ結果になり、ezsxf のプロットとも一致することを確認済み。P21 1.4MB の変換は約 0.3 秒 (初回は JIT で約 1 秒)。
+- 未対応: 縦書き (90° 回転で代用)、矢印種別 (すべて開き矢印)、外部定義ハッチ・タイルハッチ (境界のみ)、外部定義シンボル (点)、SAF 属性・ラスター画像、背景色属性。
+
+以下は着手前の調査メモ。
+
 SXF は国交省・JACIC (現 OCF) の CAD データ交換標準。電子納品で使われる。
 
 - **SFC**: SXF 独自のテキスト形式 (フィーチャコメント)。Shift_JIS。TS で自前パーサーを書く現実的な対象。
@@ -132,9 +150,9 @@ SXF は国交省・JACIC (現 OCF) の CAD データ交換標準。電子納品�
 
 1. ~~拡張子判定の一般化~~ (済)
 2. ~~JWW~~ (済。2.0 参照)
-3. SFC: TS パーサー (またはezsxf の wasm 化) → パターン A/B。
-4. P21 / P2Z / SFZ。
-5. `resources/cad-data/samples/` にテスト用の小さい JWW / SFC を追加 (配布ライセンスに注意。自作が安全)、デモページにリンク、README 8 言語に追記。
+3. ~~SFC~~ (済。2.3 参照)
+4. ~~P21 / P2Z / SFZ~~ (済)
+5. ~~サンプル・デモ・README~~ (済)
 
 ---
 

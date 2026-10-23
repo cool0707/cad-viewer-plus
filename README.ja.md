@@ -31,7 +31,10 @@
   （`@mlightcad/cad-jww-converter`、MIT。解析は [ezjww](https://github.com/monozukuri-ai/ezjww)
   （Rust → WebAssembly）を Web Worker で実行）。座標はレイヤグループの縮尺で図寸から
   実寸 (mm) に変換し、用紙を図面範囲に、画層名を「`グループ-レイヤ 名前`」にします。
-- 予定：**SXF**（P21 / SFC）の読み込み。
+- **SXF の読み込み**（国交省・電子納品の CAD データ交換標準）— サンプルアプリで
+  `.sfc`・`.p21` と ZIP 版の `.sfz`・`.p2z` を開けます（`@mlightcad/cad-sxf-converter`、
+  MIT、TypeScript。[ezsxf](https://github.com/monozukuri-ai/ezsxf) から移植）。
+  部分図は主となる部分図の縮尺で実寸表示し、用紙を図面範囲にします。
 
 ## デモ
 
@@ -91,6 +94,7 @@ pnpm test
 | `templates/acad*.dxf` | 新規図面のテンプレート |
 | `samples/fonts-sample.dxf` | フォント置き換えの確認用図面 |
 | `samples/jww-sample.jww` | JWW のサンプル（`tools/make-jww-sample.mjs` で生成） |
+| `samples/sxf-sample.*` | SXF のサンプル：`.sfc`・`.p21`・`.sfz`・`.p2z`（`tools/make-sxf-sample.py` で生成） |
 
 サンプルアプリはこのフォルダをビルド出力の隣にコピーします。パッケージを直接組み込む
 場合は、`AcApDocManager` に `baseUrl` を渡してください（相対 URL はページを基準に
@@ -112,6 +116,7 @@ SHX フォントは同梱していません。SHX を使う文字は BIZ UD ゴ�
 | `@mlightcad/cad-diff-viewer` | 図面の左右比較 |
 | `@mlightcad/three-renderer` | Three.js による描画 |
 | `@mlightcad/cad-jww-converter` | JWW / JWC（Jw_cad）の読み込み（ezjww、WebAssembly） |
+| `@mlightcad/cad-sxf-converter` | SXF（SFC / P21 / SFZ / P2Z）の読み込み（TypeScript） |
 
 パッケージ名はフォーク元の `@mlightcad/` スコープのままです。このフォークは npm には
 公開していません。
@@ -142,6 +147,24 @@ JWW の座標は図寸（用紙上の mm）で保存されています。既定�
 主図面は実寸で計測できます。`scaleMode: 'layer-group'` ではグループごとの縮尺で拡大し
 （Jw_cad の DXF 書き出しと同じ）、`scaleMode: 'paper'` では図寸のままにします。
 JWC も同じように変換します（JWC にはフォント情報がないため、文字は ＭＳ ゴシック として表示します）。
+
+## SXF 対応
+
+`@mlightcad/cad-sxf-converter` で SXF Ver.3.1 の図面（SFC `.sfc`、P21 `.p21`（AP202）、
+それらの ZIP 版 `.sfz`・`.p2z`）を読み込めます。解析は TypeScript で実装しており
+（WebAssembly 不要）、フィーチャの扱いは ezsxf（MIT）から移植しています。図面を線・曲線・
+文字・塗りつぶし・ハッチングに展開し、内蔵の DXF リーダーで読み込みます。
+
+```ts
+import { registerSxfConverter } from '@mlightcad/cad-sxf-converter'
+
+registerSxfConverter()
+```
+
+SXF の座標は図寸（用紙上の mm）で、部分図は縮尺（倍率）付きで配置されます。既定では
+主となる部分図の縮尺で全体を拡大するため、見た目は印刷どおりで、主図面は実寸で計測できます。
+`scaleMode: 'paper'` では図寸のままにします。円・円弧・楕円は曲線のまま、文字は SXF の
+文字枠の大きさに合わせて表示します。属性ファイル（SAF）とラスター画像は読み込みません。
 
 ## ライセンス
 
