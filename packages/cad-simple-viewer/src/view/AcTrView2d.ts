@@ -2984,6 +2984,13 @@ export class AcTrView2d extends AcEdBaseView {
    * @returns Parked state owned by {@link AcApDocSession} until restore.
    */
   captureSessionState(): AcTrViewSessionState {
+    // CSS2DRenderer only removes an element when its object leaves the scene,
+    // so markup / measurement DOM of the parked scene would stay on screen.
+    // The next render of a restored scene re-appends them.
+    this._scene.internalScene.traverse(object => {
+      const html = object as { isCSS2DObject?: boolean; element?: HTMLElement }
+      if (html.isCSS2DObject) html.element?.remove()
+    })
     return {
       scene: this._scene,
       layoutViewManager: this._layoutViewManager,
