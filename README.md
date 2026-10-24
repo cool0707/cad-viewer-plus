@@ -39,6 +39,12 @@ drawings never leave the user's device.
 - **Selection style switch** — a status bar button switches clicks between
   CAD style (every click adds) and replace on click (Shift + click adds or removes,
   clicking empty space clears the selection). CAD style stays the default for now.
+- **Property inspector** — the Properties tab groups values into sections (General, Placement, Symbol…)
+  and edits them directly (one undo step per change). With several objects selected, a Selection
+  section shows X / Y / W / H with a 9-point reference point, counts per type (click to keep only
+  that type) and total length / area; values that differ show as "Mixed" and can be set at once.
+  Symbol properties (block attributes) are edited in the same panel; in the replace-on-click style,
+  double-clicking a symbol jumps to its field.
 - **JWW / JWC (Jw_cad) import** — `.jww` and the older `.jwc` files open in the example app through
   `@mlightcad/cad-jww-converter` (MIT; parser: [ezjww](https://github.com/monozukuri-ai/ezjww),
   Rust → WebAssembly, in a Web Worker). Coordinates are converted from paper

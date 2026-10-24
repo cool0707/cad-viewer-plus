@@ -645,7 +645,34 @@ export default {
         noEntitySelected: '未选择任何图元！',
         multipleEntitySelected: '{count}个图元',
         propValCopied: '属性值已复制',
-        failedToCopyPropVal: '复制属性值失败！'
+        failedToCopyPropVal: '复制属性值失败！',
+        selection: '选择范围',
+        mixed: '多种',
+        x: 'X',
+        y: 'Y',
+        width: '宽',
+        height: '高',
+        keepAspectHint: '保持宽高比进行缩放',
+        referencePoint: '参考点',
+        anchor: {
+          topLeft: '左上',
+          top: '上',
+          topRight: '右上',
+          left: '左',
+          center: '中心',
+          right: '右',
+          bottomLeft: '左下',
+          bottom: '下',
+          bottomRight: '右下'
+        },
+        selectOnlyType: '仅选择{type}',
+        totalLength: '总长度',
+        totalArea: '总面积',
+        itemCount: '({count} 个)',
+        invisibleAttribute: '隐藏项',
+        constantAttribute: '固定值（不可更改）',
+        allLocked: '这些对象位于锁定的图层上，无法更改',
+        someLocked: '位于锁定图层上的对象不会被更改'
       }
     },
     layerManager: {

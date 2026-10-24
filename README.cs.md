@@ -38,6 +38,12 @@ takže výkresy nikdy neopustí zařízení uživatele.
 - **Přepínání způsobu výběru** — tlačítko ve stavovém řádku přepíná mezi stylem CAD
   (každé kliknutí přidá) a nahrazením kliknutím (Shift + kliknutí přidá nebo odebere,
   kliknutí do prázdna výběr zruší). Výchozí je zatím styl CAD.
+- **Panel vlastností** — karta Vlastnosti dělí hodnoty do skupin (Obecné, Umístění, Symbol…)
+  a upravuje je přímo (jedna změna = jeden krok zpět). Při výběru více objektů ukazuje sekce Výběr
+  X / Y / Š / V s 9bodovým referenčním bodem, počty podle typu (kliknutím ponecháte jen daný typ)
+  a celkovou délku a plochu; rozdílné hodnoty se zobrazí jako „Různé“ a lze je nastavit najednou.
+  Vlastnosti symbolu (atributy bloku) se upravují ve stejném panelu; při nahrazení kliknutím
+  dvojklik na symbol přesune kurzor do jeho pole.
 - **Import JWW / JWC (Jw_cad)** — ukázková aplikace otevírá soubory `.jww` a `.jwc` (starý formát) pomocí
   `@mlightcad/cad-jww-converter` (MIT; parser [ezjww](https://github.com/monozukuri-ai/ezjww),
   Rust → WebAssembly, ve Web Workeru). Souřadnice se převádějí z milimetrů na papíře na skutečné

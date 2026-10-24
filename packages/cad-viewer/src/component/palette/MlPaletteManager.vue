@@ -26,10 +26,7 @@
           v-else-if="store.dialogs.activePaletteTab === 'entityProperties'"
           class="ml-entity-properties-wrapper"
         >
-          <ml-entity-properties
-            :entity-props-list="properties"
-            :entity-locked="propertyEntityLocked"
-          />
+          <ml-entity-properties :selection-ids="selectionSet" />
         </div>
         <div
           v-else-if="store.dialogs.activePaletteTab === 'countList'"
@@ -103,11 +100,7 @@
 </template>
 
 <script setup lang="ts">
-import {
-  AcApDocManager,
-  AcApLayerService
-} from '@mlightcad/cad-simple-viewer'
-import { AcDbEntityProperties } from '@mlightcad/data-model'
+import { AcApDocManager, eventBus } from '@mlightcad/cad-simple-viewer'
 import {
   type MlOverflowTab,
   MlOverflowTabs,
@@ -120,13 +113,18 @@ import {
   defineAsyncComponent,
   nextTick,
   onBeforeUnmount,
+  onMounted,
   ref,
   watch
 } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { store } from '../../app'
-import { useSelectionSet, useViewerRect } from '../../composable'
+import {
+  pendingSymbolPropertyFocus,
+  useSelectionSet,
+  useViewerRect
+} from '../../composable'
 import { toolPaletteTabName, toolPaletteTitle } from '../../locale'
 import MlBlocksPalette from './MlBlocksPalette.vue'
 import MlCadScriptPanel from './MlCadScriptPanel.vue'
@@ -378,23 +376,16 @@ watch(
 )
 
 const { selectionSet } = useSelectionSet()
-const propertyRows = computed(() => {
-  const list: AcDbEntityProperties[] = []
-  const locked: boolean[] = []
-  const db = AcApDocManager.instance.curDocument?.database
-  if (!db) return { list, locked }
-  const blockTable = db.tables.blockTable
-  for (const id of selectionSet.value) {
-    // Use getEntityById which works for entities in any layout (model space or paper space)
-    const entity = blockTable.getEntityById(id)
-    if (!entity) continue
-    list.push(entity.properties)
-    locked.push(AcApLayerService.isEntityOnLockedLayer(db, entity))
-  }
-  return { list, locked }
-})
-const properties = computed(() => propertyRows.value.list)
-const propertyEntityLocked = computed(() => propertyRows.value.locked)
+
+// Double-clicking a symbol in the simple selection style edits its symbol
+// properties here instead of opening the attribute editor dialog.
+const focusSymbolProperty = (args: { objectId: string; tag?: string }) => {
+  store.dialogs.layerManager = true
+  store.dialogs.activePaletteTab = 'entityProperties'
+  pendingSymbolPropertyFocus.value = { objectId: args.objectId, tag: args.tag }
+}
+onMounted(() => eventBus.on('focus-symbol-property', focusSymbolProperty))
+onBeforeUnmount(() => eventBus.off('focus-symbol-property', focusSymbolProperty))
 </script>
 
 <style scoped>

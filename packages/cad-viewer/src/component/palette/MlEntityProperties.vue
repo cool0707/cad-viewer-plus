@@ -1,510 +1,661 @@
 <template>
-  <div class="ml-entity-properties">
-    <!-- Dropdown for multiple entities -->
-    <div
-      v-if="entityPropsList && entityPropsList.length > 1"
-      class="ml-entity-selector"
-    >
-      <el-select
-        v-model="selectedIndex"
-        placeholder="Select Entity"
-        style="width: 100%; margin-bottom: 0.5rem"
-      >
-        <el-option
-          :label="
-            t(
-              'main.toolPalette.entityProperties.propertyPanel.multipleEntitySelected',
-              { count: entityPropsList.length }
-            )
-          "
-          :value="-1"
-        />
-        <el-option
-          v-for="(item, idx) in entityPropsList"
-          :key="idx"
-          :label="item.type"
-          :value="idx"
-        />
-      </el-select>
-    </div>
+  <div ref="rootRef" class="ml-entity-properties">
+    <template v-if="entities.length">
+      <div v-if="someLocked || allLocked" class="ml-inspector-note">
+        <el-icon><Lock /></el-icon>
+        <span>{{ lockedNote }}</span>
+      </div>
 
-    <!-- Properties Table -->
-    <el-table
-      v-if="tableRows.length"
-      :data="tableRows"
-      row-key="id"
-      border
-      default-expand-all
-      :tree-props="{ children: 'children', hasChildren: 'children' }"
-      :show-header="false"
-      :span-method="spanMethod"
-      class="ml-entity-properties-table"
-    >
-      <!-- Label -->
-      <el-table-column
-        prop="name"
-        :show-overflow-tooltip="{ placement: 'top-start', showAfter: 2000 }"
-      >
-        <template #default="{ row }">
-          <div class="ml-cell-container">
-            <div :class="['ml-cell-label', { 'ml-group-row': row.isGroup }]">
-              <strong v-if="row.isGroup">{{ entityPropName(row.name) }}</strong>
-              <span v-else>{{ getPropertyName(row) }}</span>
+      <!-- ===== Selection (multiple entities) ===== -->
+      <section v-if="entities.length > 1" class="ml-inspector-section">
+        <button
+          type="button"
+          class="ml-inspector-section__header"
+          :aria-expanded="!isCollapsed(SELECTION_SECTION)"
+          @click="toggleSection(SELECTION_SECTION)"
+        >
+          <el-icon class="ml-inspector-section__caret">
+            <ArrowRight v-if="isCollapsed(SELECTION_SECTION)" />
+            <ArrowDown v-else />
+          </el-icon>
+          <span>{{ panelText('selection') }}</span>
+          <span class="ml-inspector-section__badge">
+            {{
+              panelText('multipleEntitySelected', { count: entities.length })
+            }}
+          </span>
+        </button>
+        <div
+          v-show="!isCollapsed(SELECTION_SECTION)"
+          class="ml-inspector-section__body"
+        >
+          <div v-if="boxValues" class="ml-inspector-box">
+            <ml-anchor-picker v-model="anchor" :disabled="allLocked" />
+            <div class="ml-inspector-box__fields">
+              <label
+                v-for="field in BOX_FIELDS"
+                :key="field"
+                class="ml-inspector-box__field"
+                :title="
+                  field === 'width' || field === 'height'
+                    ? panelText('keepAspectHint')
+                    : undefined
+                "
+              >
+                <span class="ml-inspector-box__label">
+                  {{ panelText(field) }}
+                </span>
+                <ml-inspector-input
+                  numeric
+                  :model-value="boxValues[field]"
+                  :disabled="
+                    allLocked ||
+                    ((field === 'width' || field === 'height') &&
+                      !(boxValues[field] > 0))
+                  "
+                  @commit="
+                    (v: string | number) =>
+                      setBoxField(anchor, field, v as number)
+                  "
+                />
+              </label>
             </div>
           </div>
-        </template>
-      </el-table-column>
 
-      <!-- Value -->
-      <el-table-column>
-        <template #default="{ row }">
-          <div class="ml-cell-value" v-if="!row.isGroup">
-            <!-- ===== Readonly ===== -->
-            <template
-              v-if="
-                editsLocked ||
-                (!row.__isArrayIndex && (!editable || !row.editable))
+          <div class="ml-inspector-types">
+            <button
+              v-for="item in summary.types"
+              :key="item.type"
+              type="button"
+              class="ml-inspector-types__item"
+              :title="
+                panelText('selectOnlyType', { type: entityTypeName(item.type) })
               "
+              :disabled="summary.types.length < 2"
+              @click="selectOnlyType(item.type)"
             >
-              <ml-color-dropdown
-                v-if="row.type === 'color'"
-                :model-value="row.accessor.get()"
-                disabled
-              />
-              <span
-                v-else
-                :title="formatDisplayValue(row)"
-                class="ml-readonly-value"
-                @dblclick="copyReadonlyValue(row)"
+              <span>{{ entityTypeName(item.type) }}</span>
+              <span class="ml-inspector-types__count">{{ item.count }}</span>
+            </button>
+          </div>
+
+          <div
+            v-if="summary.lengthCount || summary.areaCount"
+            class="ml-inspector-rows"
+          >
+            <template v-if="summary.lengthCount">
+              <div class="ml-inspector-row__label">
+                {{ panelText('totalLength') }}
+              </div>
+              <div
+                class="ml-inspector-row__value ml-readonly-value"
+                @dblclick="copyText(formatNumber(summary.totalLength))"
               >
-                {{ formatDisplayValue(row) }}
-              </span>
+                {{ formatNumber(summary.totalLength) }}
+                <span class="ml-inspector-muted">
+                  {{ panelText('itemCount', { count: summary.lengthCount }) }}
+                </span>
+              </div>
             </template>
-
-            <!-- ===== Editable ===== -->
-            <template v-else>
-              <ml-hatch-pattern-dropdown
-                v-if="isHatchPatternField(row)"
-                :model-value="String(row.accessor.get() ?? '')"
-                @update:modelValue="
-                  (v: string) => {
-                    onPropertyChange(row, v)
-                  }
-                "
-              />
-
-              <el-select
-                v-else-if="row.type === 'enum'"
-                :model-value="row.accessor.get()"
-                @change="(v: string | number) => onPropertyChange(row, v)"
+            <template v-if="summary.areaCount">
+              <div class="ml-inspector-row__label">
+                {{ panelText('totalArea') }}
+              </div>
+              <div
+                class="ml-inspector-row__value ml-readonly-value"
+                @dblclick="copyText(formatNumber(summary.totalArea))"
               >
-                <el-option
-                  v-for="opt in row.options || []"
-                  :key="opt.value"
-                  :label="entityPropEnum(opt.label)"
-                  :value="opt.value"
-                />
-              </el-select>
-
-              <ml-color-dropdown
-                v-else-if="row.type === 'color'"
-                :model-value="row.accessor.get()"
-                @color-change="(v: AcCmColor) => onPropertyChange(row, v)"
-              />
-
-              <el-switch
-                v-else-if="row.type === 'boolean'"
-                :model-value="row.accessor.get()"
-                @change="(v: boolean) => onPropertyChange(row, v)"
-              />
-
-              <el-input-number
-                v-else-if="row.type === 'int'"
-                controls-position="right"
-                :model-value="row.accessor.get()"
-                :min="row.__min"
-                :max="row.__max"
-                :step="1"
-                :precision="0"
-                @change="
-                  (v: number) => {
-                    if (row.__isArrayIndex) {
-                      if (!editsLocked) row.accessor.set?.(v)
-                    } else {
-                      onPropertyChange(row, v)
-                    }
-                  }
-                "
-              />
-
-              <el-input-number
-                v-else-if="row.type === 'float'"
-                controls-position="right"
-                :model-value="row.accessor.get()"
-                :step="0.1"
-                :precision="3"
-                @change="(v: number) => onPropertyChange(row, v)"
-              />
-
-              <el-input
-                v-else
-                :model-value="row.accessor.get()"
-                @input="(v: string) => onPropertyChange(row, v)"
-              />
+                {{ formatNumber(summary.totalArea) }}
+                <span class="ml-inspector-muted">
+                  {{ panelText('itemCount', { count: summary.areaCount }) }}
+                </span>
+              </div>
             </template>
           </div>
-        </template>
-      </el-table-column>
-    </el-table>
+        </div>
+      </section>
+
+      <!-- ===== Property groups ===== -->
+      <template v-for="group in displayGroups" :key="group.groupName">
+        <section class="ml-inspector-section">
+          <button
+            type="button"
+            class="ml-inspector-section__header"
+            :aria-expanded="!isCollapsed(group.groupName)"
+            @click="toggleSection(group.groupName)"
+          >
+            <el-icon class="ml-inspector-section__caret">
+              <ArrowRight v-if="isCollapsed(group.groupName)" />
+              <ArrowDown v-else />
+            </el-icon>
+            <span>{{ entityPropName(group.groupName) }}</span>
+          </button>
+          <div
+            v-show="!isCollapsed(group.groupName)"
+            class="ml-inspector-section__body ml-inspector-rows"
+          >
+            <template v-for="row in group.rows" :key="row.key">
+              <div class="ml-inspector-row__label" :title="propertyName(row)">
+                {{ propertyName(row) }}
+              </div>
+              <div class="ml-inspector-row__value">
+                <!-- Array (vertices…): index + read-only item values -->
+                <template v-if="row.type === 'array'">
+                  <el-input-number
+                    controls-position="right"
+                    :model-value="arrayIndex(row)"
+                    :min="1"
+                    :max="Math.max(1, arrayItems(row).length)"
+                    :step="1"
+                    :precision="0"
+                    @change="(v: number | undefined) => setArrayIndex(row, v)"
+                  />
+                </template>
+
+                <!-- Read-only -->
+                <template v-else-if="!canEdit(row)">
+                  <ml-color-dropdown
+                    v-if="row.type === 'color' && !row.mixed"
+                    :model-value="row.value as AcCmColor"
+                    disabled
+                  />
+                  <span
+                    v-else
+                    :title="formatDisplayValue(row)"
+                    class="ml-readonly-value"
+                    :class="{ 'ml-inspector-muted': row.mixed }"
+                    @dblclick="copyText(formatDisplayValue(row))"
+                  >
+                    {{ formatDisplayValue(row) }}
+                  </span>
+                </template>
+
+                <!-- Editable -->
+                <template v-else>
+                  <ml-hatch-pattern-dropdown
+                    v-if="isHatchPatternField(row)"
+                    :model-value="String(row.value ?? '')"
+                    @update:modelValue="(v: string) => setProperty(row, v)"
+                  />
+
+                  <ml-layer-select
+                    v-else-if="row.name === 'layer'"
+                    :model-value="
+                      row.mixed ? undefined : String(row.value ?? '')
+                    "
+                    :options="layerOptions"
+                    :placeholder="mixedText"
+                    @update:modelValue="(v: string) => setProperty(row, v)"
+                  />
+
+                  <ml-line-type-select
+                    v-else-if="row.type === 'linetype'"
+                    :model-value="
+                      row.mixed ? undefined : String(row.value ?? '')
+                    "
+                    :placeholder="mixedText"
+                    @update:modelValue="(v: string) => setProperty(row, v)"
+                  />
+
+                  <ml-line-weight-select
+                    v-else-if="row.type === 'lineweight'"
+                    :model-value="
+                      row.mixed ? undefined : (row.value as AcGiLineWeight)
+                    "
+                    :placeholder="mixedText"
+                    @update:modelValue="
+                      (v: AcGiLineWeight) => setProperty(row, v)
+                    "
+                  />
+
+                  <ml-color-dropdown
+                    v-else-if="row.type === 'color'"
+                    :model-value="
+                      row.mixed ? undefined : (row.value as AcCmColor)
+                    "
+                    :placeholder="mixedText"
+                    @update:modelValue="
+                      (v: AcCmColor | undefined) => v && setProperty(row, v)
+                    "
+                  />
+
+                  <el-select
+                    v-else-if="row.type === 'enum'"
+                    :model-value="enumValue(row)"
+                    :placeholder="mixedText"
+                    @change="(v: unknown) => setProperty(row, v)"
+                  >
+                    <el-option
+                      v-for="opt in row.options || []"
+                      :key="String(opt.value)"
+                      :label="entityPropEnum(opt.label)"
+                      :value="enumOptionValue(opt.value)"
+                    />
+                  </el-select>
+
+                  <div
+                    v-else-if="row.type === 'boolean'"
+                    class="ml-inspector-switch"
+                  >
+                    <el-switch
+                      :model-value="!!row.value"
+                      @change="
+                        (v: string | number | boolean) => setProperty(row, !!v)
+                      "
+                    />
+                    <span v-if="row.mixed" class="ml-inspector-muted">
+                      {{ mixedText }}
+                    </span>
+                  </div>
+
+                  <ml-inspector-input
+                    v-else-if="row.type === 'int' || row.type === 'float'"
+                    numeric
+                    :integer="row.type === 'int'"
+                    :model-value="row.value"
+                    :mixed="row.mixed"
+                    :mixed-placeholder="mixedText"
+                    @commit="(v: string | number) => setProperty(row, v)"
+                  />
+
+                  <ml-inspector-input
+                    v-else
+                    :model-value="row.value"
+                    :mixed="row.mixed"
+                    :mixed-placeholder="mixedText"
+                    @commit="(v: string | number) => setProperty(row, v)"
+                  />
+                </template>
+              </div>
+
+              <!-- Item values of an array property -->
+              <template v-if="row.type === 'array'">
+                <template
+                  v-for="item in arrayItemRows(row)"
+                  :key="`${row.key}.${item.name}`"
+                >
+                  <div
+                    class="ml-inspector-row__label ml-inspector-row__label--sub"
+                  >
+                    {{ entityPropName(item.name) }}
+                  </div>
+                  <div
+                    class="ml-inspector-row__value ml-readonly-value"
+                    @dblclick="copyText(item.text)"
+                  >
+                    {{ item.text }}
+                  </div>
+                </template>
+              </template>
+            </template>
+          </div>
+        </section>
+
+        <!-- ===== Symbol properties (attributes), after the symbol group ===== -->
+        <section
+          v-if="
+            group.groupName === symbolPropertiesAfter &&
+            symbolPropertyRows.length
+          "
+          class="ml-inspector-section"
+        >
+          <button
+            type="button"
+            class="ml-inspector-section__header"
+            :aria-expanded="!isCollapsed(ATTRIBUTE_SECTION)"
+            @click="toggleSection(ATTRIBUTE_SECTION)"
+          >
+            <el-icon class="ml-inspector-section__caret">
+              <ArrowRight v-if="isCollapsed(ATTRIBUTE_SECTION)" />
+              <ArrowDown v-else />
+            </el-icon>
+            <span>{{ entityPropName('attribute') }}</span>
+          </button>
+          <div
+            v-show="!isCollapsed(ATTRIBUTE_SECTION)"
+            class="ml-inspector-section__body ml-inspector-rows"
+          >
+            <template v-for="row in symbolPropertyRows" :key="row.tagKey">
+              <div
+                class="ml-inspector-row__label ml-inspector-attr-label"
+                :class="{ 'is-invisible': row.isInvisible }"
+                :title="symbolPropertyTitle(row)"
+              >
+                <el-icon v-if="row.isInvisible" class="ml-inspector-attr-icon">
+                  <Hide />
+                </el-icon>
+                <el-icon v-else-if="row.isConst" class="ml-inspector-attr-icon">
+                  <Lock />
+                </el-icon>
+                <span class="ml-inspector-attr-text">{{ row.label }}</span>
+              </div>
+              <div
+                class="ml-inspector-row__value"
+                :class="{ 'is-invisible': row.isInvisible }"
+                :data-symbol-tag="row.tagKey"
+              >
+                <span
+                  v-if="row.isConst || allLocked"
+                  class="ml-readonly-value"
+                  :class="{ 'ml-inspector-muted': row.mixed }"
+                  :title="row.mixed ? mixedText : row.value"
+                  @dblclick="copyText(row.value ?? '')"
+                >
+                  {{ row.mixed ? mixedText : row.value }}
+                </span>
+                <ml-inspector-input
+                  v-else
+                  :ref="el => registerSymbolInput(row.tagKey, el)"
+                  :model-value="row.value"
+                  :mixed="row.mixed"
+                  :mixed-placeholder="mixedText"
+                  @commit="
+                    (v: string | number) =>
+                      setSymbolProperty(row.tagKey, String(v))
+                  "
+                />
+              </div>
+            </template>
+          </div>
+        </section>
+      </template>
+    </template>
 
     <div v-else class="ml-no-entity-selected">
-      {{
-        t('main.toolPalette.entityProperties.propertyPanel.noEntitySelected')
-      }}
+      {{ panelText('noEntitySelected') }}
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { ArrowDown, ArrowRight, Hide, Lock } from '@element-plus/icons-vue'
+import { AcApDocManager } from '@mlightcad/cad-simple-viewer'
 import {
   AcCmColor,
   AcCmTransparency,
-  AcDbEntityProperties,
-  AcDbEntityPropertyGroup,
-  AcDbEntityRuntimeProperty,
+  AcDbEntity,
+  AcDbObjectId,
   AcGiLineWeight,
   log
 } from '@mlightcad/data-model'
 import {
-  ElInput,
+  ElIcon,
   ElInputNumber,
   ElMessage,
   ElOption,
   ElSelect,
-  ElSwitch,
-  ElTable,
-  ElTableColumn
+  ElSwitch
 } from 'element-plus'
-import { computed, ref } from 'vue'
+import { computed, nextTick, reactive, ref, toRef, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import { entityPropEnum, entityPropName } from '../../locale'
-import { MlColorDropdown, MlHatchPatternDropdown } from '../common'
+import {
+  ADVANCED_GROUP,
+  boxFields,
+  type MlAnchor,
+  type MlInspectorRow,
+  type MlSymbolPropertyRow,
+  pendingSymbolPropertyFocus,
+  SYMBOL_GROUP,
+  useEntityInspector,
+  useLayers
+} from '../../composable'
+import { entityName, entityPropEnum, entityPropName } from '../../locale'
+import {
+  MlColorDropdown,
+  MlHatchPatternDropdown,
+  MlLayerSelect,
+  MlLineTypeSelect,
+  MlLineWeightSelect
+} from '../common'
+import MlAnchorPicker from './inspector/MlAnchorPicker.vue'
+import MlInspectorInput from './inspector/MlInspectorInput.vue'
 
 const { t } = useI18n()
 
-/* ================= props / emits ================= */
-
 const props = defineProps<{
-  entityPropsList?: AcDbEntityProperties[] | null
-  editable?: boolean
-  /**
-   * Lock state aligned with `entityPropsList`.
-   * The common row is read-only when any entry is locked. A single entity row
-   * follows that entity.
-   */
-  entityLocked?: boolean[]
+  /** Object ids of the selected entities. */
+  selectionIds: AcDbObjectId[]
 }>()
 
-const emit = defineEmits<{
-  (
-    e: 'update-property',
-    payload: {
-      groupName: string
-      propertyName: string
-      newValue: unknown
-    }
-  ): void
-}>()
+const SELECTION_SECTION = '__selection'
+const ATTRIBUTE_SECTION = '__attribute'
+const BOX_FIELDS = ['x', 'y', 'width', 'height'] as const
 
-/* ================= state ================= */
+const {
+  entities,
+  groups,
+  symbols,
+  symbolPropertyRows,
+  summary,
+  box,
+  allLocked,
+  someLocked,
+  setProperty,
+  setSymbolProperty,
+  setBoxField,
+  selectOnlyType
+} = useEntityInspector(toRef(props, 'selectionIds'))
 
-const selectedIndex = ref(-1)
-const arrayIndexMap = ref<Record<string, number>>({})
+const { layers } = useLayers(AcApDocManager.instance)
+const layerOptions = computed(() =>
+  layers.map(layer => ({
+    value: layer.name,
+    name: layer.name,
+    cssColor: layer.cssColor || '#7b8794',
+    isOn: layer.isOn,
+    isLocked: layer.isLocked,
+    isFrozen: layer.isFrozen,
+    lineType: layer.linetype
+  }))
+)
 
-/**
- * 🔑 Forces rebuild of array property rows
- */
-const arrayRebuildVersion = ref(0)
+/* ================= text ================= */
 
-const editsLocked = computed(() => {
-  const flags = props.entityLocked
-  if (!flags?.length) return false
-  const count = props.entityPropsList?.length ?? 0
-  if (count <= 1) return !!flags[0]
-  if (selectedIndex.value >= 0) return !!flags[selectedIndex.value]
-  return flags.some(Boolean)
-})
-
-const activeEntityProperties = computed<AcDbEntityProperties | null>(() => {
-  const list = props.entityPropsList
-  if (!list?.length) return null
-
-  return list.length === 1
-    ? list[0]
-    : selectedIndex.value >= 0
-      ? list[selectedIndex.value]
-      : findCommonProperties(list)
-})
-
-/* ================= row types ================= */
-
-interface MlDisplayRowBase {
-  id: string
-  name: string
-  isGroup: boolean
+function panelText(key: string, params?: Record<string, unknown>) {
+  // eslint-disable-next-line @intlify/vue-i18n/no-dynamic-keys -- keys under propertyPanel
+  return t(
+    `main.toolPalette.entityProperties.propertyPanel.${key}`,
+    params ?? {}
+  )
 }
 
-type MlDisplayPropertyRow = MlDisplayRowBase &
-  AcDbEntityRuntimeProperty & {
-    __groupName?: string
-    __min?: number
-    __max?: number
-    __isArrayIndex?: boolean
-  }
+const mixedText = computed(() => panelText('mixed'))
 
-type MlDisplayGroupRow = MlDisplayRowBase & {
-  isGroup: true
-  children: MlDisplayPropertyRow[]
+const lockedNote = computed(() =>
+  allLocked.value ? panelText('allLocked') : panelText('someLocked')
+)
+
+function entityTypeName(type: string) {
+  return entityName({ type } as AcDbEntity)
 }
 
-type MlDisplayRow = MlDisplayGroupRow | MlDisplayPropertyRow
-
-/* ================= helpers ================= */
-
-function isArrayProperty(p: AcDbEntityRuntimeProperty): boolean {
-  return p.type === 'array' && !!p.itemSchema
-}
-
-function arrayKey(group: string, prop: string) {
-  return `${group}.${prop}`
-}
-
-/* ================= formatting ================= */
-
-function getPropertyName(row: MlDisplayPropertyRow): string {
+function propertyName(row: MlInspectorRow) {
   return row.skipTranslation ? row.name : entityPropName(row.name)
 }
 
-function formatDisplayValue(row: MlDisplayPropertyRow): string {
-  const v = row.accessor.get()
+function formatNumber(value: number) {
+  return String(Number(value.toFixed(6)))
+}
+
+function formatValue(row: MlInspectorRow, v: unknown): string {
   switch (row.type) {
     case 'boolean':
       return v ? 'True' : 'False'
     case 'enum':
       return entityPropEnum(row.options?.find(o => o.value === v)?.label ?? '')
     case 'color':
-      return (v as AcCmColor).toString()
+      return (v as AcCmColor | undefined)?.toString() ?? ''
     case 'lineweight':
-      return AcGiLineWeight[v as number]
+      return AcGiLineWeight[v as number] ?? String(v ?? '')
     case 'transparency':
-      return (v as AcCmTransparency).toString()
+      return (v as AcCmTransparency | undefined)?.toString() ?? ''
     default:
+      if (typeof v === 'number') return formatNumber(v)
       return v != null ? String(v) : ''
   }
 }
 
-async function copyReadonlyValue(row: MlDisplayPropertyRow) {
-  const value = formatDisplayValue(row)
+function formatDisplayValue(row: MlInspectorRow): string {
+  if (row.mixed) return mixedText.value
+  return formatValue(row, row.value)
+}
 
+function symbolPropertyTitle(row: MlSymbolPropertyRow) {
+  const parts = [row.label === row.tag ? row.tag : `${row.label} (${row.tag})`]
+  if (row.isInvisible) parts.push(panelText('invisibleAttribute'))
+  if (row.isConst) parts.push(panelText('constantAttribute'))
+  return parts.join(' — ')
+}
+
+async function copyText(value: string) {
+  if (!value) return
   try {
     await navigator.clipboard.writeText(value)
     ElMessage({
-      message: t(
-        'main.toolPalette.entityProperties.propertyPanel.propValCopied'
-      ),
+      message: panelText('propValCopied'),
       grouping: true,
       type: 'success'
     })
   } catch (e) {
     log.error(e)
     ElMessage({
-      message: t(
-        'main.toolPalette.entityProperties.propertyPanel.failedToCopyPropVal'
-      ),
+      message: panelText('failedToCopyPropVal'),
       grouping: true,
       type: 'error'
     })
   }
 }
 
-/* ================= rows ================= */
+/* ================= sections ================= */
 
-const tableRows = computed<MlDisplayRow[]>(() => {
-  // 🔑 dependency to force rebuild when array index changes
-  arrayRebuildVersion.value
+const collapsed = reactive(new Set<string>([ADVANCED_GROUP]))
 
-  const entity = activeEntityProperties.value
-  if (!entity) return []
-  return expandEntity(entity)
+function isCollapsed(name: string) {
+  return collapsed.has(name)
+}
+
+function toggleSection(name: string) {
+  if (collapsed.has(name)) collapsed.delete(name)
+  else collapsed.add(name)
+}
+
+const displayGroups = computed(() => groups.value)
+
+/** Symbol properties go right after the symbol group (or general). */
+const symbolPropertiesAfter = computed(() => {
+  if (!symbols.value.length) return undefined
+  const names = displayGroups.value.map(group => group.groupName)
+  if (names.includes(SYMBOL_GROUP)) return SYMBOL_GROUP
+  return names.filter(name => name !== ADVANCED_GROUP).pop()
 })
 
-function isHatchPatternField(row: MlDisplayPropertyRow) {
-  if (row.__isArrayIndex) return false
-  if (activeEntityProperties.value?.type.toLowerCase() !== 'hatch') return false
-  const propertyName = row.name.toLowerCase()
-  return propertyName === 'patternname' || propertyName === 'pattern'
+/* ================= editing ================= */
+
+function enumValue(row: MlInspectorRow) {
+  return row.mixed ? undefined : (row.value as string | number)
 }
 
-function expandEntity(entity: AcDbEntityProperties): MlDisplayRow[] {
-  return entity.groups.map((group, gi) => {
-    const children: MlDisplayPropertyRow[] = []
-
-    group.properties.forEach((prop, pi) => {
-      if (!isArrayProperty(prop)) {
-        children.push({
-          ...prop,
-          id: `g-${gi}-p-${pi}`,
-          isGroup: false,
-          __groupName: group.groupName
-        })
-        return
-      }
-
-      const arr = prop.accessor.get() as unknown[]
-      const key = arrayKey(group.groupName, prop.name)
-
-      if (!arrayIndexMap.value[key]) arrayIndexMap.value[key] = 1
-
-      arrayIndexMap.value[key] = Math.min(
-        Math.max(1, arrayIndexMap.value[key]),
-        arr.length
-      )
-
-      /* ===== index row (always editable) ===== */
-      children.push({
-        id: `g-${gi}-p-${pi}-index`,
-        name: prop.name,
-        type: 'int',
-        editable: true,
-        isGroup: false,
-        __groupName: group.groupName,
-        __isArrayIndex: true,
-        __min: 1,
-        __max: arr.length,
-        accessor: {
-          get: () => arrayIndexMap.value[key],
-          set: (v: number) => {
-            const newIndex = Math.min(Math.max(1, v), arr.length)
-            if (arrayIndexMap.value[key] !== newIndex) {
-              arrayIndexMap.value[key] = newIndex
-              arrayRebuildVersion.value++ // 🔥 force rebuild
-            }
-          }
-        }
-      } as MlDisplayPropertyRow)
-
-      const element = arr[arrayIndexMap.value[key] - 1] as Record<
-        string,
-        unknown
-      >
-      if (!element) return
-
-      /* ===== element property rows ===== */
-      if (prop.itemSchema) {
-        for (const itemProp of prop.itemSchema.properties) {
-          children.push({
-            id: `g-${gi}-p-${pi}-${itemProp.name}`,
-            name: itemProp.name,
-            type: itemProp.type,
-            editable: itemProp.editable,
-            isGroup: false,
-            __groupName: group.groupName,
-            accessor: {
-              get: () => element[itemProp.name],
-              set: (v: unknown) => {
-                element[itemProp.name] = v
-              }
-            }
-          })
-        }
-      }
-    })
-
-    return {
-      id: `group-${gi}`,
-      name: group.groupName,
-      isGroup: true,
-      children
-    }
-  })
+function enumOptionValue(value: unknown) {
+  return value as string | number
 }
 
-/* ================= common props ================= */
+function canEdit(row: MlInspectorRow) {
+  return row.editable && !allLocked.value
+}
 
-function findCommonProperties(
-  list: AcDbEntityProperties[]
-): AcDbEntityProperties {
-  const first = list[0]
-  const groups: AcDbEntityPropertyGroup[] = []
+function isHatchPatternField(row: MlInspectorRow) {
+  if (entities.value[0]?.type.toLowerCase() !== 'hatch') return false
+  const name = row.name.toLowerCase()
+  return name === 'patternname' || name === 'pattern'
+}
 
-  for (const g of first.groups) {
-    const props: AcDbEntityRuntimeProperty[] = []
+/* ================= arrays (single entity) ================= */
 
-    for (const p of g.properties) {
-      if (
-        list.every(ent => {
-          const gp = ent.groups
-            .find(x => x.groupName === g.groupName)
-            ?.properties.find(x => x.name === p.name)
-          return gp && gp.accessor.get() === p.accessor.get()
-        })
-      ) {
-        props.push(p)
-      }
-    }
+const arrayIndices = reactive(new Map<string, number>())
 
-    if (props.length) groups.push({ groupName: g.groupName, properties: props })
+function arrayItems(row: MlInspectorRow): Record<string, unknown>[] {
+  if (!row.property) return []
+  try {
+    const items = row.property.accessor.get()
+    return Array.isArray(items) ? items : []
+  } catch {
+    return []
   }
-
-  return { type: first.type, groups }
 }
 
-/**
- * span-method for group rows
- */
-const spanMethod = ({
-  row,
-  columnIndex
-}: {
-  row: MlDisplayRow
-  columnIndex: number
-}) => {
-  if (row.isGroup) {
-    return columnIndex === 0 ? [1, 2] : [0, 0]
+function arrayIndex(row: MlInspectorRow) {
+  const count = arrayItems(row).length
+  const index = arrayIndices.get(row.key) ?? 1
+  return Math.min(Math.max(1, index), Math.max(1, count))
+}
+
+function setArrayIndex(row: MlInspectorRow, value: number | undefined) {
+  if (value == null) return
+  arrayIndices.set(row.key, Math.round(value))
+}
+
+function arrayItemRows(row: MlInspectorRow) {
+  const item = arrayItems(row)[arrayIndex(row) - 1]
+  const schema = row.property?.itemSchema
+  if (!item || !schema) return []
+  return schema.properties.map(prop => ({
+    name: prop.name,
+    text: formatValue(
+      { ...row, type: prop.type } as MlInspectorRow,
+      item[prop.name]
+    )
+  }))
+}
+
+/* ================= selection box ================= */
+
+const anchor = ref<MlAnchor>({ x: 0, y: 0 })
+
+const boxValues = computed(() =>
+  box.value ? boxFields(box.value, anchor.value) : undefined
+)
+
+/* ================= focus from double-click ================= */
+
+const rootRef = ref<HTMLElement>()
+const symbolInputs = new Map<string, { focus: () => void }>()
+
+function registerSymbolInput(tagKey: string, el: unknown) {
+  if (el && typeof (el as { focus?: unknown }).focus === 'function') {
+    symbolInputs.set(tagKey, el as { focus: () => void })
+  } else {
+    symbolInputs.delete(tagKey)
   }
-  return [1, 1]
 }
 
-/**
- * Handle property change (direct call to accessor.set)
- */
-function onPropertyChange(row: MlDisplayPropertyRow, newValue: unknown) {
-  if (editsLocked.value || row.__isArrayIndex) return
-
-  emit('update-property', {
-    groupName: row.__groupName ?? '',
-    propertyName: row.name,
-    newValue
-  })
-}
+watch(
+  [pendingSymbolPropertyFocus, symbolPropertyRows],
+  async ([request]) => {
+    if (!request) return
+    if (!props.selectionIds.includes(request.objectId)) return
+    await nextTick()
+    collapsed.delete(ATTRIBUTE_SECTION)
+    await nextTick()
+    const wanted = request.tag?.trim().toUpperCase()
+    const rows = symbolPropertyRows.value
+    const target =
+      rows.find(row => row.tagKey === wanted && symbolInputs.has(row.tagKey)) ??
+      rows.find(row => symbolInputs.has(row.tagKey))
+    pendingSymbolPropertyFocus.value = null
+    if (!target) return
+    rootRef.value
+      ?.querySelector(`[data-symbol-tag="${CSS.escape(target.tagKey)}"]`)
+      ?.scrollIntoView({ block: 'nearest' })
+    symbolInputs.get(target.tagKey)?.focus()
+  },
+  { immediate: true }
+)
 </script>
 
 <style scoped>
-::v-deep(.el-table__placeholder) {
-  width: 0px;
-}
-
-::v-deep(.el-table .cell) {
-  display: flex;
-}
-
-::v-deep(.ml-cell-value > *) {
-  width: 100%;
-}
-
 .ml-entity-properties {
-  padding: 5px;
+  padding: 4px 6px 8px;
   flex: 1;
   min-height: 0;
   min-width: 0;
@@ -512,53 +663,193 @@ function onPropertyChange(row: MlDisplayPropertyRow, newValue: unknown) {
   box-sizing: border-box;
   overflow-x: hidden;
   overflow-y: auto;
+  font-size: 12px;
 }
 
-.ml-entity-properties-table {
-  width: 100%;
-  max-width: 100%;
-}
-
-.ml-entity-properties-table ::v-deep(.el-scrollbar__wrap) {
-  overflow-x: hidden;
-}
-
-.ml-entity-properties-table ::v-deep(.el-scrollbar__bar.is-horizontal) {
-  display: none;
-}
-
-.ml-cell-container {
+.ml-inspector-note {
   display: flex;
   align-items: center;
-  width: 100%;
-  min-width: 0;
-  line-height: 1;
+  gap: 6px;
+  margin: 2px 0 6px;
+  padding: 4px 6px;
+  border-radius: 4px;
+  background: var(--el-fill-color-light);
+  color: var(--el-text-color-secondary);
 }
 
-.ml-cell-label {
-  font-weight: normal;
-  width: 100%;
-  min-width: 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.ml-inspector-section + .ml-inspector-section {
+  border-top: 1px solid var(--el-border-color-lighter);
 }
 
-.ml-group-row {
+.ml-inspector-section__header {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  padding: 6px 2px;
+  border: none;
+  background: transparent;
+  color: var(--el-text-color-primary);
+  font: inherit;
   font-weight: 600;
+  text-align: left;
+  cursor: pointer;
 }
 
-.ml-cell-value {
-  width: 100%;
-  white-space: nowrap;
+.ml-inspector-section__header:hover {
+  color: var(--el-color-primary);
+}
+
+.ml-inspector-section__caret {
+  font-size: 11px;
+}
+
+.ml-inspector-section__badge {
+  margin-left: auto;
+  font-weight: normal;
+  color: var(--el-text-color-secondary);
+}
+
+.ml-inspector-section__body {
+  padding: 0 2px 8px 17px;
+}
+
+.ml-inspector-rows {
+  display: grid;
+  grid-template-columns: minmax(64px, 40%) minmax(0, 1fr);
+  column-gap: 8px;
+  row-gap: 4px;
+  align-items: center;
+}
+
+.ml-inspector-row__label {
+  min-width: 0;
   overflow: hidden;
+  white-space: nowrap;
   text-overflow: ellipsis;
+  color: var(--el-text-color-regular);
+}
+
+.ml-inspector-row__label--sub {
+  padding-left: 10px;
+  color: var(--el-text-color-secondary);
+}
+
+.ml-inspector-row__value {
+  min-width: 0;
+  min-height: 24px;
+  display: flex;
+  align-items: center;
+}
+
+.ml-inspector-row__value > * {
+  width: 100%;
 }
 
 .ml-readonly-value {
-  white-space: nowrap;
   overflow: hidden;
+  white-space: nowrap;
   text-overflow: ellipsis;
+  color: var(--el-text-color-regular);
+}
+
+.ml-inspector-muted {
+  color: var(--el-text-color-secondary);
+  font-style: italic;
+}
+
+.ml-inspector-row__value > .ml-inspector-muted {
+  width: auto;
+  margin-left: 4px;
+}
+
+.ml-inspector-switch {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ml-inspector-box {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.ml-inspector-box__fields {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px 6px;
+}
+
+.ml-inspector-box__field {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+
+.ml-inspector-box__label {
+  flex: 0 0 auto;
+  min-width: 1.5em;
+  color: var(--el-text-color-secondary);
+}
+
+.ml-inspector-types {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.ml-inspector-types__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border: 1px solid var(--el-border-color);
+  border-radius: 10px;
+  background: var(--el-fill-color-blank);
+  color: var(--el-text-color-regular);
+  font: inherit;
+  cursor: pointer;
+}
+
+.ml-inspector-types__item:hover:not(:disabled) {
+  border-color: var(--el-color-primary);
+  color: var(--el-color-primary);
+}
+
+.ml-inspector-types__item:disabled {
+  cursor: default;
+}
+
+.ml-inspector-types__count {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.ml-inspector-attr-label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ml-inspector-attr-text {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.ml-inspector-attr-icon {
+  flex: 0 0 auto;
+  color: var(--el-text-color-secondary);
+}
+
+.is-invisible {
+  opacity: 0.55;
 }
 
 .ml-no-entity-selected {

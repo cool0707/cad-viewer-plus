@@ -230,7 +230,51 @@ Figma / Illustrator 風の「先に選ぶ → ドラッグ / 右サイドバー�
 - 設定は `AcApSettingManager` に置き、ステータスバーのトグルから切り替える。
 - Shift で切り替え (toggle) にするには、`AcEdSelectionAction` に `'toggle'` を追加する必要がある。
 
-### ステップ 4: 右サイドバーの「選択範囲」セクション + シンボルのプロパティ
+### ステップ 4: 右サイドバーの「選択範囲」セクション + シンボルのプロパティ (済)
+- **実施内容 (結果)**:
+  - 調べた結果: 元のプロパティパネルは `editable` が渡されておらず**全項目が読み取り専用**だった
+    (編集のイベント `update-property` も誰も受けていない)。複数選択の共通値は `===` で比べていたので、
+    色 (`AcCmColor`) のようなオブジェクトは同じ値でも必ず「違う」扱いになっていた。
+  - 構成: 計算は `cad-viewer/src/composable/entityInspector.ts` (DB に触らない純粋関数。jest
+    `__tests__/entityInspector.spec.ts`)、DB への書き込みと再描画は `composable/useEntityInspector.ts`、
+    画面は `component/palette/MlEntityProperties.vue` (作り直し) と `palette/inspector/` の
+    `MlInspectorInput.vue` (Enter / フォーカスを外したときだけ確定、Esc で戻す。全角数字も可)・`MlAnchorPicker.vue` (9 点)。
+    `MlPaletteManager.vue` は選択中の ID を渡すだけになった。
+  - 編集: 1 回の変更 = 1 回の Undo (`acapRunDatabaseEdit` + `openEntityForWrite` で、データモデルの
+    `properties` のアクセサーを書き込み用に開いた図形に対して呼ぶ)。ロックされたレイヤーの図形は飛ばし、
+    一部がロックされているときは上部に注意書き、全部なら読み取り専用。読み取り専用で開いた文書も編集不可。
+    Undo / Redo や他の操作のあとも `undo-stack-changed` で表示を更新する。
+  - 項目の種類ごとの入力: レイヤー = `MlLayerSelect`、線の種類 = `MlLineTypeSelect`、線の太さ = `MlLineWeightSelect`、
+    色 = `MlColorDropdown`、列挙 = セレクト、数値・文字 = `MlInspectorInput`。透過性は編集部品が無いので読み取り専用のまま。
+    配列 (ポリラインの頂点など) は 1 図形のときだけ、番号を切り替えて読み取り専用で表示する。
+    角度 (`rotation` / `startAngle` / `endAngle`、ラジアンで保存されている図形だけ) は**度**で表示・入力する。
+  - 複数選択: どの図形にもある項目 (グループ名 + 項目名が一致) だけを出す (種類が混ざると「一般」だけになる)。
+    値が揃っていなければ「混在」と表示し、変更すると全部に入る。ハンドルは 1 図形のときだけ表示。
+  - シンボル (全部がシンボルのとき): 「一般 / 配置 (位置 X・Y、回転、倍率 X・Y) / シンボル (シンボル名) /
+    シンボルのプロパティ / 詳細 (Z・法線など、最初は折りたたみ)」に並べ替える。ja の「尺度」は「倍率」にした。
+  - **選択範囲** (2 個以上のとき一番上): X / Y / 幅 / 高さと 9 点の基準点 (既定は左下)、種類ごとの件数のボタン
+    (押すとその種類だけを選択し直す。旧ドロップダウンの「1 個ずつ見る」の代わり)、長さの合計 (`length` /
+    `arcLength` / `perimeter` を持つ図形)、面積の合計 (閉じたポリライン・円・閉じた楕円・塗りつぶし)。
+    - X / Y の変更は平行移動、**幅・高さの変更は基準点を中心にした縦横比固定の拡大縮小**にした
+      (円・文字・シンボルは片方向だけに伸ばせないため)。範囲は `geometricExtents` の和で、無限の構築線・放射線は除く。
+    - 範囲の数値は Undo に乗る (`entityService.transformEntities`、ロックされたレイヤーは飛ばす)。
+  - **シンボルのプロパティ**: 欄の名前は ATTDEF の問い合わせ文、無ければタグ (ツールチップに両方)。
+    非表示の項目は目のアイコン付きで薄く、定数は鍵アイコンで読み取り専用。同じシンボルの複数選択は項目ごとに「混在」、
+    違うシンボルが混ざっていれば共通するタグだけ (タグは大文字小文字を区別しない)。書き込みは `useAttEdit.ts` に移した
+    `openAttributeForWrite()` (`MlAttEditDlg.vue` と共用) で行い、書いたあとシンボルを `updateEntity` で描き直す。
+  - **ダブルクリック**: 選択方式が「シンプル」(`selectionStyle === 'simple'`) のときだけ、属性付きシンボルを
+    ダブルクリックすると `MlAttEditDlg` を開く代わりに `eventBus` の `focus-symbol-property` を出し、
+    パレットの「プロパティ」タブを開いて該当欄 (属性の文字を押したらその欄、シンボルの線なら最初の欄) にフォーカスする。
+    受け手 (cad-viewer) がいないとき (シンプルビューアなど) は従来どおり `attedit`。
+    操作プロファイル (ステップ 6) を入れたら、条件を `selectionStyle` からプロファイルに置き換える。
+  - **未実施**: 「+ プロパティを追加」と [シンボルを編集] ボタンはシンボルの編集 (ステップ 8) と一緒に入れる。
+    右サイドバーからの「この値で条件で選択」はステップ 5。
+  - 分かったこと: 非表示 (フラグ 1) の属性も画面に描かれている (描画側の既存の挙動。ATTMODE 未対応)。
+    e2e 用の DXF で ATTRIB を INSERT に結び付けるには、ATTRIB にハンドル (5) と所有者 (330 = INSERT のハンドル) が要り、
+    タグなどはサブクラスマーカー (`100 AcDbAttribute`) の後ろに置かないと読まれない。
+  - テスト: jest `cad-viewer/__tests__/entityInspector.spec.ts`、e2e `property-inspector.spec.ts`
+    (fixture `symbol-attributes.dxf`: DOOR シンボル 2 個 + 線 2 本)。
+- 以下は着手前の調査メモ:
 - `packages/cad-viewer/src/component/palette/MlEntityProperties.vue` (今は複数選択を 1 図形ずつドロップダウンで切り替える形)、`composable/useSelectionSet.ts`。
 - 属性: `component/dialog/MlAttDefDlg.vue`, `MlAttEditDlg.vue`, `composable/useAttEdit.ts`。
 

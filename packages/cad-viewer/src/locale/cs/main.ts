@@ -677,7 +677,34 @@ export default {
         noEntitySelected: 'Není vybrán žádný objekt!',
         multipleEntitySelected: 'Vybráno objektů: {count}',
         propValCopied: 'Hodnota vlastnosti zkopírována',
-        failedToCopyPropVal: 'Nepodařilo se zkopírovat hodnotu vlastnosti!'
+        failedToCopyPropVal: 'Nepodařilo se zkopírovat hodnotu vlastnosti!',
+        selection: 'Výběr',
+        mixed: 'Různé',
+        x: 'X',
+        y: 'Y',
+        width: 'Š',
+        height: 'V',
+        keepAspectHint: 'Změní velikost výběru se zachováním poměru stran',
+        referencePoint: 'Referenční bod',
+        anchor: {
+          topLeft: 'Vlevo nahoře',
+          top: 'Nahoře',
+          topRight: 'Vpravo nahoře',
+          left: 'Vlevo',
+          center: 'Střed',
+          right: 'Vpravo',
+          bottomLeft: 'Vlevo dole',
+          bottom: 'Dole',
+          bottomRight: 'Vpravo dole'
+        },
+        selectOnlyType: 'Vybrat jen: {type}',
+        totalLength: 'Celková délka',
+        totalArea: 'Celková plocha',
+        itemCount: '(počet: {count})',
+        invisibleAttribute: 'Skryté pole',
+        constantAttribute: 'Konstanta (nelze změnit)',
+        allLocked: 'Objekty jsou v uzamčených hladinách a nelze je změnit',
+        someLocked: 'Objekty v uzamčených hladinách se nezmění'
       }
     },
     layerManager: {

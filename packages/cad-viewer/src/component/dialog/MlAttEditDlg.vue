@@ -279,7 +279,6 @@ import {
 import {
   AcCmColor,
   AcDbAttribute,
-  AcDbDatabase,
   AcDbTextHorizontalMode,
   AcDbTextVerticalMode,
   AcGiLineWeight
@@ -304,8 +303,8 @@ import { useI18n } from 'vue-i18n'
 
 import {
   findAttributePrompt,
-  isAttributeEntity,
   listBlockAttributes,
+  openAttributeForWrite,
   promptAttributedBlockReference,
   useAttEdit,
   useDialogManager,
@@ -816,39 +815,6 @@ function applyRowToAttribute(opened: AcDbAttribute, row: AttributeRow) {
   opened.lineType = row.lineType
   opened.color = AcCmColor.fromString(row.colorKey) ?? createByLayerColor()
   opened.lineWeight = row.lineWeight
-}
-
-function openAttributeForWrite(
-  db: AcDbDatabase,
-  blockRef: NonNullable<ReturnType<typeof getTargetBlockReference>>,
-  attr: AcDbAttribute
-): AcDbAttribute | undefined {
-  const tryOpen = () => {
-    const opened = db.openEntityForWrite(attr)
-    return isAttributeEntity(opened) ? opened : undefined
-  }
-
-  try {
-    const opened = tryOpen()
-    if (opened) return opened
-  } catch {
-    // Fall through to re-sync and retry.
-  }
-
-  // Attributes live on the INSERT map; a failed earlier sync can leave them
-  // out of the handle registry so open-for-write throws for N>1 cases.
-  const sync = (
-    blockRef as { syncAttributeDatabases?: () => void }
-  ).syncAttributeDatabases
-  if (typeof sync === 'function') {
-    sync.call(blockRef)
-  }
-
-  try {
-    return tryOpen()
-  } catch {
-    return isAttributeEntity(attr) ? attr : undefined
-  }
 }
 
 function applyRowsToDatabase() {

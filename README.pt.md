@@ -39,6 +39,12 @@ acontecem no cliente, então os desenhos nunca saem do dispositivo do usuário.
 - **Troca do modo de seleção** — um botão da barra de status alterna entre o estilo CAD
   (cada clique adiciona) e substituir ao clicar (Shift + clique adiciona ou remove, clicar no vazio
   limpa a seleção). Por enquanto o estilo CAD continua sendo o padrão.
+- **Inspetor de propriedades** — a aba Propriedades agrupa os valores em seções (Geral, Posicionamento,
+  Símbolo…) e os edita diretamente (um passo de desfazer por alteração). Com vários objetos selecionados,
+  uma seção Seleção mostra X / Y / L / A com um ponto de referência de 9 posições, a contagem por tipo
+  (clique para manter só esse tipo) e o comprimento e a área totais; valores diferentes aparecem como
+  "Misto" e podem ser alterados de uma vez. As propriedades de símbolo (atributos de bloco) são editadas
+  no mesmo painel; no modo de substituir ao clicar, um clique duplo num símbolo leva ao seu campo.
 - **Importação de JWW / JWC (Jw_cad)** — o app de exemplo abre arquivos `.jww` e `.jwc` (formato antigo) com
   `@mlightcad/cad-jww-converter` (MIT; analisador [ezjww](https://github.com/monozukuri-ai/ezjww),
   Rust → WebAssembly, em um Web Worker). As coordenadas passam de milímetros de papel para

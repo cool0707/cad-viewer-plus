@@ -690,7 +690,34 @@ export default {
         noEntitySelected: 'No entity selected!',
         multipleEntitySelected: '{count} entities selected',
         propValCopied: 'Property value copied',
-        failedToCopyPropVal: 'Failed to copy property value!'
+        failedToCopyPropVal: 'Failed to copy property value!',
+        selection: 'Selection',
+        mixed: 'Mixed',
+        x: 'X',
+        y: 'Y',
+        width: 'W',
+        height: 'H',
+        keepAspectHint: 'Scales the selection and keeps its proportions',
+        referencePoint: 'Reference point',
+        anchor: {
+          topLeft: 'Top left',
+          top: 'Top',
+          topRight: 'Top right',
+          left: 'Left',
+          center: 'Center',
+          right: 'Right',
+          bottomLeft: 'Bottom left',
+          bottom: 'Bottom',
+          bottomRight: 'Bottom right'
+        },
+        selectOnlyType: 'Select only {type}',
+        totalLength: 'Total length',
+        totalArea: 'Total area',
+        itemCount: '({count} items)',
+        invisibleAttribute: 'Hidden field',
+        constantAttribute: 'Constant (cannot be changed)',
+        allLocked: 'These objects are on locked layers and cannot be changed',
+        someLocked: 'Objects on locked layers will not be changed'
       }
     },
     layerManager: {
