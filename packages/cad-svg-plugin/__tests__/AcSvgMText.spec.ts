@@ -262,7 +262,7 @@ describe('buildSvgMText', () => {
   })
 
   it('uses directionVector for rotation when provided', () => {
-    const { localSvg } = buildSvgMText(
+    const { localSvg, box } = buildSvgMText(
       {
         text: 'Rotated',
         height: 10,
@@ -275,10 +275,17 @@ describe('buildSvgMText', () => {
       ctx
     )
 
-    expect(localSvg).toContain('rotate(-90')
+    // The SVG flips Y, so +90 is counter-clockwise: the text reads upwards.
+    expect(localSvg).toContain('rotate(90)')
+    // The extents follow the rotation: up the Y axis, and the top-left
+    // attachment hangs the text to the right of it.
+    expect(box.max.y).toBeGreaterThan(30)
+    expect(box.min.y).toBeGreaterThan(-1e-6)
+    expect(box.min.x).toBeGreaterThan(-1e-6)
+    expect(box.max.x).toBeCloseTo(10, 6)
   })
 
-  it('lays out bottom-to-top vertical text for TEXT-style flow', () => {
+  it('keeps TEXT (bottom-to-top flow) on one horizontal line', () => {
     const { localSvg } = buildSvgMText(
       {
         text: 'ABC',
@@ -292,9 +299,10 @@ describe('buildSvgMText', () => {
       ctx
     )
 
-    const baselines = runBaselines(localSvg)
-    expect(baselines.length).toBeGreaterThan(1)
-    expect(baselines[0]).toBeGreaterThan(baselines[baselines.length - 1])
+    // TEXT / ATTRIB always pass BOTTOM_TO_TOP; mtext-renderer still draws
+    // them left to right, so the SVG must not stack the characters.
+    expect(runBaselines(localSvg)).toHaveLength(1)
+    expect(localSvg).toContain('>ABC</text>')
   })
 
   it('applies inline color formatting', () => {
@@ -540,5 +548,65 @@ describe('buildSvgMText', () => {
     // \A2 (TOP): A stays at size 10, B (size 5) shifts by 5-10 = -5.
     expect(localSvg).toMatch(/translate\([^,]+,-5\)/)
     expect(localSvg).toContain('font-size="5"')
+  })
+})
+
+describe('buildSvgMText vertical text (縦書き)', () => {
+  /** Origins (e, f) and x-axis angle of each run's matrix. */
+  function pieces(svg: string) {
+    return [
+      ...svg.matchAll(
+        /<g transform="matrix\(([^)]+)\) scale\([^)]+\)"><text[^>]*>([^<]*)<\/text>/g
+      )
+    ].map(match => {
+      const [a, b, , , e, f] = match[1].split(',').map(Number)
+      return { text: match[2], x: e, y: f, angle: Math.atan2(b, a) }
+    })
+  }
+
+  function verticalText(text: string) {
+    return {
+      text,
+      height: 10,
+      width: Infinity,
+      position: { x: 100, y: 200, z: 0 },
+      rotation: (3 * Math.PI) / 2,
+      drawingDirection: AcGiMTextFlowDirection.BOTTOM_TO_TOP,
+      attachmentPoint: 10
+    } as never
+  }
+
+  it('stacks the characters of an @ font upright down a column', () => {
+    const { localSvg, box } = buildSvgMText(
+      verticalText('縦書き'),
+      { font: '@ＭＳ ゴシック' } as never,
+      createTraits(),
+      ctx
+    )
+    const runs = pieces(localSvg)
+    expect(runs.map(r => r.text)).toEqual(['縦', '書', 'き'])
+    for (const run of runs) {
+      expect(run.angle).toBeCloseTo(0, 6)
+      expect(run.x).toBeCloseTo(runs[0].x, 6)
+    }
+    // One em (the SVG font-size) per character, downwards.
+    expect(runs[0].y - runs[1].y).toBeCloseTo(10, 6)
+    expect(localSvg).toContain('text-anchor="middle"')
+    // The font is looked up without the @.
+    expect(localSvg).not.toContain('@')
+    expect(box.max.y).toBeCloseTo(200, 6)
+    expect(box.min.y).toBeCloseTo(170, 6)
+  })
+
+  it('uses the vertical flag of the text style for TEXT', () => {
+    const { localSvg } = buildSvgMText(
+      verticalText('縦ー'),
+      { font: 'ＭＳ ゴシック', standardFlag: 4 } as never,
+      createTraits(),
+      ctx
+    )
+    const [upright, sideways] = pieces(localSvg)
+    expect(upright.angle).toBeCloseTo(0, 6)
+    expect(sideways.angle).toBeCloseTo(-Math.PI / 2, 6)
   })
 })

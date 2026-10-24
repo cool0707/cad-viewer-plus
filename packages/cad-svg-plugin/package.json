@@ -42,6 +42,9 @@
     "lint": "eslint src/",
     "lint:fix": "eslint --fix --quiet src/"
   },
+  "dependencies": {
+    "@mlightcad/cad-vertical-text": "workspace:*"
+  },
   "devDependencies": {
     "@mlightcad/cad-simple-viewer": "workspace:*",
     "@mlightcad/data-model": "1.15.14",

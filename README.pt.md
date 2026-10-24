@@ -47,6 +47,10 @@ acontecem no cliente, então os desenhos nunca saem do dispositivo do usuário.
   `.sfc`, `.p21` e as versões ZIP `.sfz` / `.p2z` com `@mlightcad/cad-sxf-converter` (MIT, TypeScript,
   portado do [ezsxf](https://github.com/monozukuri-ai/ezsxf)). Desenhos parciais aparecem no tamanho real
   da vista principal, e a folha vira os limites do desenho.
+- **Escrita vertical (縦書き)** — texto com uma fonte vertical do Windows (`@ＭＳ ゴシック`,
+  p. ex. o 縦字 do Jw_cad) e TEXT cujo estilo tem o sinalizador "vertical" do AutoCAD são
+  escritos de cima para baixo na tela e na exportação SVG / PDF, com as fontes BIZ UD
+  incluídas (`@mlightcad/cad-vertical-text`).
 
 ## Demonstração
 

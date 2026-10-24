@@ -26,6 +26,7 @@ pnpm --filter @mlightcad/cad-viewer-example test:e2e   # Playwright e2e (fixture
 - `packages/cad-viewer` — Vue3 + Element Plus の UI。`packages/cad-viewer-example` がデモ本体。
 - `packages/cad-jww-converter` — JWW / JWC (Jw_cad) 読み込み。ezjww (MIT, wasm) を Worker で実行し DXF 経由で読む。example で opt-in 登録。
 - `packages/cad-sxf-converter` — SXF 読み込み。TypeScript 実装 (ezsxf から移植、wasm なし)。DXF 経由で読む。example で opt-in 登録。
+- `packages/cad-vertical-text` — 縦書きの組み方 (依存なし)。画面 (three-renderer)・SVG・PDF で共有。
 - `@mlightcad/data-model` / `libredwg-converter` / `geometry-engine` / `mtext-renderer` は **npm 依存** (このリポジトリにソースは無い)。直すときは pnpm patch (下記)。
 - `resources/cad-data/` — フォント (BIZ UD woff + fonts.json)・テンプレート・サンプル図面。ビルド時に各 example の `cad-data/` へコピーされる。
 - `demo/index.html` + `tools/build-demo.mjs` → `demo-dist/` → GitHub Pages (`.github/workflows/demo.yml`, gh-pages ブランチ)。

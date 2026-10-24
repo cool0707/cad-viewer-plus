@@ -87,6 +87,13 @@ const text = (b, x, y, size, content, font = 'ＭＳ ゴシック') => ({
   content
 })
 
+// Jw_cad 縦字: an @ font, and the string runs downwards from the start point.
+const verticalText = (b, x, y, size, content, font = '@ＭＳ ゴシック') => ({
+  ...text(b, x, y, size, content, font),
+  end_x: x,
+  end_y: y - size * cells(content)
+})
+
 // Paper millimetres (the plan is 1/100: 1 mm on paper = 100 mm).
 const W = 100 // 10 m
 const H = 70 // 7 m
@@ -160,6 +167,9 @@ entities.push({
 // Room names.
 entities.push(text(base(0, 3, 2), x0 + 15, y0 + H - 15, 4, '居間・食堂'))
 entities.push(text(base(0, 3, 2), x0 + W / 2 + 15, y0 + H - 15, 4, '寝室'))
+entities.push(
+  verticalText(base(0, 3, 2), x0 + W - 10, y0 + H - 25, 4, '収納（押入れ）')
+)
 // Dimension (10,000 between the outer grid lines).
 const dimY = y0 - 18
 const dimBase = base(0, 4, 1)

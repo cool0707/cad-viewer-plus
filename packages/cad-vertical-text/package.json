@@ -1,0 +1,29 @@
+{
+  "name": "@mlightcad/cad-vertical-text",
+  "version": "1.7.7-preview.1",
+  "license": "MIT",
+  "type": "module",
+  "description": "Vertical text (縦書き) layout for CAD TEXT / MTEXT, shared by the screen, SVG and PDF renderers",
+  "files": [
+    "dist",
+    "lib",
+    "README.md",
+    "package.json"
+  ],
+  "main": "./dist/index.umd.cjs",
+  "module": "./dist/index.js",
+  "types": "./lib/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.umd.cjs"
+    }
+  },
+  "scripts": {
+    "clean": "rimraf dist lib tsconfig.tsbuildinfo",
+    "build": "tsc && vite build",
+    "lint": "eslint src/",
+    "lint:fix": "eslint --fix --quiet src/"
+  }
+}

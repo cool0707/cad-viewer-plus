@@ -142,6 +142,22 @@ describe('AcDbJwwConverter', () => {
     expect(style?.textStyle.font).toBe('ＭＳ 明朝')
   })
 
+  it('turns Jw_cad 縦字 into vertical text along the string', async () => {
+    const db = await openSample()
+    const text = entitiesOf(db).find(
+      (e): e is AcDbText =>
+        e instanceof AcDbText && e.textString === '収納（押入れ）'
+    )
+    expect(text).toBeDefined()
+    // The string runs downwards, so the @ font is rotated by 270°.
+    expect(text!.rotation).toBeCloseTo((3 * Math.PI) / 2, 6)
+    // The baseline is one descender to the right of the JWW point.
+    const gothic = jwwTextFontMetrics('@ＭＳ ゴシック')
+    expect(text!.position.x).toBeCloseTo(1000 + 400 * gothic.descender, 6)
+    const style = db.tables.textStyleTable.getAt(text!.styleName)
+    expect(style?.textStyle.font).toBe('@ＭＳ ゴシック')
+  })
+
   it('can keep paper millimetres or use each layer group scale', async () => {
     const paperDb = await openSample(
       new AcDbJwwConverter({ useWorker: false, scaleMode: 'paper' })
