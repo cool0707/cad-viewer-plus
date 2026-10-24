@@ -1,6 +1,7 @@
 export * from './AcDbSxfConverter'
 export * from './convertSxf'
 export * from './drawing'
+export * from './image'
 export * from './p21'
 export * from './registerSxfConverter'
 export * from './sfc'

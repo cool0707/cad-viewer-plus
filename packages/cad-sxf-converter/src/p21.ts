@@ -24,6 +24,8 @@ import {
   sampleSpline,
   type SxfCurve,
   SxfDrawing,
+  sxfImageFileName,
+  sxfImageFromPaths,
   type SxfStyle,
   transformCurve
 } from './drawing'
@@ -410,8 +412,27 @@ export class P21DrawingBuilder {
       inverseAffine(this.axisTransform(sourceAxis))
     )
     const representation = this.get(representationId, 'DRAUGHTING_SUBFIGURE_REPRESENTATION')
-    if (representation) {
+    if (!representation) return
+    const render = () =>
       this.renderItems(refs(representation[1]), compose(t, mapping), layerOverride, parentVisible, active)
+    const imageFile = sxfImageFileName(asString(representation[0]) ?? '')
+    if (imageFile) this.renderImage(imageFile, render)
+    else render()
+  }
+
+  /** Draws an image attribute's rectangle as an image (else as lines). */
+  private renderImage(fileName: string, render: () => void) {
+    const saved = this.drawing.paths
+    this.drawing.paths = []
+    render()
+    const paths = this.drawing.paths
+    this.drawing.paths = saved
+    const image = sxfImageFromPaths(fileName, paths)
+    if (image) {
+      this.drawing.images.push(image)
+    } else {
+      this.drawing.paths.push(...paths)
+      this.drawing.warnOnce(`image-shape-${fileName}`, `Image "${fileName}" has no rectangle; drawn as lines`)
     }
   }
 

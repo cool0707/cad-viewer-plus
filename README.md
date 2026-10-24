@@ -164,6 +164,9 @@ drawing looks as it does in Jw_cad and the main drawing measures in real
 millimetres. `scaleMode: 'layer-group'` scales each group by its own scale (like
 Jw_cad's DXF export) and `scaleMode: 'paper'` keeps paper millimetres. JWC files are
 converted the same way (they have no font information, so text uses ＭＳ ゴシック).
+Images placed with `^@BM` are shown as raster images: images embedded in the JWW are
+displayed directly, and images that refer to external files appear as missing images that you
+can supply from the viewer. Image trimming is not applied yet.
 
 ## SXF support
 
@@ -184,7 +187,9 @@ with a scale ratio. By default everything is scaled by the main partial
 drawing's scale, so the sheet looks as printed and the main view measures in
 real millimetres; `scaleMode: 'paper'` keeps paper millimetres. Circles, arcs
 and ellipses stay true curves, and text is sized from its SXF character box.
-SAF attributes and raster images are not loaded.
+Raster images (SXF 3.1 image attributes) are shown when the image file is bundled in the
+`.sfz` / `.p2z`; monochrome TIFF (G4) is converted for the browser, JPEG is used as is. A plain
+`.sfc` / `.p21` shows the image frame as a missing image. SAF attribute files are not loaded.
 
 ## License
 

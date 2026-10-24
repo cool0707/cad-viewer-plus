@@ -26,11 +26,14 @@
 
 | パッケージ | 目的 |
 | --- | --- |
-| `@mlightcad/data-model@1.15.14` | ① `lib/base/AcDbDxfPairReader.js`: 文字コード自動判定 (`acdbGuessLegacyEncoding`)、② `lib/dxf/AcDbDxfHeaderReader.js`: `$LIMMIN/$LIMMAX/$PLIMMIN/$PLIMMAX` を `db.limmin` 等に格納 (+ `.d.ts`)、③ `lib/dxf/AcDbNativeDxfConverter.js`: 読み込み直後に画層 0 と参照画層を作成 (`acdbEnsureReferencedLayers`) |
+| `@mlightcad/data-model@1.15.14` | ① `lib/base/AcDbDxfPairReader.js`: 文字コード自動判定 (`acdbGuessLegacyEncoding`)、② `lib/dxf/AcDbDxfHeaderReader.js`: `$LIMMIN/$LIMMAX/$PLIMMIN/$PLIMMAX` を `db.limmin` 等に格納 (+ `.d.ts`)、③ `lib/dxf/AcDbNativeDxfConverter.js`: 読み込み直後に画層 0 と参照画層を作成 (`acdbEnsureReferencedLayers`)、④ `lib/entity/AcDbRasterImage.js` + `dist/data-model.cjs`: `boundaryPath()` の回転の中心が右下の角になっていた・負の角度を無視していたのを、挿入点 (左下) 中心・0 以外すべてに修正 |
 | `@mlightcad/libredwg-converter@3.15.14` | DWG ヘッダーの LIMMIN 等を `db` に格納 |
 | `@mlightcad/geometry-engine@3.15.14` | NURBS 評価の高速パス |
 | `@mlightcad/mtext-renderer@0.13.5` | `fonts.json` の絶対 URL (Google Fonts) を許可 |
 | `ezjww@0.7.3` | npm 版は Node 専用 (読み込み時に `fs` で wasm を読む)。`initSync` / `initAsync` を追加し、wasm を後から渡せるようにした (`exports` に wasm パスも追加) |
+
+注意: `lib/dxf/AcDbNativeDxfConverter.js` は末尾に改行が無く、そのまま `pnpm patch-commit` すると最終行 (`}`) が落ちたパッチになりビルドが壊れる。
+編集ディレクトリでこのファイルの末尾に改行を足してから commit すること。
 
 ---
 
@@ -53,7 +56,15 @@
 - ezjww リポジトリの `jww_samples/` (実際の Jw_cad 図面: マンション平面例、木造平面例など) でもブラウザ表示を確認済み (リポジトリには入れていない)。
 - 注意: Jest は data-model の CJS ビルドを読むので、data-model パッチ (`$LIMMIN` 読み込みなど) は Jest では効かない。`db.limmin` はブラウザでしか確認できない。
 - **JWC (旧形式)** も同じコンバーターで読む (`jwc` にも登録)。`readJwcDocument` のヘッダー (レイヤグループ・縮尺・用紙 A0–A4) を JWW と同じ形 (`JwSource`) に正規化し、`readDxfDocument(…, { jwcCoordinates: 'paper_millimeters' })` (用紙中心原点の図寸 mm) を同じ writer に通す。JWC にはフォントが無いので ＭＳ ゴシック 扱い。ezjww が受け付ける JWC は 2 種類の固定ヘッダー形式だけで、それ以外はエラー。テスト用 JWC は ezjww の MIT サンプル (`packages/cad-jww-converter/__tests__/fixtures/`)。縮尺のテストはオフセット 1797 の f32 を書き換えて作っている。
-- 未対応: JWS、画像 (`^@BM`)、Worker 無しの main thread モードはテストのみで使用 (`wasmUrl` 指定で動く)。外部参照 (XATTACH) は DWG/DXF のまま。
+- **画像 (`^@BM`)**: 文字要素 `^@BM<パス>,<幅>,<高さ>[,…]` を DXF の `IMAGE` (+ OBJECTS の `IMAGEDEF`) にする (`src/jwwImage.ts`、`writeImage()`)。
+  左下 = 文字の始点、幅 × 高さは図寸 mm、回転は文字の角度。画素数は 1 × 1 として U / V ベクトルに全体の大きさを入れている。
+  同梱画像 (`%temp%<名前>`) は ezjww の `readDocument().images` (base64、`compressed` なら gzip → fflate で展開) を
+  `JwwConversionResult.images` で返し、DXF 読み込み後に `attachJwwImages()` が `AcDbRasterImage.image` に Blob を入れる。
+  外部パスの画像は Blob 無しのまま = 既存の「見つからない画像」(ステータスバー・リソースパレット) に出るので、ユーザーがファイルを指定できる。
+  ezjww の writer は `.gz` 名の同梱画像を `%temp%<.gz を除いた名前>` で参照する。サンプル JWW には gzip 同梱の BMP を 1 枚入れた。
+  追加パラメータ (既定 `0,0,1,0,255,255,255`。トリミングらしいが資料が見つからない) が既定と違うときは警告だけ出して画像全体を表示する。
+  回転した画像は元々正しく描けていなかったので、data-model パッチ④と `three-renderer/src/object/AcTrImage.ts` の UV (画像の軸に沿って計算) も直した。SVG / PDF 書き出しの回転画像は未確認。
+- 未対応: JWS、画像のトリミング、Worker 無しの main thread モードはテストのみで使用 (`wasmUrl` 指定で動く)。外部参照 (XATTACH) は DWG/DXF のまま。
 
 以下は着手前の調査メモ (JWW 部分は上記で対応済み)。
 
@@ -129,7 +140,15 @@ i18n: ファイル選択画面などの「DWG / DXF」表記 (`packages/cad-simp
 - ezsxf と意図的に変えた点: 部分図 (sfig 種別 1・2、P21 の `$$SXF_FM_` / `$$SXF_FG_`) の配置では子要素の画層を上書きしない (ezsxf は配置画層が 0 以外なら上書き。ezsxf の writer は配置に画層 1 を付けるので、そのままだと平面図の画層がすべて図枠画層になる)。
 - サンプル: `tools/make-sxf-sample.py` (ezsxf の作成 API、`pip install ezsxf==0.3.4`) で `sxf-sample.sfc/.p21/.sfz/.p2z` を生成。SFC 版と P21 版が同じ図形になることをテストで確認している。
 - ezsxf リポジトリの `data/D0LS004Z*` (ABC-CAD 出力の実データ、配布条件不明なのでコミットしない) で SFC / P21 とも同じ結果になり、ezsxf のプロットとも一致することを確認済み。P21 1.4MB の変換は約 0.3 秒 (初回は JIT で約 1 秒)。
-- 未対応: 縦書き (90° 回転で代用)、矢印種別 (すべて開き矢印)、外部定義ハッチ・タイルハッチ (境界のみ)、外部定義シンボル (点)、SAF 属性・ラスター画像、背景色属性。
+- **ラスター画像** (SXF 3.1 共通の画像属性): 名前が `$$ATRU$$<ID>$$<図形名>$$画像$$<ファイル名>[$$STR]` (P21 は先頭に `$$SXF_G_`) の
+  複合図形 (種別 3) が矩形ポリライン 1 本を包んでいる。矩形は左下から時計回り (左下・左上・右上・右下)。
+  SFC は `renderPlacement`、P21 は `renderMappedItem` で、その中身を描く代わりに `SxfImage` (原点・U・V) にする (`sxfImageFromPaths()`)。
+  DXF では IMAGE / IMAGEDEF (線や文字より先に書くので下に描かれる)。画像本体は SFZ / P2Z に同梱されたファイルをファイル名 (大文字小文字無視) で探す。
+  SXF の画像は白黒 TIFF (G4) か JPEG。ブラウザは TIFF を表示できないので utif2 (MIT) でデコードして BMP にする (`src/image.ts`):
+  1bit はそのまま 1bit BMP、長辺 4096px を超えるとき (A1 400dpi のスキャンは約 13000 × 9000) は縮小して 8bit グレーにする。
+  `.sfc` / `.p21` 単体では画像は「見つからない画像」になる。ただしユーザーが TIFF を指定してもビューア側は TIFF を表示できない (未対応)。
+  サンプル (`tools/make-sxf-sample.py`) に 640 × 480 の G4 TIFF (案内図) を追加。生成には Pillow (libtiff 付き) が要る。SFZ / P2Z だけが TIFF を含む。
+- 未対応: 縦書き (90° 回転で代用)、矢印種別 (すべて開き矢印)、外部定義ハッチ・タイルハッチ (境界のみ)、外部定義シンボル (点)、SAF 属性 (SAF 経由 = ATRF の画像も)、背景色属性。
 
 以下は着手前の調査メモ。
 

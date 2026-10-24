@@ -6,9 +6,11 @@ import {
   type AcDbDatabaseConverterReadOptions,
   AcDbFileType,
   AcDbNativeDxfConverter,
+  AcDbRasterImage,
   log
 } from '@mlightcad/data-model'
 
+import { imageMimeType, type JwwImageFile, jwwImageKey } from './jwwImage'
 import {
   convertJwwToDxf,
   type JwwConversionResult,
@@ -76,14 +78,27 @@ export class AcDbJwwConverter extends AcDbDatabaseConverter {
         [...new Set(result.unsupportedEntities)].join(', ')
       )
     }
+    for (const warning of result.warnings) log.warn(`[JWW] ${warning}`)
     const bytes = new TextEncoder().encode(result.dxf)
     const dxfConverter =
       AcDbDatabaseConverterManager.instance.get(AcDbFileType.DXF) ??
       new AcDbNativeDxfConverter()
     await dxfConverter.read(bytes.buffer as ArrayBuffer, db, {
       ...options,
-      encoding: 'utf-8'
+      encoding: 'utf-8',
+      // The viewer draws entities while the DXF converter flushes them, so
+      // images get their pixels between parsing and that flush.
+      progress: async (percentage, stage, status, data) => {
+        if (stage === 'ENTITY' && status === 'START') {
+          attachJwwImages(db, result.images)
+        }
+        await options?.progress?.(percentage, stage, status, data)
+      }
     })
+    // Fallback for a DXF converter without that stage: redraw late images.
+    for (const entity of attachJwwImages(db, result.images)) {
+      db.events.entityModified.dispatch({ database: db, entity })
+    }
   }
 
   /** Converts JWW bytes to DXF text (in the worker when configured). */
@@ -170,7 +185,9 @@ export class AcDbJwwConverter extends AcDbDatabaseConverter {
         if (response.ok) {
           request.resolve({
             dxf: response.dxf,
-            unsupportedEntities: response.unsupportedEntities
+            unsupportedEntities: response.unsupportedEntities,
+            images: response.images,
+            warnings: response.warnings
           })
         } else {
           request.reject(new Error(response.error))
@@ -189,4 +206,37 @@ export class AcDbJwwConverter extends AcDbDatabaseConverter {
     }
     return this.worker
   }
+}
+
+/**
+ * Gives each IMAGE entity the pixels of the embedded image it names. Images
+ * that are not embedded keep only their path and show up as missing images,
+ * which the user can supply from the viewer. Returns the images it filled.
+ */
+export function attachJwwImages(
+  db: AcDbDatabase,
+  images: JwwImageFile[]
+): AcDbRasterImage[] {
+  const attached: AcDbRasterImage[] = []
+  if (images.length === 0) return attached
+  const blobs = new Map<string, Blob>()
+  for (const image of images) {
+    blobs.set(
+      jwwImageKey(image.name),
+      new Blob([image.data as BlobPart], {
+        type: imageMimeType(image.data, image.name)
+      })
+    )
+  }
+  for (const block of db.tables.blockTable.newIterator()) {
+    for (const entity of block.newIterator()) {
+      if (!(entity instanceof AcDbRasterImage) || entity.image) continue
+      const blob = blobs.get(jwwImageKey(entity.imageFileName))
+      if (blob) {
+        entity.image = blob
+        attached.push(entity)
+      }
+    }
+  }
+  return attached
 }

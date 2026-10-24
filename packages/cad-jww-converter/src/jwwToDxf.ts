@@ -1,5 +1,11 @@
 import type { DxfDocument, JwcDocument, JwwDocument } from 'ezjww'
 
+import {
+  decodeJwwImages,
+  jwwImageDisplayPath,
+  type JwwImageFile,
+  parseJwwImageReference
+} from './jwwImage'
 import { jwwPaperSize } from './jwwPaper'
 
 /**
@@ -45,6 +51,13 @@ export interface JwwConversionResult {
   dxf: string
   /** Entity types ezjww could not convert, as reported by ezjww. */
   unsupportedEntities: string[]
+  /**
+   * Image files stored in the JWW. `IMAGE` entities in {@link dxf} name them
+   * by file name; other images are referenced by their original path.
+   */
+  images: JwwImageFile[]
+  /** Parts of the drawing that were converted only approximately. */
+  warnings: string[]
 }
 
 /** Text style used when a JWW text record names no font (and for JWC). */
@@ -115,6 +128,8 @@ interface JwSource {
   entityGroups: number[]
   /** Fonts of text records (JWC stores none). */
   texts: { content: unknown; x: unknown; y: unknown; font?: string }[]
+  /** Image files stored in the drawing (JWC stores none). */
+  images: JwwImageFile[]
 }
 
 function jwwSource(jww: JwwDocument): JwSource {
@@ -144,7 +159,8 @@ function jwwSource(jww: JwwDocument): JwSource {
         x: e.start_x,
         y: e.start_y,
         font: e.font_name
-      }))
+      })),
+    images: decodeJwwImages(jww.images ?? [])
   }
 }
 
@@ -169,7 +185,8 @@ function jwcSource(jwc: JwcDocument): JwSource {
     entityGroups: jwc.entities
       .filter(e => e.type !== 'temporary_point')
       .map(e => ('attributes' in e ? e.attributes.layer : e.layer).group),
-    texts: []
+    texts: [],
+    images: []
   }
 }
 
@@ -218,7 +235,9 @@ export function convertJwwToDxf(
   const writer = new JwwDxfWriter(source, dxfDoc, options.scaleMode ?? 'drawing')
   return {
     dxf: writer.write(),
-    unsupportedEntities: [...(dxfDoc.unsupported_entities ?? [])]
+    unsupportedEntities: [...(dxfDoc.unsupported_entities ?? [])],
+    images: source.images,
+    warnings: writer.warnings
   }
 }
 
@@ -306,6 +325,9 @@ class JwwDxfWriter {
   private readonly textWidths: number[]
   private textWidthIndex = 0
   private readonly blockRecords = new Map<string, string>()
+  /** Image path → IMAGEDEF handle. */
+  private readonly imageDefs = new Map<string, string>()
+  readonly warnings: string[] = []
 
   constructor(
     private readonly source: JwSource,
@@ -387,6 +409,7 @@ class JwwDxfWriter {
     this.section('ENTITIES')
     this.out.push(entities)
     this.pair(0, 'ENDSEC')
+    this.writeObjects()
     this.pair(0, 'EOF')
     return this.out.join('')
   }
@@ -468,6 +491,16 @@ class JwwDxfWriter {
         break
       case 'TEXT': {
         const content = String(e.content ?? '')
+        const image = parseJwwImageReference(content)
+        if (image) {
+          // Keep the per-text width factors aligned with ezjww's texts.
+          this.textWidthIndex++
+          this.writeImage(e, s, image.path, image.width, image.height)
+          if (image.hasExtra) {
+            this.warnOnce('Image trimming is not supported; whole images are shown')
+          }
+          break
+        }
         const { style, font } = this.styleFor(content, n('x'), n('y'))
         const width =
           this.textWidths[this.textWidthIndex++] ?? (n('width_factor') || 1)
@@ -523,9 +556,53 @@ class JwwDxfWriter {
     }
   }
 
+  /**
+   * Writes a `^@BM` image placement: lower-left corner at the text point,
+   * width × height paper millimetres along the text angle. The pixel size is
+   * left at 1 × 1 so the U / V vectors carry the whole extent.
+   */
+  private writeImage(
+    e: EzDxfEntity,
+    s: number,
+    path: string,
+    width: number,
+    height: number
+  ) {
+    const n = (key: string) =>
+      typeof e[key] === 'number' ? (e[key] as number) : 0
+    const fileName = jwwImageDisplayPath(path)
+    let defHandle = this.imageDefs.get(fileName)
+    if (!defHandle) {
+      defHandle = this.nextHandle()
+      this.imageDefs.set(fileName, defHandle)
+    }
+    const angle = (n('rotation') * Math.PI) / 180
+    const cos = Math.cos(angle)
+    const sin = Math.sin(angle)
+    this.entityHeader('IMAGE', e, 1)
+    this.pair(100, 'AcDbRasterImage')
+    this.pair(90, '0')
+    this.point(10, n('x') * s, n('y') * s)
+    this.point(11, width * cos * s, width * sin * s)
+    this.point(12, -height * sin * s, height * cos * s)
+    this.pair(13, '1.0')
+    this.pair(23, '1.0')
+    this.pair(340, defHandle)
+    this.pair(70, '3')
+    this.pair(280, '0')
+    this.pair(281, '50')
+    this.pair(282, '50')
+    this.pair(283, '0')
+  }
+
+  private warnOnce(message: string) {
+    if (!this.warnings.includes(message)) this.warnings.push(message)
+  }
+
   private entityHeader(type: string, e: EzDxfEntity, s: number) {
     this.pair(0, type)
     this.pair(5, this.nextHandle())
+    if (type === 'IMAGE') this.pair(100, 'AcDbEntity')
     this.pair(8, this.layerName(e.layer))
     this.pair(6, e.line_type || 'BYLAYER')
     this.pair(62, String(e.color ?? 256))
@@ -643,6 +720,42 @@ class JwwDxfWriter {
       this.pair(1071, '0')
     }
     this.pair(0, 'ENDTAB')
+  }
+
+  /** Image definitions referenced by IMAGE entities. */
+  private writeObjects() {
+    if (this.imageDefs.size === 0) return
+    const root = this.nextHandle()
+    const dict = this.nextHandle()
+    this.section('OBJECTS')
+    this.pair(0, 'DICTIONARY')
+    this.pair(5, root)
+    this.pair(100, 'AcDbDictionary')
+    this.pair(3, 'ACAD_IMAGE_DICT')
+    this.pair(350, dict)
+    this.pair(0, 'DICTIONARY')
+    this.pair(5, dict)
+    this.pair(330, root)
+    this.pair(100, 'AcDbDictionary')
+    for (const handle of this.imageDefs.values()) {
+      this.pair(3, `JW_IMAGE_${handle}`)
+      this.pair(350, handle)
+    }
+    for (const [fileName, handle] of this.imageDefs) {
+      this.pair(0, 'IMAGEDEF')
+      this.pair(5, handle)
+      this.pair(330, dict)
+      this.pair(100, 'AcDbRasterImageDef')
+      this.pair(90, '0')
+      this.pair(1, oneLine(fileName))
+      this.pair(10, '1.0')
+      this.pair(20, '1.0')
+      this.pair(11, '1.0')
+      this.pair(21, '1.0')
+      this.pair(280, '1')
+      this.pair(281, '0')
+    }
+    this.pair(0, 'ENDSEC')
   }
 
   private writeBlockRecords() {

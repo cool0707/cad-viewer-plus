@@ -5,15 +5,19 @@
 
 A small A3 floor plan: a 1/100 partial drawing (部分図) with grid lines,
 walls, a door swing, a table, a rug, a column fill, a hatched area, room
-names and a dimension, plus a 1/1 sheet border and title. Writes
-sxf-sample.sfc / .p21 and their ZIP forms .sfz / .p2z (same content). ezsxf is MIT licensed;
-the drawing itself is original.
+names and a dimension, plus a 1/1 sheet border, title and a monochrome
+TIFF (G4) image (SXF 3.1 image attribute). Writes sxf-sample.sfc / .p21 and
+their ZIP forms .sfz / .p2z (same content; only the ZIP forms carry the
+image file). Requires Pillow with libtiff. ezsxf is MIT licensed; the drawing
+and the image are original.
 """
 
+import tempfile
 import zipfile
 from pathlib import Path
 
 import ezsxf
+from PIL import Image, ImageDraw
 
 OUT = Path(__file__).resolve().parent.parent / "resources" / "cad-data" / "samples"
 TIMESTAMP = "2026-10-23T00:00:00"
@@ -103,19 +107,57 @@ def build():
         {"kind": "text", "text": "S=1/100  A3", "anchor": (305, 15), "height": 3.5,
          "layer": frame},
     ])
+    # Location map (案内図) as a bundled monochrome G4 TIFF, 80 x 60 mm.
+    doc.add_image(IMAGE, (320, 200), 80, 60, layer=frame, file_name=IMAGE.name)
+    doc.extend([
+        {"kind": "text", "text": "案内図 (同梱画像)", "anchor": (320, 195), "height": 3,
+         "layer": frame},
+    ])
     return doc
 
 
+IMAGE = Path(tempfile.gettempdir()) / "SXF-MAP.TIF"
+
+
+def make_image():
+    """A 640 x 480 bilevel location map: roads, a river and the site."""
+    img = Image.new("1", (640, 480), 1)
+    d = ImageDraw.Draw(img)
+    d.rectangle((0, 0, 639, 479), outline=0, width=4)
+    for y in (120, 330):
+        d.line((0, y, 639, y), fill=0, width=10)
+    d.line((200, 0, 260, 479), fill=0, width=10)
+    d.line((470, 0, 520, 479), fill=0, width=6)
+    # River: dashed curve.
+    for i in range(0, 640, 24):
+        d.arc((i - 40, 380, i + 40, 470), 200, 340, fill=0, width=3)
+    # Site: hatched block with a mark.
+    d.rectangle((300, 160, 420, 290), outline=0, width=6)
+    for k in range(300, 420, 12):
+        d.line((k, 290, k + 40, 160), fill=0, width=2)
+    d.ellipse((560, 40, 620, 100), outline=0, width=4)
+    d.polygon([(590, 30), (580, 70), (600, 70)], fill=0)
+    img.save(IMAGE, compression="group4")
+
+
 def main():
+    make_image()
     doc = build()
+    # The plain SFC / P21 reference the image (shown as a missing image);
+    # the ZIP forms carry it.
     doc.save(OUT / "sxf-sample.sfc")
-    doc.save_p21(OUT / "sxf-sample.p21")
+    with tempfile.TemporaryDirectory() as tmp:
+        bundle = Path(tmp) / "bundle"
+        doc.save_p21_bundle(bundle, file_name="sxf-sample.p21")
+        (OUT / "sxf-sample.p21").write_bytes((bundle / "sxf-sample.p21").read_bytes())
     doc.save_p2z(OUT / "sxf-sample.p2z")
     # SFZ is the SFC file in a ZIP archive (fixed timestamp: reproducible).
     with zipfile.ZipFile(OUT / "sxf-sample.sfz", "w", zipfile.ZIP_DEFLATED) as archive:
-        info = zipfile.ZipInfo("SXF-SAMPLE.SFC", date_time=(2026, 10, 23, 0, 0, 0))
-        info.compress_type = zipfile.ZIP_DEFLATED
-        archive.writestr(info, (OUT / "sxf-sample.sfc").read_bytes())
+        for name, data in (("SXF-SAMPLE.SFC", (OUT / "sxf-sample.sfc").read_bytes()),
+                           (IMAGE.name, IMAGE.read_bytes())):
+            info = zipfile.ZipInfo(name, date_time=(2026, 10, 23, 0, 0, 0))
+            info.compress_type = zipfile.ZIP_DEFLATED
+            archive.writestr(info, data)
     for name in ("sfc", "p21", "p2z", "sfz"):
         print("wrote", OUT / f"sxf-sample.{name}")
 

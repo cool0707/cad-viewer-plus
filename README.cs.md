@@ -102,6 +102,9 @@ JWW ukládá souřadnice v milimetrech na papíře. Ve výchozím stavu se vše 
 skupiny hladin (s nejvíce objekty), takže výkres vypadá jako v Jw_cad a hlavní výkres se měří ve
 skutečných milimetrech. `scaleMode: 'layer-group'` použije měřítko každé skupiny a
 `scaleMode: 'paper'` ponechá milimetry na papíře. Starý formát JWC se převádí stejně (neobsahuje písma, text se zobrazí jako ＭＳ ゴシック).
+Obrázky vložené pomocí `^@BM` se zobrazí jako rastrové obrázky: obrázky uložené v souboru JWW se zobrazí přímo,
+obrázky odkazující na externí soubory se zobrazí jako chybějící a soubor lze doplnit v prohlížeči.
+Oříznutí obrázku se zatím nepoužije.
 
 ## Podpora SXF
 
@@ -118,7 +121,9 @@ registerSxfConverter()
 Souřadnice SXF jsou v milimetrech na papíře a dílčí výkresy se umisťují s měřítkem. Ve výchozím stavu se vše
 zvětší měřítkem hlavního dílčího výkresu: list vypadá jako vytištěný a hlavní pohled se měří ve skutečných
 milimetrech; `scaleMode: 'paper'` ponechá milimetry na papíře. Kružnice, oblouky a elipsy zůstávají
-křivkami a text odpovídá rámečku SXF. Atributy (SAF) a rastrové obrázky se nenačítají.
+křivkami a text odpovídá rámečku SXF. Rastrové obrázky (obrazové atributy SXF 3.1) se zobrazí, pokud je soubor obrázku přibalen v `.sfz` / `.p2z`;
+černobílý TIFF (G4) se převede pro prohlížeč, JPEG se použije beze změny. Samostatný `.sfc` / `.p21`
+zobrazí rámeček obrázku jako chybějící obrázek. Atributové soubory (SAF) se nenačítají.
 
 ## Licence
 
