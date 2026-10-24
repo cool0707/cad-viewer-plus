@@ -126,11 +126,11 @@ export default {
     title: 'O aplikaci',
     close: 'Zavřít',
     product: 'CAD Viewer',
-    tagline: 'Vysokovýkonný webový CAD prohlížeč pro výkresy DWG a DXF.',
+    tagline: 'Webový CAD prohlížeč pro výkresy DWG, DXF, JWW a SXF.',
     website: 'Web',
     docs: 'Dokumentace',
     repository: 'GitHub',
-    copyright: '© {year} mlightcad. Všechna práva vyhrazena.',
+    copyright: '© {year} RemixCAD. Šířeno pod licencí MIT.',
     ok: 'OK'
   },
   drawStyle: {

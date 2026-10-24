@@ -8,7 +8,7 @@ export default {
       description: 'コマンドラインのオプションでレイヤーを管理します'
     },
     about: {
-      description: 'mlightcad の情報を表示します'
+      description: 'RemixCAD の情報を表示します'
     },
     acadver: {
       description:

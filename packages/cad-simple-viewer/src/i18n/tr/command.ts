@@ -8,7 +8,7 @@ export default {
       description: 'Komut satırı seçenekleriyle katmanları yönetir'
     },
     about: {
-      description: 'mlightcad hakkında bilgi gösterir'
+      description: 'RemixCAD hakkında bilgi gösterir'
     },
     acadver: {
       description: 'Çizim veritabanı sürüm tanımlayıcısını saklar (salt okunur)'

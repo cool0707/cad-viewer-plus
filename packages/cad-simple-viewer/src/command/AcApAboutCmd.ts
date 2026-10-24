@@ -3,7 +3,7 @@ import { AcEdCommand } from '../editor'
 import { AcUiAboutDialog } from '../ui/AcUiAboutDialog'
 
 /**
- * Command that opens the mlightcad About dialog.
+ * Command that opens the RemixCAD About dialog.
  *
  * Registered as the system command `about`.
  *

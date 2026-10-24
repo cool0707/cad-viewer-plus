@@ -7,7 +7,7 @@ export default {
       description: '通过命令行选项管理图层'
     },
     about: {
-      description: '显示 mlightcad 产品信息'
+      description: '显示 RemixCAD 产品信息'
     },
     acadver: {
       description: '存储图形数据库版本标识符（只读）'

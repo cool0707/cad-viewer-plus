@@ -125,11 +125,11 @@ export default {
     title: 'حول',
     close: 'إغلاق',
     product: 'عارض CAD',
-    tagline: 'عارض CAD عالي الأداء للويب لملفات DWG وDXF.',
+    tagline: 'عارض CAD للويب لملفات DWG وDXF وJWW وSXF.',
     website: 'الموقع الإلكتروني',
     docs: 'التوثيق',
     repository: 'GitHub',
-    copyright: '© {year} mlightcad. جميع الحقوق محفوظة.',
+    copyright: '© {year} RemixCAD. مُتاح بموجب رخصة MIT.',
     ok: 'موافق'
   },
   drawStyle: {

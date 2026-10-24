@@ -128,11 +128,11 @@ export default {
     title: 'バージョン情報',
     close: '閉じる',
     product: 'CAD Viewer',
-    tagline: 'DWG / DXF 図面のための高性能な Web CAD ビューア。',
+    tagline: 'DWG / DXF / JWW / SXF 図面を開ける Web CAD ビューア。',
     website: 'Web サイト',
     docs: 'ドキュメント',
     repository: 'GitHub',
-    copyright: '© {year} mlightcad. All rights reserved.',
+    copyright: '© {year} RemixCAD. MIT ライセンスで公開しています。',
     ok: 'OK'
   },
   drawStyle: {

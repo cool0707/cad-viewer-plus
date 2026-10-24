@@ -126,11 +126,11 @@ export default {
     title: 'Hakkında',
     close: 'Kapat',
     product: 'CAD Viewer',
-    tagline: 'DWG ve DXF çizimleri için yüksek performanslı web CAD görüntüleyici.',
+    tagline: 'DWG, DXF, JWW ve SXF çizimleri için web CAD görüntüleyici.',
     website: 'Web sitesi',
     docs: 'Belgeler',
     repository: 'GitHub',
-    copyright: '© {year} mlightcad. Tüm hakları saklıdır.',
+    copyright: '© {year} RemixCAD. MIT Lisansı ile yayımlanmıştır.',
     ok: 'Tamam'
   },
   drawStyle: {

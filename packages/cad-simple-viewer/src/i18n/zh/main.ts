@@ -122,11 +122,11 @@ export default {
     title: '关于',
     close: '关闭',
     product: 'CAD 查看器',
-    tagline: '面向 DWG/DXF 图纸的高性能 Web CAD 查看器。',
+    tagline: '支持 DWG/DXF/JWW/SXF 图纸的 Web CAD 查看器。',
     website: '官网',
     docs: '文档',
     repository: 'GitHub',
-    copyright: '© {year} mlightcad。保留所有权利。',
+    copyright: '© {year} RemixCAD。基于 MIT 许可证发布。',
     ok: '确定'
   },
   drawStyle: {

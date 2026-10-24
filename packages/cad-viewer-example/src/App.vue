@@ -47,15 +47,16 @@ import {
   AcApSettingManager,
   AcEdCommandStack,
   AcEdOpenMode,
-  layoutBackgroundColorFromRgb
+  layoutBackgroundColorFromRgb,
+  MLIGHTCAD_BRAND_NAME
 } from '@mlightcad/cad-simple-viewer'
-import { MlCadViewer } from '@mlightcad/cad-viewer'
+import { MlCadViewer, useDocument } from '@mlightcad/cad-viewer'
 import {
   ACDB_DRAW_CIRCLE_SIDES_DRAFT,
   ACGI_PAPER_SPACE_BACKGROUND,
   log
 } from '@mlightcad/data-model'
-import { computed, nextTick, ref } from 'vue'
+import { computed, nextTick, ref, watchEffect } from 'vue'
 
 import { AcApQuitCmd } from './commands'
 import FileUpload from './components/FileUpload.vue'
@@ -200,6 +201,16 @@ const showViewer = computed(
     store.selectedUrl != null ||
     store.isNewDrawing
 )
+
+const { displayName } = useDocument()
+
+// Browser tab title: "<file name> - RemixCAD" while a drawing is open.
+watchEffect(() => {
+  document.title =
+    showViewer.value && displayName.value
+      ? `${displayName.value} - ${MLIGHTCAD_BRAND_NAME}`
+      : MLIGHTCAD_BRAND_NAME
+})
 
 const selectedMode = ref<AcEdOpenMode>(AcEdOpenMode.Write)
 const useMainThreadDraw = ref(true)

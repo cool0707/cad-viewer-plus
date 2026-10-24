@@ -8,7 +8,7 @@ export default {
       description: 'Spravuje hladiny pomocí voleb příkazového řádku'
     },
     about: {
-      description: 'Zobrazí informace o mlightcad'
+      description: 'Zobrazí informace o RemixCAD'
     },
     acadver: {
       description:
