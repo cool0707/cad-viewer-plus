@@ -9,8 +9,10 @@ import {
   boxFieldTransform,
   buildInspectorGroups,
   buildSymbolPropertyRows,
+  formatInspectorNumber,
   inspectorValueKey,
   type MlInspectorSymbol,
+  numberKind,
   PLACEMENT_GROUP,
   summarizeSelection,
   SYMBOL_GROUP,
@@ -312,5 +314,27 @@ describe('selection box', () => {
         5
       )
     ).toBeUndefined()
+  })
+})
+
+describe('number precision', () => {
+  it('rounds lengths, angles and unitless values differently', () => {
+    expect(numberKind({ name: 'positionX' })).toBe('length')
+    expect(numberKind({ name: 'radius' })).toBe('length')
+    expect(numberKind({ name: 'rotation', unit: 'degree' })).toBe('angle')
+    expect(numberKind({ name: 'totalAngle' })).toBe('angle')
+    expect(numberKind({ name: 'scaleFactorsX' })).toBe('plain')
+    expect(numberKind({ name: 'linetypeScale' })).toBe('plain')
+    expect(numberKind({ name: 'widthFactor' })).toBe('plain')
+    expect(numberKind({ name: 'normalZ' })).toBe('plain')
+  })
+
+  it('formats with at most the given decimals and no trailing zeros', () => {
+    expect(formatInspectorNumber(-144.456973377328, 4)).toBe('-144.457')
+    expect(formatInspectorNumber(-144.456973377328, 2)).toBe('-144.46')
+    expect(formatInspectorNumber(12.5, 0)).toBe('13')
+    expect(formatInspectorNumber(100, 4)).toBe('100')
+    expect(formatInspectorNumber(-0.00001, 2)).toBe('0')
+    expect(formatInspectorNumber(1 / 3)).toBe('0.333333')
   })
 })

@@ -131,6 +131,32 @@ export function degToRad(value: number) {
   return (value * Math.PI) / 180
 }
 
+/** How a float property is rounded for display. */
+export type MlNumberKind = 'length' | 'angle' | 'plain'
+
+/** Ratios, scale factors and directions: no unit, so not rounded to LUPREC. */
+const PLAIN_NUMBER = /scale|factor|ratio|^normal|unitDir/i
+
+/**
+ * Classifies a float row: angles follow the drawing's angle precision
+ * (AUPREC), lengths and coordinates its linear precision (LUPREC), and
+ * unitless values keep up to 6 decimals (rounding a scale of 0.5 to the
+ * drawing's precision could show 1).
+ */
+export function numberKind(row: Pick<MlInspectorRow, 'name' | 'unit'>) {
+  if (row.unit === 'degree' || row.name === 'totalAngle') return 'angle'
+  if (PLAIN_NUMBER.test(row.name)) return 'plain'
+  return 'length'
+}
+
+/** Formats a number with at most `decimals` digits, without trailing zeros. */
+export function formatInspectorNumber(value: number, decimals = 6) {
+  if (!Number.isFinite(value)) return ''
+  const rounded = Number(value.toFixed(Math.min(Math.max(decimals, 0), 8)))
+  // Avoid "-0".
+  return String(rounded === 0 ? 0 : rounded)
+}
+
 /**
  * Display group of a property. Symbols get the layout of the plan
  * (General / Placement / Symbol); other entities keep their own groups.

@@ -15,6 +15,8 @@
 import { ElInput } from 'element-plus'
 import { ref, watch } from 'vue'
 
+import { formatInspectorNumber } from '../../../composable/entityInspector'
+
 /**
  * Text / number field of the property inspector.
  *
@@ -26,6 +28,8 @@ const props = defineProps<{
   modelValue: unknown
   numeric?: boolean
   integer?: boolean
+  /** Maximum number of decimals shown (default 6). */
+  decimals?: number
   /** The selected entities have different values. */
   mixed?: boolean
   mixedPlaceholder?: string
@@ -38,12 +42,11 @@ const emit = defineEmits<{
 
 const inputRef = ref<InstanceType<typeof ElInput>>()
 
-/** Formats numbers without trailing zeros (up to 6 decimals). */
+/** Formats numbers without trailing zeros. */
 function format(value: unknown) {
   if (props.mixed || value == null) return ''
   if (typeof value === 'number') {
-    if (!Number.isFinite(value)) return ''
-    return String(Number(value.toFixed(props.integer ? 0 : 6)))
+    return formatInspectorNumber(value, props.integer ? 0 : props.decimals)
   }
   return String(value)
 }
@@ -51,7 +54,7 @@ function format(value: unknown) {
 const draft = ref(format(props.modelValue))
 
 watch(
-  () => [props.modelValue, props.mixed],
+  () => [props.modelValue, props.mixed, props.decimals],
   () => {
     draft.value = format(props.modelValue)
   }

@@ -47,6 +47,7 @@
                 </span>
                 <ml-inspector-input
                   numeric
+                  :decimals="precision.length"
                   :model-value="boxValues[field]"
                   :disabled="
                     allLocked ||
@@ -89,9 +90,15 @@
               </div>
               <div
                 class="ml-inspector-row__value ml-readonly-value"
-                @dblclick="copyText(formatNumber(summary.totalLength))"
+                @dblclick="
+                  copyText(
+                    formatInspectorNumber(summary.totalLength, precision.length)
+                  )
+                "
               >
-                {{ formatNumber(summary.totalLength) }}
+                {{
+                  formatInspectorNumber(summary.totalLength, precision.length)
+                }}
                 <span class="ml-inspector-muted">
                   {{ panelText('itemCount', { count: summary.lengthCount }) }}
                 </span>
@@ -103,9 +110,13 @@
               </div>
               <div
                 class="ml-inspector-row__value ml-readonly-value"
-                @dblclick="copyText(formatNumber(summary.totalArea))"
+                @dblclick="
+                  copyText(
+                    formatInspectorNumber(summary.totalArea, precision.length)
+                  )
+                "
               >
-                {{ formatNumber(summary.totalArea) }}
+                {{ formatInspectorNumber(summary.totalArea, precision.length) }}
                 <span class="ml-inspector-muted">
                   {{ panelText('itemCount', { count: summary.areaCount }) }}
                 </span>
@@ -252,6 +263,7 @@
                     v-else-if="row.type === 'int' || row.type === 'float'"
                     numeric
                     :integer="row.type === 'int'"
+                    :decimals="decimalsOf(row)"
                     :model-value="row.value"
                     :mixed="row.mixed"
                     :mixed-placeholder="mixedText"
@@ -392,9 +404,11 @@ import { useI18n } from 'vue-i18n'
 import {
   ADVANCED_GROUP,
   boxFields,
+  formatInspectorNumber,
   type MlAnchor,
   type MlInspectorRow,
   type MlSymbolPropertyRow,
+  numberKind,
   pendingSymbolPropertyFocus,
   SYMBOL_GROUP,
   useEntityInspector,
@@ -429,6 +443,7 @@ const {
   symbolPropertyRows,
   summary,
   box,
+  precision,
   allLocked,
   someLocked,
   setProperty,
@@ -474,8 +489,13 @@ function propertyName(row: MlInspectorRow) {
   return row.skipTranslation ? row.name : entityPropName(row.name)
 }
 
-function formatNumber(value: number) {
-  return String(Number(value.toFixed(6)))
+/** Decimals for a numeric row, following the drawing's precision. */
+function decimalsOf(row: MlInspectorRow) {
+  if (row.type === 'int') return 0
+  const kind = numberKind(row)
+  if (kind === 'angle') return precision.value.angle
+  if (kind === 'length') return precision.value.length
+  return undefined
 }
 
 function formatValue(row: MlInspectorRow, v: unknown): string {
@@ -491,7 +511,9 @@ function formatValue(row: MlInspectorRow, v: unknown): string {
     case 'transparency':
       return (v as AcCmTransparency | undefined)?.toString() ?? ''
     default:
-      if (typeof v === 'number') return formatNumber(v)
+      if (typeof v === 'number') {
+        return formatInspectorNumber(v, decimalsOf(row))
+      }
       return v != null ? String(v) : ''
   }
 }

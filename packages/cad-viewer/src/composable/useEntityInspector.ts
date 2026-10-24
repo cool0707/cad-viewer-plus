@@ -10,6 +10,7 @@ import {
   AcDbDatabase,
   AcDbEntity,
   AcDbObjectId,
+  AcDbSysVarManager,
   AcGeMatrix3d
 } from '@mlightcad/data-model'
 import { computed, onMounted, onUnmounted, type Ref, ref } from 'vue'
@@ -121,11 +122,22 @@ export function useEntityInspector(selectionIds: Ref<AcDbObjectId[]>) {
     revision.value++
   }
 
+  // LUPREC / AUPREC are not undoable edits, so watch them separately.
+  const onSysVarChanged = (args: { name: string }) => {
+    const name = args.name.toUpperCase()
+    if (name === 'LUPREC' || name === 'AUPREC') refresh()
+  }
   onMounted(() => {
     eventBus.on('undo-stack-changed', refresh)
+    AcDbSysVarManager.instance().events.sysVarChanged.addEventListener(
+      onSysVarChanged
+    )
   })
   onUnmounted(() => {
     eventBus.off('undo-stack-changed', refresh)
+    AcDbSysVarManager.instance().events.sysVarChanged.removeEventListener(
+      onSysVarChanged
+    )
   })
 
   const getDb = (): AcDbDatabase | undefined =>
@@ -149,6 +161,25 @@ export function useEntityInspector(selectionIds: Ref<AcDbObjectId[]>) {
     revision.value
     const doc = AcApDocManager.instance?.curDocument
     return !doc || doc.openMode < AcEdOpenMode.Write
+  })
+
+  /**
+   * Display precision of the drawing (LUPREC / AUPREC, set in the drawing
+   * units dialog).
+   */
+  const precision = computed(() => {
+    revision.value
+    const db = getDb()
+    const clamp = (value: unknown, fallback: number) => {
+      const n = Number(value)
+      return Number.isFinite(n)
+        ? Math.min(Math.max(Math.round(n), 0), 8)
+        : fallback
+    }
+    return {
+      length: clamp(db?.luprec, 4),
+      angle: clamp(db?.auprec, 0)
+    }
   })
 
   const lockedFlags = computed(() => {
@@ -293,6 +324,7 @@ export function useEntityInspector(selectionIds: Ref<AcDbObjectId[]>) {
     symbolPropertyRows,
     summary,
     box,
+    precision,
     allLocked,
     someLocked,
     setProperty,
