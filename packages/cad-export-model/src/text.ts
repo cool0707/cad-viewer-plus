@@ -41,7 +41,7 @@ export const DEFAULT_MINCHO_FONT = 'ＭＳ 明朝'
  * A leading `@` (vertical font) is kept.
  */
 export function cellFontName(font: string) {
-  const trimmed = font.trim()
+  const trimmed = font.replace(/[\p{Cc}]/gu, '').trim()
   const vertical = trimmed.startsWith('@')
   const name = vertical ? trimmed.slice(1) : trimmed
   let result: string

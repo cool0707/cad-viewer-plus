@@ -42,13 +42,17 @@ export function sheetFromLimits(
   const w = limits.max[0] - limits.min[0]
   const h = limits.max[1] - limits.min[1]
   if (!(w > 0 && h > 0)) return undefined
-  for (const paper of Object.keys(PAPER_SIZES) as ExportPaperName[]) {
+  // A2 and A4 have exactly proportional sizes (594 × 420 = 2 × 297 × 210):
+  // prefer a standard scale, then the smaller sheet.
+  let found: ExportSheet | undefined
+  const papers = (Object.keys(PAPER_SIZES) as ExportPaperName[]).reverse()
+  for (const paper of papers) {
     for (const portrait of [false, true]) {
       const [lw, lh] = PAPER_SIZES[paper]
       const [pw, ph] = portrait ? [lh, lw] : [lw, lh]
       const scale = w / pw
       if (Math.abs(h / ph - scale) > 1e-6 * scale) continue
-      return {
+      const sheet: ExportSheet = {
         paper,
         portrait,
         width: pw,
@@ -56,9 +60,11 @@ export function sheetFromLimits(
         scale: Number(scale.toPrecision(10)),
         origin: [limits.min[0], limits.min[1]]
       }
+      if (STANDARD_SCALES.includes(sheet.scale)) return sheet
+      found ??= sheet
     }
   }
-  return undefined
+  return found
 }
 
 /**
