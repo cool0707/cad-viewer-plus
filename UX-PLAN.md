@@ -195,7 +195,32 @@ Figma / Illustrator 風の「先に選ぶ → ドラッグ / 右サイドバー�
   ズームは `src/command/AcApZoomCmd.ts`、ファイルを開いたときの初期表示は `AcTrView2d.applyInitialZoom()` / `resolveFirstVisitFrameBox()`。
 - 印刷範囲: `MlExportPdfDlg.vue` / `MlExportHtmlDlg.vue` を見る (「非表示の画層も書き出す」オプションがすでにある)。
 
-### ステップ 3: 選択方式の切り替え
+### ステップ 3: 選択方式の切り替え (済)
+- **実施内容 (結果)**:
+  - `AcEdSelectionAction` に `'toggle'` (選択済みは外し、それ以外は足す) と、選択方式の型 `AcEdSelectionStyle = 'cad' | 'simple'` を追加。
+    `resolvePointerSelectionAction(e, style, isClick)` が方式ごとに解決する:
+    | 操作 | CAD 式 (`'cad'`) | シンプル (`'simple'`) |
+    |---|---|---|
+    | クリック / ドラッグ | add | replace (何もない所のクリックで選択解除) |
+    | Shift + クリック | remove | toggle |
+    | Shift + ドラッグ | remove | add (範囲の切り替えは結果が読みにくいので追加にした) |
+    | Ctrl / Cmd | add | add |
+  - 設定は `AcApSettingManager` の `selectionStyle` (localStorage に保存)。**既定は `'cad'`** のまま
+    (既定のプロファイルはステップ 4 の後に決める方針どおり)。
+  - ステータスバーに切り替えボタン `MlSelectionStyleButton.vue` (選択ツールの矢印アイコン、シンプルのとき青) を追加。
+    ツールチップは `main.statusBar.selectionStyle.{simple,cad}` (6 ロケール)。
+  - toggle はロックされたレイヤーの図形を「足さない」が「外す」ことはできる (remove と同じ扱い)。
+    マークアップ・計測のオーバーレイも toggle に対応 (`AcEdReviewOverlayPick.ts`)。
+  - 対象は**コマンド待ちでないときの選択** (`AcTrView2d`) だけ。コマンド実行中の「オブジェクトを選択」
+    (`AcEdInputManager` の選択の入力待ち) は両方式とも今の CAD 式のまま (足していく動作がコマンドには自然なため)。
+    スマホ・タブレットのタップ / 範囲選択はもともと replace。
+  - **未実施**: Ctrl / Cmd + クリックで「シンボル内部の図形を直接選択」(1.5) はシンボルの編集 (ステップ 8) と
+    一緒に入れる。今は Ctrl / Cmd = 追加。
+  - 分かったこと: 選択中の図形のグリップ (端点・中点) の上でクリックするとグリップ編集が始まり、選択は変わらない
+    (どちらの方式でも同じ)。ステップ 7 でバウンディングボックス変形に変えるときに扱う。
+  - テスト: jest `AcEdSelectionAction.spec.ts` / `AcEdSelectionToggle.spec.ts`、e2e `selection-style.spec.ts`
+    (fixture `two-lines.dxf`)。
+- 以下は着手前の調査メモ:
 - `packages/cad-simple-viewer/src/editor/view/AcEdSelectionAction.ts`
   - `resolvePointerSelectionAction()` がクリックの既定を `'add'` (CAD 式) にしている。
   - `resolveSelectionActionFromEvent()` は今 Shift = remove / Ctrl・Meta = add。

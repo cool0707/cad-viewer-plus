@@ -35,6 +35,9 @@ acontecem no cliente, então os desenhos nunca saem do dispositivo do usuário.
 - **Barra de ferramentas móvel** — arraste a alça (⠿) para movê-la para qualquer lugar; o menu ⋯ ao lado
   alterna entre vertical e horizontal ou a devolve à borda esquerda. Os submenus abrem em direção ao
   centro da tela e a posição é lembrada.
+- **Troca do modo de seleção** — um botão da barra de status alterna entre o estilo CAD
+  (cada clique adiciona) e substituir ao clicar (Shift + clique adiciona ou remove, clicar no vazio
+  limpa a seleção). Por enquanto o estilo CAD continua sendo o padrão.
 - **Importação de JWW (Jw_cad)** — o app de exemplo abre arquivos `.jww` com
   `@mlightcad/cad-jww-converter` (MIT; analisador [ezjww](https://github.com/monozukuri-ai/ezjww),
   Rust → WebAssembly, em um Web Worker). As coordenadas passam de milímetros de papel para

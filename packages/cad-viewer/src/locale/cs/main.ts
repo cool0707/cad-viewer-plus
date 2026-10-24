@@ -640,6 +640,11 @@ export default {
       on: 'Skrýt tloušťky čar',
       off: 'Zobrazit tloušťky čar'
     },
+    selectionStyle: {
+      simple:
+        'Kliknutí nahradí výběr (Shift+kliknutí přidá nebo odebere). Kliknutím přepnete na styl CAD',
+      cad: 'Styl CAD: každé kliknutí přidá do výběru. Kliknutím přepnete na nahrazení kliknutím'
+    },
     orthoMode: {
       on: 'Vypnout režim ortho',
       off: 'Zapnout režim ortho'

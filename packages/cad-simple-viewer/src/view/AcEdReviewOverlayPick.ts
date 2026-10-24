@@ -168,7 +168,7 @@ export function collectReviewOverlayIdsByBox(
  * @returns `true` when this click should consume the pick (skip CAD entities).
  *   `'remove'` / `'add'` only consume when selection actually changed, so a
  *   Shift-click on an unselected overlay can still reach CAD geometry.
- *   `'replace'` always consumes a hit overlay.
+ *   `'replace'` and `'toggle'` always consume a hit overlay.
  */
 function applyOverlaySelection(
   view: AcTrView2d,
@@ -181,6 +181,9 @@ function applyOverlaySelection(
   }
   if (action === 'add') {
     return ht.selectGroup(id, false)
+  }
+  if (action === 'toggle') {
+    return ht.deselectGroup(id) || ht.selectGroup(id, false)
   }
   ht.selectGroup(id, true)
   return true
@@ -208,6 +211,13 @@ function applyOverlayBoxSelection(
   if (action === 'add') {
     for (const id of ids) {
       if (ht.selectGroup(id, false)) changed = true
+    }
+    return changed
+  }
+
+  if (action === 'toggle') {
+    for (const id of ids) {
+      if (ht.deselectGroup(id) || ht.selectGroup(id, false)) changed = true
     }
     return changed
   }

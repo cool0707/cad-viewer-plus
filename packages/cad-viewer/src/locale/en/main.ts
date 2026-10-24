@@ -653,6 +653,11 @@ export default {
       on: 'Hide line widths',
       off: 'Show line widths'
     },
+    selectionStyle: {
+      simple:
+        'Click replaces the selection (Shift+click adds or removes). Click to switch to CAD style',
+      cad: 'CAD style: every click adds to the selection. Click to switch to replace on click'
+    },
     orthoMode: {
       on: 'Turn off ortho mode',
       off: 'Turn on ortho mode'

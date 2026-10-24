@@ -653,6 +653,11 @@ export default {
       on: 'Çizgi genişliklerini gizle',
       off: 'Çizgi genişliklerini göster'
     },
+    selectionStyle: {
+      simple:
+        'Tıklama seçimi değiştirir (Shift+tıklama ekler veya kaldırır). CAD stiline geçmek için tıklayın',
+      cad: 'CAD stili: her tıklama seçime ekler. Tıklamayla değiştirmeye geçmek için tıklayın'
+    },
     orthoMode: {
       on: 'Ortogonal modu kapat',
       off: 'Ortogonal modu aç'

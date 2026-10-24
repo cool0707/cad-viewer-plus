@@ -55,6 +55,8 @@ import {
 } from 'vue'
 
 import { useDocument, useSettings } from '../../composable'
+import { ML_TOOLBAR_EDGE_OFFSET } from '../../composable/toolbarSide'
+import { usePaletteToolbarAvoidance } from '../../composable/usePaletteToolbarAvoidance'
 // Raw markup: AcUiToolbar takes SVG strings. (Rendering Vue icon components
 // while it builds buttons would flush pending watchers and re-enter it.)
 import arcThreePointsSvg from '../../svg/arc/arcThreePoints.svg?raw'
@@ -78,6 +80,17 @@ const { isDocumentOpening, openMode: docOpenMode } = useDocument()
 const hostRef = ref<HTMLElement | null>(null)
 let toolbar: AcUiToolbar | undefined
 let unbindDoc: (() => void) | undefined
+
+// Keep the bar on the left, or on the right while the palette covers the left.
+const { refresh: refreshToolbarSide } = usePaletteToolbarAvoidance(
+  hostRef,
+  () => toolbar,
+  {
+    preferredSide: 'left',
+    // A dragged bar the palette covers goes back to its edge; forget the spot.
+    onFloatingReset: () => saveFloatingLayout(undefined)
+  }
+)
 
 const markupVisible = ref(isMarkupVisible())
 const measurementVisible = ref(isMeasurementVisible())
@@ -610,15 +623,18 @@ const ensureToolbar = () => {
   toolbar = new AcUiToolbar({
     host,
     placement: 'left',
-    // Same inset as the AcUiShortCutToolbar shell (`right: 12px`).
-    edgeOffset: 12,
+    edgeOffset: ML_TOOLBAR_EDGE_OFFSET,
     items: buildItems(),
     i18n,
     collapsible: true,
     // Drag the grip to move; sub-toolbars open toward the host centre.
     movable: true,
     floatingLayout: loadFloatingLayout(),
-    onFloatingLayoutChange: saveFloatingLayout,
+    onFloatingLayoutChange: layout => {
+      saveFloatingLayout(layout)
+      // A bar dropped onto the palette is put back on a free edge.
+      refreshToolbarSide()
+    },
     onCommand: command => {
       if (isDocumentOpening.value || !command) return
       if (command === 'switchbg' && readingModeEnabled.value) return
@@ -629,6 +645,7 @@ const ensureToolbar = () => {
   // Re-measure after the host has a real canvas-sized box (see host CSS note).
   void nextTick(() => {
     toolbar?.refresh()
+    refreshToolbarSide()
   })
 }
 
