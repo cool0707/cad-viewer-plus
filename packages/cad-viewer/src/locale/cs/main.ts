@@ -229,6 +229,7 @@ export default {
     },
     property: {
       color: 'Barva',
+      lineColor: 'Barva čáry',
       lineType: 'Typ čáry',
       lineWeight: 'Tloušťka čáry'
     },

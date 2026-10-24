@@ -228,6 +228,7 @@ export default {
     },
     property: {
       color: '色',
+      lineColor: '線の色',
       lineType: '線の種類',
       lineWeight: '線の太さ'
     },

@@ -50,6 +50,7 @@ export default {
     property: {
       ...enMain.ribbon.property,
       color: 'اللون',
+      lineColor: 'لون الخط',
       lineType: 'نوع الخط',
       lineWeight: 'سُمك الخط'
     },

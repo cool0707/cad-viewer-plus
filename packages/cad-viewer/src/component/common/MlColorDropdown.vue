@@ -3,6 +3,7 @@
     <el-select
       v-model="selectedKey"
       :disabled="props.disabled"
+      :placeholder="props.placeholder"
       popper-class="ml-color-dropdown-popper"
       class="ml-color-dropdown-select"
       style="width: 100%"

@@ -226,6 +226,7 @@ export default {
     },
     property: {
       color: '颜色',
+      lineColor: '线条颜色',
       lineType: '线条类型',
       lineWeight: '线宽'
     },

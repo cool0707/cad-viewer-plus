@@ -230,6 +230,7 @@ export default {
     },
     property: {
       color: 'Renk',
+      lineColor: 'Çizgi rengi',
       lineType: 'Çizgi Türü',
       lineWeight: 'Çizgi Kalınlığı'
     },

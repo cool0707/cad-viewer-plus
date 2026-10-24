@@ -229,6 +229,7 @@ export default {
     },
     property: {
       color: 'Color',
+      lineColor: 'Line color',
       lineType: 'Line type',
       lineWeight: 'Lineweight'
     },
