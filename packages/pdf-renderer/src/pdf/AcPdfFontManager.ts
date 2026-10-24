@@ -62,8 +62,31 @@ function readUint32(bytes: Uint8Array, offset: number): number {
   )
 }
 
+const SFNT_TRUETYPE = 0x00010000
+const SFNT_TRUE = 0x74727565 // 'true' (Apple TrueType)
+
+interface SfntTable {
+  tag: string
+  data: Uint8Array
+  checksum: number
+}
+
+function tableChecksum(data: Uint8Array): number {
+  let sum = 0
+  for (let i = 0; i < data.length; i += 4) {
+    sum =
+      (sum +
+        ((data[i] << 24) |
+          ((data[i + 1] ?? 0) << 16) |
+          ((data[i + 2] ?? 0) << 8) |
+          (data[i + 3] ?? 0))) >>>
+      0
+  }
+  return sum
+}
+
 /**
- * Repacks a WOFF1 container into a plain TrueType font program.
+ * Unpacks a WOFF1 container into its (inflated) sfnt tables.
  *
  * fontkit re-inflates compressed WOFF tables on every table/glyph access —
  * seconds per text run on CJK faces (a 6MB simsun.woff costs ~2-5s per new
@@ -72,18 +95,12 @@ function readUint32(bytes: Uint8Array, offset: number): number {
  * byte slice, matching plain TTF speed.
  *
  * Structure per https://www.w3.org/TR/WOFF/#WOFFHeader: 44-byte header, then
- * 20-byte table directory entries, zlib-compressed table payloads. The TTF
- * table directory must be sorted by tag with 4-byte-aligned table data.
+ * 20-byte table directory entries, zlib-compressed table payloads.
  */
-function woff1ToTtf(woff: Uint8Array): Uint8Array {
+function readWoff1Tables(woff: Uint8Array): SfntTable[] {
   const dv = new DataView(woff.buffer, woff.byteOffset, woff.byteLength)
   const numTables = dv.getUint16(12)
-  interface Table {
-    tag: string
-    data: Uint8Array
-    checksum: number
-  }
-  const tables: Table[] = []
+  const tables: SfntTable[] = []
   for (let i = 0; i < numTables; i++) {
     const off = 44 + i * 20
     const tag = String.fromCharCode(
@@ -101,8 +118,42 @@ function woff1ToTtf(woff: Uint8Array): Uint8Array {
     }
     tables.push({ tag, data, checksum: dv.getUint32(off + 16) })
   }
-  tables.sort((a, b) => (a.tag < b.tag ? -1 : a.tag > b.tag ? 1 : 0))
+  return tables
+}
 
+/** Reads the table directory of a plain TrueType font program. */
+function readSfntTables(bytes: Uint8Array): SfntTable[] {
+  const dv = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength)
+  const numTables = dv.getUint16(4)
+  const tables: SfntTable[] = []
+  for (let i = 0; i < numTables; i++) {
+    const off = 12 + i * 16
+    const tag = String.fromCharCode(
+      bytes[off], bytes[off + 1], bytes[off + 2], bytes[off + 3]
+    )
+    const offset = dv.getUint32(off + 8)
+    const length = dv.getUint32(off + 12)
+    if (offset + length > bytes.byteLength) {
+      throw new Error(`TrueType table "${tag}" out of range`)
+    }
+    tables.push({
+      tag,
+      data: bytes.subarray(offset, offset + length),
+      checksum: dv.getUint32(off + 4)
+    })
+  }
+  return tables
+}
+
+/**
+ * Writes sfnt tables as a TrueType font program. The table directory must be
+ * sorted by tag with 4-byte-aligned table data.
+ */
+function writeSfnt(input: SfntTable[]): Uint8Array {
+  const tables = [...input].sort((a, b) =>
+    a.tag < b.tag ? -1 : a.tag > b.tag ? 1 : 0
+  )
+  const numTables = tables.length
   const entrySelector = Math.floor(Math.log2(numTables))
   const searchRange = 2 ** entrySelector * 16
   const headerLength = 12 + numTables * 16
@@ -112,7 +163,7 @@ function woff1ToTtf(woff: Uint8Array): Uint8Array {
   }
   const out = new Uint8Array(total)
   const header = new DataView(out.buffer)
-  header.setUint32(0, 0x00010000)
+  header.setUint32(0, SFNT_TRUETYPE)
   header.setUint16(4, numTables)
   header.setUint16(6, searchRange)
   header.setUint16(8, entrySelector)
@@ -133,13 +184,98 @@ function woff1ToTtf(woff: Uint8Array): Uint8Array {
 }
 
 /**
- * Normalizes a resolved font program for fast fontkit access. WOFF1 payloads
- * are unpacked once; everything else is passed through (WOFF2 and TrueType
- * collections are left for fontkit/pdf-lib to accept or reject).
+ * Pads every glyph in `glyf` to a 4-byte length and rewrites `loca` (long
+ * format) to match. Returns `false` when nothing needed padding.
+ *
+ * fontkit's TTFSubset (used by pdf-lib's `embedFont({ subset: true })`)
+ * copies each glyph's bytes verbatim and, when the subset is small, writes a
+ * short-format `loca` — which stores offsets halved. A source font with
+ * odd-length glyphs (BIZ UD ships them; legal with a long `loca`) then gets
+ * truncated offsets, so every glyph after the first odd one decodes as
+ * garbage and PDF viewers paint nothing for it (e.g. "居間・食堂" showed only
+ * "居間"). Padding makes every subset offset even, so halving is exact.
+ */
+function padGlyphs(tables: SfntTable[]): boolean {
+  const head = tables.find(t => t.tag === 'head')
+  const loca = tables.find(t => t.tag === 'loca')
+  const glyf = tables.find(t => t.tag === 'glyf')
+  if (!head || !loca || !glyf || head.data.length < 54) {
+    return false
+  }
+  const headView = new DataView(
+    head.data.buffer,
+    head.data.byteOffset,
+    head.data.byteLength
+  )
+  const longLoca = headView.getInt16(50) === 1
+  const locaView = new DataView(
+    loca.data.buffer,
+    loca.data.byteOffset,
+    loca.data.byteLength
+  )
+  const count = loca.data.length / (longLoca ? 4 : 2)
+  const offsets: number[] = []
+  for (let i = 0; i < count; i++) {
+    offsets.push(
+      longLoca ? locaView.getUint32(i * 4) : locaView.getUint16(i * 2) * 2
+    )
+  }
+  let needsPadding = false
+  let total = 0
+  for (let i = 0; i + 1 < count; i++) {
+    const length = Math.max(0, offsets[i + 1] - offsets[i])
+    if (length % 4 !== 0) {
+      needsPadding = true
+    }
+    total += length + ((4 - (length % 4)) % 4)
+  }
+  if (!needsPadding) {
+    return false
+  }
+
+  const newGlyf = new Uint8Array(total)
+  const newLoca = new Uint8Array(count * 4)
+  const newLocaView = new DataView(newLoca.buffer)
+  let pos = 0
+  for (let i = 0; i < count; i++) {
+    newLocaView.setUint32(i * 4, pos)
+    if (i + 1 < count) {
+      const start = Math.min(offsets[i], glyf.data.length)
+      const end = Math.min(Math.max(offsets[i + 1], start), glyf.data.length)
+      newGlyf.set(glyf.data.subarray(start, end), pos)
+      const length = Math.max(0, offsets[i + 1] - offsets[i])
+      pos += length + ((4 - (length % 4)) % 4)
+    }
+  }
+
+  const newHead = head.data.slice()
+  new DataView(newHead.buffer).setInt16(50, 1) // indexToLocFormat = long
+  head.data = newHead
+  head.checksum = tableChecksum(newHead)
+  glyf.data = newGlyf
+  glyf.checksum = tableChecksum(newGlyf)
+  loca.data = newLoca
+  loca.checksum = tableChecksum(newLoca)
+  return true
+}
+
+/**
+ * Normalizes a resolved font program for pdf-lib/fontkit. WOFF1 payloads are
+ * unpacked once and TrueType glyphs are padded for fontkit's subsetter (see
+ * {@link padGlyphs}); everything else is passed through (WOFF2, CFF-based
+ * OpenType and TrueType collections are left for fontkit/pdf-lib to accept
+ * or reject).
  */
 function decodeFontProgram(bytes: Uint8Array): Uint8Array {
   if (bytes.byteLength >= 44 && readUint32(bytes, 0) === WOFF1_SIGNATURE) {
-    return woff1ToTtf(bytes)
+    const tables = readWoff1Tables(bytes)
+    padGlyphs(tables)
+    return writeSfnt(tables)
+  }
+  const signature = bytes.byteLength >= 12 ? readUint32(bytes, 0) : 0
+  if (signature === SFNT_TRUETYPE || signature === SFNT_TRUE) {
+    const tables = readSfntTables(bytes)
+    return padGlyphs(tables) ? writeSfnt(tables) : bytes
   }
   return bytes
 }
