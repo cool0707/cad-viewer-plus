@@ -110,8 +110,12 @@ describe('SXF image attributes', () => {
   it('matches bundled files case-insensitively and passes JPEG through', () => {
     const entries = unzipSync(sample('sxf-sample.sfz'))
     const jpeg = new Uint8Array([0xff, 0xd8, 0xff, 0xd9])
-    const sfc = new TextDecoder('latin1')
-      .decode(entries['SXF-SAMPLE.SFC'])
+    // One char per byte. TextDecoder('latin1') is windows-1252 and would turn
+    // the Shift_JIS bytes 0x80-0x9F into code points above 0xFF.
+    const sfc = Array.from(entries['SXF-SAMPLE.SFC'], b =>
+      String.fromCharCode(b)
+    )
+      .join('')
       .split('SXF-MAP.TIF')
       .join('photo.jpg')
     const bundle = zipSync({
