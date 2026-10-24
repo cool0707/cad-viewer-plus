@@ -21,7 +21,7 @@ export default {
     about: {
       ...enCommand.ACAD.about,
       description:
-        'عرض معلومات حول mlightcad'
+        'عرض معلومات حول RemixCAD'
     },
 
     acadver: {

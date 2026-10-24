@@ -127,11 +127,11 @@ export default {
     title: 'About',
     close: 'Close',
     product: 'CAD Viewer',
-    tagline: 'High-performance web CAD viewer for DWG and DXF drawings.',
+    tagline: 'Web CAD viewer for DWG, DXF, JWW and SXF drawings.',
     website: 'Website',
     docs: 'Documentation',
     repository: 'GitHub',
-    copyright: '© {year} mlightcad. All rights reserved.',
+    copyright: '© {year} RemixCAD. Released under the MIT License.',
     ok: 'OK'
   },
   drawStyle: {

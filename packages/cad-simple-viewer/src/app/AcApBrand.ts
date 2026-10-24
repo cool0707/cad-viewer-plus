@@ -1,28 +1,31 @@
 /**
- * Shared mlightcad brand assets and metadata for progress overlays and About UI.
+ * Shared RemixCAD brand assets and metadata for progress overlays and About UI.
  */
 
-/** Cloud + "ML" mark matching the product logo (`currentColor`). */
+/** Cloud + "RC" mark (`currentColor`). Placeholder until the RemixCAD logo is designed. */
 export const MLIGHTCAD_ICON_SVG =
   '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" aria-hidden="true">' +
   '<path fill="currentColor" d="M737.216 357.952 704 349.824l-11.776-32a192.064 192.064 0 0 0-367.424 23.04l-8.96 39.04-39.04 8.96A192.064 192.064 0 0 0 320 768h368a207.81 207.81 0 0 0 207.808-208 208.32 208.32 0 0 0-158.592-202.048m15.168-62.208A272.32 272.32 0 0 1 959.744 560a271.81 271.81 0 0 1-271.552 272H320a256 256 0 0 1-57.536-505.536 256.128 256.128 0 0 1 489.92-30.72"/>' +
-  '<text x="512" y="580" text-anchor="middle" dominant-baseline="middle" font-size="300" font-family="Arial,sans-serif" fill="currentColor" font-weight="bold">ML</text>' +
+  '<text x="512" y="580" text-anchor="middle" dominant-baseline="middle" font-size="300" font-family="Arial,sans-serif" fill="currentColor" font-weight="bold">RC</text>' +
   '</svg>'
 
 /** Public-facing brand / product name. */
-export const MLIGHTCAD_BRAND_NAME = 'mlightcad'
+export const MLIGHTCAD_BRAND_NAME = 'RemixCAD'
 
 /** Marketing / demo site. */
-export const MLIGHTCAD_WEBSITE_URL = 'https://mlightcad.github.io/cad-viewer/'
+export const MLIGHTCAD_WEBSITE_URL = 'https://cool0707.github.io/remix-cad/'
 
 /** User-guide / docs site root (localized pages live under this base). */
 export const MLIGHTCAD_DOCS_URL = 'https://mlightcad.com/cad-viewer/docs/'
 
+/** Docs link shown in the About dialog. */
+export const REMIXCAD_DOCS_URL = 'https://github.com/cool0707/remix-cad#readme'
+
 /** Source repository. */
-export const MLIGHTCAD_REPO_URL = 'https://github.com/mlightcad/cad-viewer'
+export const MLIGHTCAD_REPO_URL = 'https://github.com/cool0707/remix-cad'
 
 /**
- * Creates the mlightcad logo icon element (no wordmark).
+ * Creates the RemixCAD logo icon element (no wordmark).
  *
  * @param options.className - Optional CSS class on the icon wrapper
  * @param options.size - CSS size for the icon (default `40px`)

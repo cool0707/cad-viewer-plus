@@ -1,14 +1,14 @@
 import {
   acapCreateMlightcadBrandMark,
-  MLIGHTCAD_DOCS_URL,
   MLIGHTCAD_REPO_URL,
-  MLIGHTCAD_WEBSITE_URL
+  MLIGHTCAD_WEBSITE_URL,
+  REMIXCAD_DOCS_URL
 } from '../app/AcApBrand'
 import { AcApI18n } from '../i18n'
 import { AcUiDialog } from './AcUiDialog'
 
 /**
- * About dialog showing mlightcad branding and product links.
+ * About dialog showing RemixCAD branding and product links.
  *
  * Extends {@link AcUiDialog}; styles are injected once per document.
  */
@@ -72,7 +72,7 @@ export class AcUiAboutDialog extends AcUiDialog {
       this.createLink(AcApI18n.t('main.about.website'), MLIGHTCAD_WEBSITE_URL)
     )
     links.appendChild(
-      this.createLink(AcApI18n.t('main.about.docs'), MLIGHTCAD_DOCS_URL)
+      this.createLink(AcApI18n.t('main.about.docs'), REMIXCAD_DOCS_URL)
     )
     links.appendChild(
       this.createLink(AcApI18n.t('main.about.repository'), MLIGHTCAD_REPO_URL)

@@ -8,7 +8,7 @@ export default {
       description: 'Manages layers through command-line options'
     },
     about: {
-      description: 'Displays information about mlightcad'
+      description: 'Displays information about RemixCAD'
     },
     acadver: {
       description: 'Stores the drawing database version identifier (read-only)'
