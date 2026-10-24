@@ -32,26 +32,43 @@ async function dockTo(page: Page, label: RegExp) {
     .click()
 }
 
-test('the toolbar moves right while the palette is docked left', async ({
+const boxOf = async (page: Page, selector: string) => {
+  const box = await page.locator(selector).boundingBox()
+  if (!box) throw new Error(`${selector} not visible`)
+  return box
+}
+
+test('a docked palette shrinks the canvas, so the toolbar stays beside it', async ({
   page
 }) => {
   await openLayerPalette(page)
 
+  // Docked right by default: the bar keeps its left edge.
+  await expect(verticalToolbar(page)).toHaveClass(/\bis-left\b/)
+
   await dockTo(page, /left/i)
+  await expect(verticalToolbar(page)).toHaveClass(/\bis-left\b/)
+  await expect
+    .poll(async () => {
+      const palette = await boxOf(page, '.ml-layer-manager')
+      const bar = await boxOf(
+        page,
+        '.ml-vertical-toolbar-host > .ml-ex-ui-toolbar'
+      )
+      return bar.x >= palette.x + palette.width
+    })
+    .toBe(true)
+})
+
+test('the toolbar moves right under a floating palette and back when docked', async ({
+  page
+}) => {
+  await openLayerPalette(page)
+  // Floating, the palette sits over the top-left of the canvas.
+  await dockTo(page, /undock/i)
   await expect(verticalToolbar(page)).toHaveClass(/\bis-right\b/)
 
   await dockTo(page, /right/i)
-  await expect(verticalToolbar(page)).toHaveClass(/\bis-left\b/)
-})
-
-test('the toolbar returns to the left when the palette closes', async ({
-  page
-}) => {
-  await openLayerPalette(page)
-  await dockTo(page, /left/i)
-  await expect(verticalToolbar(page)).toHaveClass(/\bis-right\b/)
-
-  await page.locator('.ml-tool-palette-action-close').click()
   await expect(verticalToolbar(page)).toHaveClass(/\bis-left\b/)
 })
 
@@ -59,22 +76,19 @@ test('a dragged toolbar the palette covers is docked again', async ({
   page
 }) => {
   await openLayerPalette(page)
-  await dockTo(page, /left/i)
-  await expect(verticalToolbar(page)).toHaveClass(/\bis-right\b/)
 
-  // Drag the bar from the right edge towards the middle, then dock the
-  // palette to the right on top of it.
+  // Drag the bar from the left edge towards the top-left, where the floating
+  // palette will land on top of it.
   const grip = verticalToolbar(page).locator('.ml-ex-ui-toolbar-grip')
   const box = await grip.boundingBox()
   if (!box) throw new Error('toolbar grip not visible')
-  const viewport = page.viewportSize()!
   await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2)
   await page.mouse.down()
-  await page.mouse.move(viewport.width - 200, box.y + 40, { steps: 10 })
+  await page.mouse.move(200, 260, { steps: 10 })
   await page.mouse.up()
   await expect(verticalToolbar(page)).toHaveClass(/\bis-floating\b/)
 
-  await dockTo(page, /right/i)
+  await dockTo(page, /undock/i)
   await expect(verticalToolbar(page)).not.toHaveClass(/\bis-floating\b/)
-  await expect(verticalToolbar(page)).toHaveClass(/\bis-left\b/)
+  await expect(verticalToolbar(page)).toHaveClass(/\bis-right\b/)
 })
