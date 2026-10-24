@@ -171,7 +171,8 @@ Jw_cad's DXF export) and `scaleMode: 'paper'` keeps paper millimetres. JWC files
 converted the same way (they have no font information, so text uses ＭＳ ゴシック).
 Images placed with `^@BM` are shown as raster images: images embedded in the JWW are
 displayed directly, and images that refer to external files appear as missing images that you
-can supply from the viewer. Image trimming is not applied yet.
+can supply from the viewer. Trimmed images (Jw_cad 画像編集 → トリミング) show only the trimmed part
+when the image is a BMP embedded in the JWW; other trimmed images are shown whole.
 
 ## SXF support
 

@@ -1,9 +1,14 @@
 import type { DxfDocument, JwcDocument, JwwDocument } from 'ezjww'
 
 import {
+  bmpSize,
+  cropBmp,
   decodeJwwImages,
   jwwImageDisplayPath,
   type JwwImageFile,
+  jwwImageKey,
+  type JwwImageReference,
+  jwwTrimPixelRect,
   parseJwwImageReference
 } from './jwwImage'
 import { jwwPaperSize } from './jwwPaper'
@@ -251,11 +256,15 @@ export function convertJwwToDxf(
     explodeInserts: false,
     jwcCoordinates: 'paper_millimeters'
   })
-  const writer = new JwwDxfWriter(source, dxfDoc, options.scaleMode ?? 'drawing')
+  const writer = new JwwDxfWriter(
+    source,
+    dxfDoc,
+    options.scaleMode ?? 'drawing'
+  )
   return {
     dxf: writer.write(),
     unsupportedEntities: [...(dxfDoc.unsupported_entities ?? [])],
-    images: source.images,
+    images: [...source.images, ...writer.trimmedImages],
     warnings: writer.warnings
   }
 }
@@ -346,6 +355,10 @@ class JwwDxfWriter {
   private readonly blockRecords = new Map<string, string>()
   /** Image path → IMAGEDEF handle. */
   private readonly imageDefs = new Map<string, string>()
+  /** Trimmed parts of embedded images, cut out as their own image files. */
+  readonly trimmedImages: JwwImageFile[] = []
+  /** Embedded image key + pixel rectangle → trimmed image name. */
+  private readonly trimmedNames = new Map<string, string>()
   readonly warnings: string[] = []
 
   constructor(
@@ -514,9 +527,17 @@ class JwwDxfWriter {
         if (image) {
           // Keep the per-text width factors aligned with ezjww's texts.
           this.textWidthIndex++
-          this.writeImage(e, s, image.path, image.width, image.height)
+          this.writeImage(
+            e,
+            s,
+            this.imagePath(image),
+            image.width,
+            image.height
+          )
           if (image.hasExtra) {
-            this.warnOnce('Image trimming is not supported; whole images are shown')
+            this.warnOnce(
+              'Image parameters other than trimming (rotation, transparent colour) are ignored'
+            )
           }
           break
         }
@@ -574,6 +595,38 @@ class JwwDxfWriter {
       default:
         break
     }
+  }
+
+  /**
+   * Path of the image file a placement shows. A trimmed placement of an
+   * embedded BMP gets the trimmed pixels as an image file of its own (so every
+   * renderer and exporter shows just that part); other trimmed images are
+   * shown whole, stretched over the trimmed frame.
+   */
+  private imagePath(image: JwwImageReference) {
+    if (!image.trim) return image.path
+    const key = jwwImageKey(image.path)
+    const file = this.source.images.find(f => jwwImageKey(f.name) === key)
+    const size = file && bmpSize(file.data)
+    const rect =
+      size && jwwTrimPixelRect(image, image.trim, size.width, size.height)
+    if (!file || !rect) {
+      this.warnOnce(
+        'Trimming is supported only for BMP images stored in the drawing; other trimmed images are shown whole'
+      )
+      return image.path
+    }
+    const id = `${key}|${rect.x},${rect.y},${rect.width},${rect.height}`
+    let name = this.trimmedNames.get(id)
+    if (!name) {
+      const data = cropBmp(file.data, rect)
+      if (!data) return image.path
+      const base = jwwImageDisplayPath(image.path).replace(/\.[^.\\/]*$/, '')
+      name = `${base}~trim${this.trimmedNames.size + 1}.bmp`
+      this.trimmedNames.set(id, name)
+      this.trimmedImages.push({ name, data })
+    }
+    return `%temp%${name}`
   }
 
   /**
