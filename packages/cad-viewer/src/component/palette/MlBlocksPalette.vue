@@ -454,7 +454,6 @@ onUnmounted(() => {
 
 .ml-blocks-palette__source-label {
   writing-mode: vertical-rl;
-  transform: rotate(180deg);
   font-size: 11px;
   letter-spacing: 0.04em;
   white-space: nowrap;
