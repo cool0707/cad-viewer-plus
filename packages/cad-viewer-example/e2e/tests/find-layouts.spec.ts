@@ -82,8 +82,8 @@ async function loadFixture(page: Page, file = fixturePath) {
   await page.waitForTimeout(2500)
 }
 
-/** Page x of a WCS point, and the right edge of the docked palette. */
-async function screenXAndPaletteRight(
+/** Page x of a WCS point, and the left edge of the right-docked palette. */
+async function screenXAndPaletteLeft(
   page: Page,
   point: { x: number; y: number }
 ) {
@@ -99,8 +99,8 @@ async function screenXAndPaletteRight(
         .getBoundingClientRect()
       return {
         x: canvas.left + view.worldToScreen(point).x,
-        paletteRight: palette.right,
-        canvasRight: canvas.right
+        paletteLeft: palette.left,
+        canvasLeft: canvas.left
       }
     },
     { url: viewerModuleUrl!, point }
@@ -154,7 +154,11 @@ test.describe('Find palette (full Vue UI)', () => {
     // At the default window size the Utilities group sits in the overflow.
     const overflow = page.locator('button.ml-ribbon-overflow-trigger:visible')
     if ((await overflow.count()) > 0) await overflow.first().click()
-    await page.getByText('Find', { exact: true }).first().click()
+    // The always-open palette also has a "Find" tab; click the ribbon button.
+    await page
+      .getByRole('button', { name: /Open the Find palette/ })
+      .first()
+      .click()
     await expect(page.getByTestId('find-palette')).toBeVisible()
     await expect(input(page)).toBeFocused()
   })
@@ -223,15 +227,15 @@ test.describe('Find palette (full Vue UI)', () => {
       .toEqual(['C11'])
     // "Legenda: Sala Técnica 01" sits at (40, 500) in paper space. The view
     // is framed so the text lands beside the palette (not behind it), so the
-    // view centre is left of the text.
+    // view centre is right of the text.
     const planta = await viewerState(page)
     expect(planta.center[0]).toBeGreaterThan(-400)
     expect(planta.center[0]).toBeLessThan(400)
     expect(planta.center[1]).toBeGreaterThan(495)
     expect(planta.center[1]).toBeLessThan(515)
-    const legend = await screenXAndPaletteRight(page, { x: 40, y: 500 })
-    expect(legend.x).toBeGreaterThan(legend.paletteRight)
-    expect(legend.x).toBeLessThan(legend.canvasRight)
+    const legend = await screenXAndPaletteLeft(page, { x: 40, y: 500 })
+    expect(legend.x).toBeLessThan(legend.paletteLeft)
+    expect(legend.x).toBeGreaterThan(legend.canvasLeft)
     await expect(
       page.locator('.ml-layout-tabs-button.el-button--primary')
     ).toHaveText('Planta')
@@ -314,9 +318,9 @@ test.describe('Find palette (full Vue UI)', () => {
       .poll(async () => (await viewerState(page)).selected)
       .toEqual(['F14'])
     // Block text at (10, 5), height 4, inserted at (900, -200) scale 2.
-    const start = await screenXAndPaletteRight(page, { x: 920, y: -190 })
-    expect(start.x).toBeGreaterThan(start.paletteRight)
-    expect(start.x).toBeLessThan(start.canvasRight)
+    const start = await screenXAndPaletteLeft(page, { x: 920, y: -190 })
+    expect(start.x).toBeLessThan(start.paletteLeft)
+    expect(start.x).toBeGreaterThan(start.canvasLeft)
   })
 
   test('a hit in the active layout is framed beside the palette, not behind it', async ({
@@ -329,7 +333,7 @@ test.describe('Find palette (full Vue UI)', () => {
       .poll(async () => (await viewerState(page)).selected)
       .toEqual(['B2'])
     // "Instalação AVAC" starts at (0, 60).
-    const start = await screenXAndPaletteRight(page, { x: 0, y: 60 })
-    expect(start.x).toBeGreaterThan(start.paletteRight)
+    const start = await screenXAndPaletteLeft(page, { x: 0, y: 60 })
+    expect(start.x).toBeLessThan(start.paletteLeft)
   })
 })

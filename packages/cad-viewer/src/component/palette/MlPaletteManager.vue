@@ -1,9 +1,11 @@
 <template>
   <el-config-provider :size="'small'">
     <ml-tool-palette
+      ref="paletteRef"
       class="ml-layer-manager"
       :style="paletteStyle"
       v-model="store.dialogs.layerManager"
+      v-model:dock-side="dockSide"
       :title="activeTabTitle"
       :left-offset="paletteOffsets.left"
       :right-offset="paletteOffsets.right"
@@ -111,8 +113,16 @@ import {
   MlOverflowTabs,
   MlToolPalette
 } from '@mlightcad/ui-components'
+import { useResizeObserver } from '@vueuse/core'
 import { ElConfigProvider } from 'element-plus'
-import { computed, defineAsyncComponent, nextTick, watch } from 'vue'
+import {
+  computed,
+  defineAsyncComponent,
+  nextTick,
+  onBeforeUnmount,
+  ref,
+  watch
+} from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { store } from '../../app'
@@ -236,6 +246,72 @@ const syncPaletteToContainer = () => {
   paletteElement.style.maxWidth = `${containerWidth}px`
 }
 
+// Dock to the right by default. The viewer rect changes a few times while the
+// ribbon renders, so dock once it has settled; docking against a stale rect
+// leaves the palette over the ribbon. The palette has no close button (hidden
+// in CSS): it can only be collapsed to its title bar.
+const INITIAL_DOCK_DELAY = 100
+type DockSide = 'float' | 'left' | 'top' | 'bottom' | 'right'
+const dockSide = ref<DockSide | undefined>()
+let initialDockTimer: ReturnType<typeof setTimeout> | undefined
+const stopInitialDock = watch(
+  containerRect,
+  rect => {
+    clearTimeout(initialDockTimer)
+    if (rect.width <= 0 || rect.height <= 0) return
+    initialDockTimer = setTimeout(() => {
+      stopInitialDock()
+      dockSide.value = 'right'
+    }, INITIAL_DOCK_DELAY)
+  },
+  { immediate: true }
+)
+onBeforeUnmount(() => {
+  clearTimeout(initialDockTimer)
+  stopInitialDock()
+  Object.assign(store.paletteDockInsets, { left: 0, right: 0, top: 0, bottom: 0 })
+})
+
+// Publish the space a docked palette takes so the canvas shrinks around it
+// (collapsing the palette gives the space back).
+const paletteRef = ref<InstanceType<typeof MlToolPalette>>()
+const updatePaletteDockInsets = () => {
+  const insets = { left: 0, right: 0, top: 0, bottom: 0 }
+  const element = paletteRef.value?.$el as HTMLElement | undefined
+  const side = dockSide.value
+  const { top, left, width, height } = containerRect.value
+  if (
+    element instanceof HTMLElement &&
+    store.dialogs.layerManager &&
+    side &&
+    side !== 'float'
+  ) {
+    const rect = element.getBoundingClientRect()
+    const extent = {
+      left: rect.right - left,
+      right: left + width - rect.left,
+      top: rect.bottom - top,
+      bottom: top + height - rect.top
+    }[side]
+    const max = side === 'left' || side === 'right' ? width : height
+    insets[side] = clamp(Math.round(extent), 0, max)
+  }
+  const current = store.paletteDockInsets
+  if (
+    current.left !== insets.left ||
+    current.right !== insets.right ||
+    current.top !== insets.top ||
+    current.bottom !== insets.bottom
+  ) {
+    Object.assign(current, insets)
+  }
+}
+useResizeObserver(paletteRef, updatePaletteDockInsets)
+watch(dockSide, async () => {
+  await nextTick()
+  updatePaletteDockInsets()
+})
+
 const baseTabNames = [
   'layerManager',
   'entityProperties',
@@ -296,6 +372,7 @@ watch(
   async () => {
     await nextTick()
     syncPaletteToContainer()
+    updatePaletteDockInsets()
   },
   { immediate: true, deep: true }
 )
@@ -329,6 +406,10 @@ const propertyEntityLocked = computed(() => propertyRows.value.locked)
   max-width: var(--ml-palette-max-width);
   max-height: var(--ml-palette-max-height);
   z-index: 7;
+}
+
+.ml-layer-manager :deep(.ml-tool-palette-action-close) {
+  display: none;
 }
 
 .ml-layer-list-wrapper {

@@ -257,14 +257,6 @@ const registerAgentIntegration = async (pluginManager: AcApPluginManager) => {
     const agentRegister = await import('@mlightcad/cad-agent-plugin/register')
 
     agentRegister.setAgentPaletteOpener(() => {
-      if (
-        store.dialogs.layerManager &&
-        store.dialogs.activePaletteTab === 'agent'
-      ) {
-        store.dialogs.layerManager = false
-        return
-      }
-
       store.dialogs.activePaletteTab = 'agent'
       store.dialogs.layerManager = true
     })
@@ -288,14 +280,6 @@ const registerCadScriptIntegration = async (
     const scriptRegister = await import('@mlightcad/cad-script-plugin/register')
 
     scriptRegister.setCadScriptPaletteOpener(() => {
-      if (
-        store.dialogs.layerManager &&
-        store.dialogs.activePaletteTab === 'cadScript'
-      ) {
-        store.dialogs.layerManager = false
-        return
-      }
-
       store.dialogs.activePaletteTab = 'cadScript'
       store.dialogs.layerManager = true
     })

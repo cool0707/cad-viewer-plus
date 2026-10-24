@@ -2,7 +2,11 @@ import { reactive } from 'vue'
 
 export const store = reactive({
   dialogs: {
-    layerManager: false,
+    /**
+     * The palette (layers, properties, ...) is always shown: it can only be
+     * collapsed to its title bar, never closed.
+     */
+    layerManager: true,
     activePaletteTab: 'layerManager',
     /** Sub-tab inside Missing / External Resources palette */
     activeMissingResourceTab: 'font' as 'font' | 'xref',
@@ -28,5 +32,11 @@ export const store = reactive({
   /**
    * Bumped by the OPENPERF command after publishing the latest open profile.
    */
-  openFileProfileTick: 0
+  openFileProfileTick: 0,
+  /**
+   * Pixels of the main area taken by the docked palette on each side. The
+   * canvas is shrunk by these so the drawing is never hidden behind it.
+   * All zero while the palette floats.
+   */
+  paletteDockInsets: { left: 0, right: 0, top: 0, bottom: 0 }
 })

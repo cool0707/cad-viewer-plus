@@ -34,8 +34,8 @@ del dispositivo del usuario.
   sombreado → relleno de patrón, referencia externa → plano vinculado, selección rápida → seleccionar por criterios, etc.
   Las descripciones emergentes mantienen el término CAD entre paréntesis (todos los idiomas).
 - **Barra de herramientas movible** — arrastra el asa (⠿) para moverla a cualquier lugar; el menú ⋯ junto a
-  ella la cambia entre vertical y horizontal o la devuelve a su posición inicial: el borde izquierdo, o el
-  derecho cuando el panel (capas, etc.) está a la izquierda. Si el panel la tapa, vuelve allí sola. Los
+  ella la cambia entre vertical y horizontal o la devuelve a su posición inicial: el borde izquierdo del área
+  de dibujo, o el derecho cuando el panel flotante (capas, etc.) tapa la izquierda. Si el panel la tapa, vuelve allí sola. Los
   submenús se abren hacia el centro de la pantalla y la posición se recuerda.
 - **Cambio del modo de selección** — un botón de la barra de estado alterna entre el estilo CAD
   (cada clic añade) y reemplazar al hacer clic (Mayús + clic añade o quita, un clic en vacío
