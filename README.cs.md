@@ -38,11 +38,14 @@ takže výkresy nikdy neopustí zařízení uživatele.
 - **Přepínání způsobu výběru** — tlačítko ve stavovém řádku přepíná mezi stylem CAD
   (každé kliknutí přidá) a nahrazením kliknutím (Shift + kliknutí přidá nebo odebere,
   kliknutí do prázdna výběr zruší). Výchozí je zatím styl CAD.
-- **Import JWW (Jw_cad)** — ukázková aplikace otevírá soubory `.jww` pomocí
+- **Import JWW / JWC (Jw_cad)** — ukázková aplikace otevírá soubory `.jww` a `.jwc` (starý formát) pomocí
   `@mlightcad/cad-jww-converter` (MIT; parser [ezjww](https://github.com/monozukuri-ai/ezjww),
   Rust → WebAssembly, ve Web Workeru). Souřadnice se převádějí z milimetrů na papíře na skutečné
   milimetry podle měřítka skupiny hladin a list se použije jako meze výkresu.
-- Plánováno: import **SXF** (P21 / SFC).
+- **Import SXF** (japonský standard výměny dat CAD pro veřejné stavby) — ukázková aplikace otevírá `.sfc`,
+  `.p21` a jejich ZIP verze `.sfz` / `.p2z` pomocí `@mlightcad/cad-sxf-converter` (MIT, TypeScript,
+  převzato z [ezsxf](https://github.com/monozukuri-ai/ezsxf)). Dílčí výkresy se zobrazí ve skutečné velikosti
+  hlavního pohledu a list se použije jako meze výkresu.
 
 ## Ukázka
 
@@ -83,9 +86,9 @@ přes `@mlightcad/libredwg-converter` založený na
 [LibreDWG](https://github.com/LibreDWG/libredwg) s licencí **GPL-3.0**; před
 distribucí zvažte důsledky GPL.
 
-## Podpora JWW
+## Podpora JWW / JWC
 
-`@mlightcad/cad-jww-converter` čte výkresy Jw_cad (`.jww`): soubor zpracuje pomocí ezjww (MIT)
+`@mlightcad/cad-jww-converter` čte výkresy Jw_cad (`.jww` / `.jwc`): soubor zpracuje pomocí ezjww (MIT)
 ve Web Workeru, převede jej na DXF a načte vestavěnou čtečkou DXF. Zaregistrujte jej a umístěte
 `jww-parser-worker.js` a `jww-parser.wasm` (z `dist/` balíčku) do stejné složky:
 
@@ -98,7 +101,24 @@ registerJwwConverter('./assets/jww-parser-worker.js')
 JWW ukládá souřadnice v milimetrech na papíře. Ve výchozím stavu se vše zvětší měřítkem hlavní
 skupiny hladin (s nejvíce objekty), takže výkres vypadá jako v Jw_cad a hlavní výkres se měří ve
 skutečných milimetrech. `scaleMode: 'layer-group'` použije měřítko každé skupiny a
-`scaleMode: 'paper'` ponechá milimetry na papíře. Starý formát JWC zatím není podporován.
+`scaleMode: 'paper'` ponechá milimetry na papíře. Starý formát JWC se převádí stejně (neobsahuje písma, text se zobrazí jako ＭＳ ゴシック).
+
+## Podpora SXF
+
+`@mlightcad/cad-sxf-converter` čte výkresy SXF Ver.3.1: SFC (`.sfc`), P21 (`.p21`, AP202) a jejich ZIP verze
+(`.sfz`, `.p2z`). Parser je napsán v TypeScriptu (bez WebAssembly) a zpracování prvků je převzato z ezsxf
+(MIT). Výkres se rozloží na čáry, křivky, texty, výplně a šrafy a načte se vestavěnou čtečkou DXF.
+
+```ts
+import { registerSxfConverter } from '@mlightcad/cad-sxf-converter'
+
+registerSxfConverter()
+```
+
+Souřadnice SXF jsou v milimetrech na papíře a dílčí výkresy se umisťují s měřítkem. Ve výchozím stavu se vše
+zvětší měřítkem hlavního dílčího výkresu: list vypadá jako vytištěný a hlavní pohled se měří ve skutečných
+milimetrech; `scaleMode: 'paper'` ponechá milimetry na papíře. Kružnice, oblouky a elipsy zůstávají
+křivkami a text odpovídá rámečku SXF. Atributy (SAF) a rastrové obrázky se nenačítají.
 
 ## Licence
 

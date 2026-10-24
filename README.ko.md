@@ -32,11 +32,14 @@
 - **선택 방식 전환** — 상태 표시줄 버튼으로 클릭할 때마다 추가하는 CAD 방식과
   클릭하면 바꾸는 방식(Shift + 클릭으로 추가·해제, 빈 곳 클릭으로 선택 해제)을 전환합니다.
   현재 기본값은 CAD 방식입니다.
-- **JWW(Jw_cad) 가져오기** — 예제 앱에서 `.jww` 파일을 열 수 있습니다
+- **JWW / JWC(Jw_cad) 가져오기** — 예제 앱에서 `.jww` 및 구 형식 `.jwc` 파일을 열 수 있습니다
   (`@mlightcad/cad-jww-converter`, MIT. 파서는 [ezjww](https://github.com/monozukuri-ai/ezjww),
   Rust → WebAssembly, Web Worker에서 실행). 좌표는 레이어 그룹 축척으로 용지 mm에서
   실제 mm로 변환하고, 용지를 도면 한계로 설정합니다.
-- 예정: **SXF**(P21 / SFC) 가져오기.
+- **SXF 가져오기**(일본 공공 공사 CAD 데이터 교환 표준) — 예제 앱에서 `.sfc`, `.p21` 및 ZIP 형식
+  `.sfz` / `.p2z`를 열 수 있습니다(`@mlightcad/cad-sxf-converter`, MIT, TypeScript,
+  [ezsxf](https://github.com/monozukuri-ai/ezsxf)에서 이식). 부분도는 주 뷰의 축척으로 실제 크기로
+  표시하고, 용지를 도면 한계로 설정합니다.
 
 ## 데모
 
@@ -76,9 +79,9 @@ DXF는 내장된 MIT 파서로 읽습니다. DWG는 선택적으로
 [LibreDWG](https://github.com/LibreDWG/libredwg) 기반의 `@mlightcad/libredwg-converter`를
 사용할 수 있으며, 라이선스는 **GPL-3.0**입니다. 배포 전에 GPL 영향을 확인하세요.
 
-## JWW 지원
+## JWW / JWC 지원
 
-`@mlightcad/cad-jww-converter`는 Jw_cad 도면(`.jww`)을 읽습니다. Web Worker에서 ezjww(MIT)로
+`@mlightcad/cad-jww-converter`는 Jw_cad 도면(`.jww` / `.jwc`)을 읽습니다. Web Worker에서 ezjww(MIT)로
 파싱하고 DXF로 변환한 뒤 내장 DXF 리더로 불러옵니다. 등록한 다음 패키지 `dist/`의
 `jww-parser-worker.js`와 `jww-parser.wasm`을 같은 위치에 배포하세요.
 
@@ -91,7 +94,24 @@ registerJwwConverter('./assets/jww-parser-worker.js')
 JWW는 좌표를 용지 mm로 저장합니다. 기본적으로 주 레이어 그룹(엔티티가 가장 많은 그룹)의
 축척으로 전체를 확대하므로 Jw_cad와 같은 모양으로 보이고 주 도면은 실제 mm로 측정됩니다.
 `scaleMode: 'layer-group'`은 그룹별 축척을, `scaleMode: 'paper'`는 용지 mm를 그대로 사용합니다.
-구 형식 JWC는 아직 지원하지 않습니다.
+구 형식 JWC도 같은 방식으로 변환합니다(JWC에는 글꼴 정보가 없으므로 문자는 ＭＳ ゴシック으로 표시).
+
+## SXF 지원
+
+`@mlightcad/cad-sxf-converter`는 SXF Ver.3.1 도면을 읽습니다: SFC(`.sfc`), P21(`.p21`, AP202) 및 ZIP
+형식(`.sfz`, `.p2z`). 파서는 TypeScript로 작성되었고(WebAssembly 불필요) 피처 처리는 ezsxf(MIT)에서
+이식했습니다. 도면을 선, 곡선, 문자, 채우기, 해치로 펼친 뒤 내장 DXF 리더로 불러옵니다.
+
+```ts
+import { registerSxfConverter } from '@mlightcad/cad-sxf-converter'
+
+registerSxfConverter()
+```
+
+SXF 좌표는 용지 mm이며 부분도는 축척 비율로 배치됩니다. 기본적으로 주 부분도의 축척으로 전체를 확대하므로
+인쇄와 같은 모양으로 보이고 주 뷰는 실제 mm로 측정됩니다. `scaleMode: 'paper'`는 용지 mm를 유지합니다.
+원, 원호, 타원은 곡선 그대로이며 문자는 SXF 문자 상자 크기에 맞춥니다. 속성 파일(SAF)과 래스터 이미지는
+읽지 않습니다.
 
 ## 라이선스
 

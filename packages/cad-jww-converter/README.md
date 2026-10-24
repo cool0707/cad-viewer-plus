@@ -1,6 +1,6 @@
 # @mlightcad/cad-jww-converter
 
-Jw_cad (`.jww`) reader for the CAD viewer. The file is parsed by
+Jw_cad (`.jww`, and the older `.jwc`) reader for the CAD viewer. The file is parsed by
 [ezjww](https://github.com/monozukuri-ai/ezjww) (MIT, Rust → WebAssembly) in a
 Web Worker, converted to DXF (AC1024, UTF-8) and loaded by the registered DXF
 converter, so layers, blocks and text styles follow the regular DXF path.
@@ -13,7 +13,7 @@ registerJwwConverter('./assets/jww-parser-worker.js')
 ```
 
 After registration `AcApDocManager.openDocument('plan.jww', …)` / `openUrl(…)`
-and the viewer's file dialogs accept `.jww`.
+and the viewer's file dialogs accept `.jww` and `.jwc`.
 
 ## Conversion
 
@@ -24,6 +24,7 @@ and the viewer's file dialogs accept `.jww`.
 | Layer group / layer | Layer `<group>-<layer> <group name> - <layer name>` (hex numbers as in Jw_cad); only used layers; hidden → frozen, protected → locked |
 | Pen color, line type, width | ACI color, LTYPE (pattern in paper mm, entity linetype scale = drawing scale), lineweight (from ezjww) |
 | Text font | Text style per font (ＭＳ ゴシック / ＭＳ 明朝 … → BIZ UD via `fonts.json`) |
+| Text size (character cell height) | DXF height = cell × cap height / em of the substituted BIZ UD font, baseline raised by the descender — the renderer sizes TrueType text by the capital "A", which would otherwise draw Japanese text ~1.27× too large |
 | Blocks | Block definitions + INSERT |
 | Dimensions, solids | Lines + text, SOLID (from ezjww) |
 
@@ -36,7 +37,13 @@ and the viewer's file dialogs accept `.jww`.
   export. Groups with different scales (e.g. a 1/1 title block) no longer line up.
 - `paper`: no scaling (paper millimetres).
 
-Not supported yet: JWC (old format), JWS, embedded images (`^@BM`).
+JWC (the old format) goes through the same conversion: ezjww converts it to paper
+millimetres with the origin at the sheet centre (sheets A0–A4), and the layer group
+scales, layer names and text-height correction are applied as for JWW. JWC stores
+no fonts, so text uses ＭＳ ゴシック (BIZ UD Gothic). Profiles ezjww does not accept
+fail with its error message.
+
+Not supported yet: JWS, embedded images (`^@BM`).
 
 ## ezjww in the browser
 

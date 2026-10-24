@@ -8,6 +8,7 @@ import {
   registerJwwConverter
 } from '@mlightcad/cad-jww-converter'
 import { LIBREDWG_PARSER_WORKER_FILE } from '@mlightcad/cad-simple-viewer'
+import { registerSxfConverter } from '@mlightcad/cad-sxf-converter'
 import { i18n } from '@mlightcad/cad-viewer'
 import ElementPlus from 'element-plus'
 import { createApp } from 'vue'
@@ -20,6 +21,8 @@ const initApp = () => {
   registerLibreDwgConverter(`./assets/${LIBREDWG_PARSER_WORKER_FILE}`)
   // Jw_cad (.jww) through ezjww (MIT, WebAssembly) in a worker.
   registerJwwConverter(`./assets/${JWW_PARSER_WORKER_FILE}`)
+  // SXF (.sfc): TypeScript parser (MIT), no extra assets.
+  registerSxfConverter()
 
   const app = createApp(App)
   // Required when Vite aliases `@mlightcad/ui-components` to source: those SFCs
