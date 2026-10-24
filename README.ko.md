@@ -1,12 +1,12 @@
-# CAD-Viewer Plus
+# RemixCAD
 
 [English](./README.md) | [日本語](./README.ja.md) | [简体中文](./README.zh-CN.md) | [한국어](./README.ko.md) | [Español](./README.es.md) | [Português](./README.pt.md) | [Русский](./README.ru.md) | [Čeština](./README.cs.md)
 
-> **이 저장소는 포크입니다.** CAD-Viewer Plus는
+> **이 저장소는 포크입니다.** RemixCAD는
 > [mlightcad/cad-viewer](https://github.com/mlightcad/cad-viewer)(MIT 라이선스)의
 > 포크로, 독립적으로 유지 관리됩니다. **원 저작자와는 관계가 없으며 원 프로젝트의
 > 지원 대상도 아닙니다.** 문제는 원 프로젝트가 아니라
-> [이 저장소의 Issues](https://github.com/cool0707/cad-viewer-plus/issues)에 보고해 주세요.
+> [이 저장소의 Issues](https://github.com/cool0707/remix-cad/issues)에 보고해 주세요.
 
 브라우저에서만 동작하는 DXF/DWG 뷰어 겸 편집기입니다. 도면 해석, 형상 처리, 렌더링
 (Three.js / WebGL)은 모두 클라이언트에서 수행되므로 도면이 사용자 기기를 벗어나지 않습니다.
@@ -46,7 +46,7 @@
 
 ## 데모
 
-- 온라인: <https://cool0707.github.io/cad-viewer-plus/>
+- 온라인: <https://cool0707.github.io/remix-cad/>
 - 로컬:
 
   ```bash
@@ -60,8 +60,8 @@
 [Node.js](https://nodejs.org/) 24 이상과 [pnpm](https://pnpm.io/) 10 이상이 필요합니다.
 
 ```bash
-git clone https://github.com/cool0707/cad-viewer-plus.git
-cd cad-viewer-plus
+git clone https://github.com/cool0707/remix-cad.git
+cd remix-cad
 pnpm install
 pnpm dev          # 전체 기능 뷰어
 pnpm dev:simple   # 간단한 뷰어

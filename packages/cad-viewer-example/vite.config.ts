@@ -6,6 +6,7 @@ import { viteStaticCopy } from 'vite-plugin-static-copy'
 import svgLoader from 'vite-svg-loader'
 import { visualizer } from 'rollup-plugin-visualizer'
 import vue from '@vitejs/plugin-vue'
+import { brandThemeHtml } from '../vite-config/pluginBrandTheme'
 import { examplePeerPackageAliases, exampleRollupOutput } from '../vite-config/pluginRollupOutput'
 import {
   JWW_CONVERTER_PACKAGE,
@@ -179,6 +180,7 @@ export default defineConfig(({ command, mode }) => {
 
   const plugins = [
     vue(),
+    brandThemeHtml(),
     svgLoader(),
     viteStaticCopy({
       targets: [

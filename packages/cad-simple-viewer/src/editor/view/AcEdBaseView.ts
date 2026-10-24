@@ -953,7 +953,7 @@ export abstract class AcEdBaseView {
           ? windowLine
           : crossingLine
     const background =
-      'var(--ml-ui-canvas-fill-mix, var(--ml-ui-canvas-fill, rgba(64, 158, 255, 0.12)))'
+      'var(--ml-ui-canvas-fill-mix, var(--ml-ui-canvas-fill, color-mix(in srgb, var(--ml-brand) 12%, transparent)))'
     const borderStyle = mode === 'window' ? 'solid' : 'dashed'
     return { borderStyle, lineColor, background }
   }

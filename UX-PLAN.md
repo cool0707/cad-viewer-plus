@@ -256,5 +256,5 @@ Figma / Illustrator 風の「先に選ぶ → ドラッグ / 右サイドバー�
 2. `main` から作業ブランチを切る。
 3. 「ステップ N をやって」と指示する。ステップ内で決めることがあれば、着手時にユーザーに確認する。
 4. 確認: `npx jest` (ルートで)、`pnpm --filter @mlightcad/cad-viewer-example test:e2e`、`pnpm dev` で実際に操作する。
-   push すれば https://cool0707.github.io/cad-viewer-plus/preview/<ブランチ名>/ でも確認できる (数分後)。
+   push すれば https://cool0707.github.io/remix-cad/preview/<ブランチ名>/ でも確認できる (数分後)。
 5. 終わったら、このファイルのステップに「(済)」と、分かったこと (未確認だった点の結果など) を追記する。

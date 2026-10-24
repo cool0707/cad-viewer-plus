@@ -173,14 +173,14 @@ const ACI_PALETTE_CSS = `
   -webkit-touch-callout: none;
 }
 .ml-aci-cell:hover {
-  outline: 1px solid #00a8ff;
+  outline: 1px solid var(--ml-brand);
 }
 .ml-aci-cell.is-selected {
-  outline: 2px solid var(--ml-ui-accent, #409eff);
+  outline: 2px solid var(--ml-ui-accent, var(--ml-brand));
   outline-offset: -1px;
 }
 .ml-aci-cell.is-preview {
-  outline: 2px solid #00a8ff;
+  outline: 2px solid var(--ml-brand);
   outline-offset: -1px;
   z-index: 1;
   position: relative;

@@ -428,7 +428,7 @@ export class AcUiTouchPointTutorial extends AcUiDialog {
   width: ${CROSS_SIZE}px;
   height: ${CROSS_SIZE}px;
   margin: calc(-1 * var(--ml-touch-cross-half)) 0 0 calc(-1 * var(--ml-touch-cross-half));
-  color: var(--ml-ui-accent, #0b84ff);
+  color: var(--ml-ui-accent, var(--ml-brand));
   opacity: 0;
   animation:
     ml-touch-cross-move ${DEMO_CYCLE_MS}ms ease-in-out infinite,
@@ -518,9 +518,9 @@ export class AcUiTouchPointTutorial extends AcUiDialog {
 }
 
 @keyframes ml-touch-cross-color {
-  0%, ${snapCommitAt}% { color: var(--ml-ui-accent, #0b84ff); }
+  0%, ${snapCommitAt}% { color: var(--ml-ui-accent, var(--ml-brand)); }
   ${crossGreen}%, ${returnEnd}% { color: #0f0; }
-  100% { color: var(--ml-ui-accent, #0b84ff); }
+  100% { color: var(--ml-ui-accent, var(--ml-brand)); }
 }
 
 @keyframes ml-touch-snap-box {
@@ -550,7 +550,7 @@ export class AcUiTouchPointTutorial extends AcUiDialog {
   width: 16px;
   height: 16px;
   margin: 0;
-  accent-color: var(--ml-ui-accent, #0b84ff);
+  accent-color: var(--ml-ui-accent, var(--ml-brand));
 }
 
 .ml-ui-touch-point-tutorial .ml-ui-dialog-footer {
@@ -563,7 +563,7 @@ export class AcUiTouchPointTutorial extends AcUiDialog {
 .ml-ui-touch-point-tutorial-ok {
   border: none;
   background: transparent;
-  color: var(--ml-ui-accent, #0b84ff);
+  color: var(--ml-ui-accent, var(--ml-brand));
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;

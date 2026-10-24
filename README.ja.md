@@ -1,12 +1,12 @@
-# CAD-Viewer Plus
+# RemixCAD
 
 [English](./README.md) | [日本語](./README.ja.md) | [简体中文](./README.zh-CN.md) | [한국어](./README.ko.md) | [Español](./README.es.md) | [Português](./README.pt.md) | [Русский](./README.ru.md) | [Čeština](./README.cs.md)
 
-> **これはフォークです。** CAD-Viewer Plus は
+> **これはフォークです。** RemixCAD は
 > [mlightcad/cad-viewer](https://github.com/mlightcad/cad-viewer)（MIT ライセンス）の
 > フォークで、独立して開発しています。**フォーク元の作者とは無関係で、フォーク元の
 > サポート対象でもありません。** 不具合などはフォーク元ではなく
-> [このリポジトリの Issues](https://github.com/cool0707/cad-viewer-plus/issues) に
+> [このリポジトリの Issues](https://github.com/cool0707/remix-cad/issues) に
 > 報告してください。
 
 ブラウザだけで動作する DXF/DWG ビューア兼エディタです。図面の解析、形状の処理、
@@ -51,7 +51,7 @@
 
 ## デモ
 
-- オンライン：<https://cool0707.github.io/cad-viewer-plus/>
+- オンライン：<https://cool0707.github.io/remix-cad/>
   （`.github/workflows/demo.yml` が `gh-pages` ブランチに公開）
 - ローカル：
 
@@ -75,8 +75,8 @@
 ### インストール
 
 ```bash
-git clone https://github.com/cool0707/cad-viewer-plus.git
-cd cad-viewer-plus
+git clone https://github.com/cool0707/remix-cad.git
+cd remix-cad
 pnpm install
 ```
 

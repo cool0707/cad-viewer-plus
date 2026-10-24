@@ -20,7 +20,7 @@
 | `7bb415d` (PR #1) | **JWW 読み込み** (`packages/cad-jww-converter`)、拡張子判定の一般化 (`AcApDrawingFileTypes`) |
 | (このブランチ) | JWW 文字サイズ補正、**JWC**、**SXF (SFC / P21 / SFZ / P2Z)** (`packages/cad-sxf-converter`) |
 
-デモ: <https://cool0707.github.io/cad-viewer-plus/> (`?url=` `?new=1` `?lang=` `?view=extents|saved|limits` が使える)
+デモ: <https://cool0707.github.io/remix-cad/> (`?url=` `?new=1` `?lang=` `?view=extents|saved|limits` が使える)
 
 ### 既存パッチ (`patches/`)
 

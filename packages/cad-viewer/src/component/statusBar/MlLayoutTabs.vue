@@ -369,6 +369,6 @@ onBeforeUnmount(() => {
 
 <style>
 .ml-layout-tabs-overflow-menu .el-dropdown-menu__item.is-selected {
-  color: var(--el-color-primary, #409eff);
+  color: var(--el-color-primary, var(--ml-brand));
 }
 </style>

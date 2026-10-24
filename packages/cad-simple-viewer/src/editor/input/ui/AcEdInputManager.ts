@@ -581,7 +581,7 @@ export class AcEdInputManager {
       .ml-jig-preview-rect {
         position: absolute;
         border: 1px dashed var(--line-color, var(--ml-ui-canvas-line, #0f0));
-        background: var(--ml-ui-canvas-fill-mix, var(--ml-ui-canvas-fill, rgba(64, 158, 255, 0.12)));
+        background: var(--ml-ui-canvas-fill-mix, var(--ml-ui-canvas-fill, color-mix(in srgb, var(--ml-brand) 12%, transparent)));
         pointer-events: none;
         z-index: 1;
       }

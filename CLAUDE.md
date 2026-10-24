@@ -1,4 +1,4 @@
-# CLAUDE.md — cad-viewer-plus
+# CLAUDE.md — RemixCAD
 
 mlightcad/cad-viewer (MIT) を日本向けにフォークしたブラウザ CAD ビューア。
 JWW / JWC (`packages/cad-jww-converter`) と SXF (SFC・P21・SFZ・P2Z、`packages/cad-sxf-converter`)
@@ -31,7 +31,7 @@ pnpm --filter @mlightcad/cad-viewer-example test:e2e   # Playwright e2e (fixture
 - `resources/cad-data/` — フォント (BIZ UD woff + fonts.json)・テンプレート・サンプル図面。ビルド時に各 example の `cad-data/` へコピーされる。
 - `demo/index.html` + `tools/build-demo.mjs` → `demo-dist/` → GitHub Pages (`.github/workflows/demo.yml`, gh-pages ブランチ)。
   - `main` はサイトの直下、それ以外のブランチは `preview/<ブランチ名>/` に出る
-    (例: https://cool0707.github.io/cad-viewer-plus/preview/<ブランチ名>/ 。名前の `/` などは `-` になる)。
+    (例: https://cool0707.github.io/remix-cad/preview/<ブランチ名>/ 。名前の `/` などは `-` になる)。
     push してからビルドが終わるまで数分かかる。ブランチを削除するとプレビューも消える。
     gh-pages の更新は `tools/publish-pages.sh` (main の更新でも `preview/` は残す)。
 
@@ -54,4 +54,9 @@ pnpm patch-commit /tmp/dm-edit
 - 図面フォントは CDN を使わない。BIZ UD を同梱、他言語は Google Fonts (`fonts.json` の絶対 URL)。UI フォントは Noto Sans JP。
 - LibreDWG (GPL) を本体パッケージに取り込まない。DWG は example 側で opt-in 登録している。JWW / SXF も同じく **MIT 互換のライブラリか自前実装** にする。
 - `main` と `ja-localization` は現在同一。今後は `main` から作業ブランチを切ればよい。
+- テーマカラーは **`packages/cad-simple-viewer/src/theme/theme.config.ts`** の 1 か所で決める
+  (現在: 一色 `#AF61DA`、グラデーション `#EA60D4 → #9C62DC`)。書き換えて `pnpm build` すれば全 UI に反映される。
+  色を直書きせず、CSS 変数 `--ml-brand` / `--ml-brand-gradient` / `--ml-brand-soft` / `--el-color-primary*` /
+  `--ml-ui-accent` を使う (`acedApplyBrandTheme()` が実行時に定義、example の HTML には Vite プラグイン
+  `packages/vite-config/pluginBrandTheme.ts`、デモのトップページには `tools/build-demo.mjs` が書き込む)。
 - README は 8 言語 (`README*.md`) あるので、機能追加を書くときは全部更新する。

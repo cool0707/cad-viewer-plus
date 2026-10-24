@@ -1,12 +1,12 @@
-# CAD-Viewer Plus
+# RemixCAD
 
 [English](./README.md) | [日本語](./README.ja.md) | [简体中文](./README.zh-CN.md) | [한국어](./README.ko.md) | [Español](./README.es.md) | [Português](./README.pt.md) | [Русский](./README.ru.md) | [Čeština](./README.cs.md)
 
-> **Toto je fork.** CAD-Viewer Plus je fork projektu
+> **Toto je fork.** RemixCAD je fork projektu
 > [mlightcad/cad-viewer](https://github.com/mlightcad/cad-viewer) (licence MIT).
 > Je udržován nezávisle a **není spojen s autorem původního projektu ani jím
 > podporován**. Problémy tohoto forku hlaste v
-> [issues tohoto repozitáře](https://github.com/cool0707/cad-viewer-plus/issues),
+> [issues tohoto repozitáře](https://github.com/cool0707/remix-cad/issues),
 > nikoli u původního projektu.
 
 Prohlížeč a editor DXF/DWG, který běží celý v prohlížeči: načítání výkresů,
@@ -52,7 +52,7 @@ takže výkresy nikdy neopustí zařízení uživatele.
 
 ## Ukázka
 
-- Online: <https://cool0707.github.io/cad-viewer-plus/>
+- Online: <https://cool0707.github.io/remix-cad/>
 - Lokálně:
 
   ```bash
@@ -66,8 +66,8 @@ takže výkresy nikdy neopustí zařízení uživatele.
 Vyžaduje [Node.js](https://nodejs.org/) >= 24 a [pnpm](https://pnpm.io/) >= 10.
 
 ```bash
-git clone https://github.com/cool0707/cad-viewer-plus.git
-cd cad-viewer-plus
+git clone https://github.com/cool0707/remix-cad.git
+cd remix-cad
 pnpm install
 pnpm dev          # plnohodnotný prohlížeč
 pnpm dev:simple   # jednoduchý prohlížeč

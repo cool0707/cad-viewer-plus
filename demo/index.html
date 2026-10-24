@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>CAD-Viewer Plus デモ</title>
+    <title>RemixCAD デモ</title>
     <style>
       :root {
         --bg: #f6f7f9;
@@ -11,8 +11,8 @@
         --text: #1d2330;
         --muted: #5b6475;
         --line: #e2e5eb;
-        --accent: #2563eb;
-        --accent-soft: #e8efff;
+        --accent: var(--ml-brand);
+        --accent-soft: color-mix(in srgb, var(--ml-brand) 10%, var(--card));
         color-scheme: light;
       }
       @media (prefers-color-scheme: dark) {
@@ -22,8 +22,8 @@
           --text: #e8ebf0;
           --muted: #9aa3b2;
           --line: #2c323c;
-          --accent: #6ea0ff;
-          --accent-soft: #1f2a40;
+          --accent: var(--ml-brand);
+          --accent-soft: color-mix(in srgb, var(--ml-brand) 18%, var(--card));
           color-scheme: dark;
         }
       }
@@ -109,7 +109,7 @@
   </head>
   <body>
     <main>
-      <h1>CAD-Viewer Plus デモ</h1>
+      <h1>RemixCAD デモ</h1>
       <p class="lead">
         日本語化・フォント同梱版の動作確認ページです。すべてブラウザ内で動作し、図面がサーバーに送信されることはありません。
       </p>
@@ -197,7 +197,7 @@
       </ul>
 
       <footer>
-        <a href="https://github.com/cool0707/cad-viewer-plus">cool0707/cad-viewer-plus</a>
+        <a href="https://github.com/cool0707/remix-cad">cool0707/remix-cad</a>
         — <a href="https://github.com/mlightcad/cad-viewer">mlightcad/cad-viewer</a>
         (MIT) のフォークです。
       </footer>
