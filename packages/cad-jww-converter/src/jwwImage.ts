@@ -116,6 +116,69 @@ function clamp(value: number, min: number, max: number) {
   return Math.min(Math.max(value, min), max)
 }
 
+/**
+ * A trimmed part of an image the browser decodes (PNG, JPEG, GIF, …), cut out
+ * asynchronously by {@link cropJwwImage}.
+ */
+export interface JwwImageCrop {
+  /** Name of the trimmed image file. */
+  name: string
+  /** The whole image file. */
+  source: Uint8Array
+  reference: Pick<JwwImageReference, 'width' | 'height'>
+  trim: JwwImageTrim
+}
+
+/**
+ * Cuts a trimmed part out of an image with the browser's decoder (in a page
+ * or a worker). JPEG stays JPEG, other formats become PNG. Undefined when the
+ * image cannot be decoded or there is no OffscreenCanvas (e.g. in Node).
+ */
+export async function cropJwwImage(crop: JwwImageCrop) {
+  if (
+    typeof createImageBitmap !== 'function' ||
+    typeof OffscreenCanvas !== 'function'
+  ) {
+    return undefined
+  }
+  try {
+    const type = imageMimeType(crop.source, crop.name)
+    const bitmap = await createImageBitmap(
+      new Blob([crop.source as BlobPart], { type })
+    )
+    try {
+      const rect = jwwTrimPixelRect(
+        crop.reference,
+        crop.trim,
+        bitmap.width,
+        bitmap.height
+      )
+      const canvas = rect && new OffscreenCanvas(rect.width, rect.height)
+      const context = canvas?.getContext('2d')
+      if (!rect || !canvas || !context) return undefined
+      context.drawImage(
+        bitmap,
+        rect.x,
+        rect.y,
+        rect.width,
+        rect.height,
+        0,
+        0,
+        rect.width,
+        rect.height
+      )
+      const blob = await canvas.convertToBlob(
+        type === 'image/jpeg' ? { type, quality: 0.95 } : { type: 'image/png' }
+      )
+      return new Uint8Array(await blob.arrayBuffer())
+    } finally {
+      bitmap.close()
+    }
+  } catch {
+    return undefined
+  }
+}
+
 /** Size of an uncompressed Windows BMP, or undefined for other images. */
 export function bmpSize(data: Uint8Array) {
   const bmp = readBmp(data)

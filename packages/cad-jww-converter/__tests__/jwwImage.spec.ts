@@ -20,7 +20,7 @@ import {
   jwwTrimPixelRect,
   parseJwwImageReference
 } from '../src/jwwImage'
-import { convertJwwToDxf } from '../src/jwwToDxf'
+import { convertJwwToDxf, cropJwwImages } from '../src/jwwToDxf'
 
 // 1 x 1 PNG.
 const PNG = Buffer.from(
@@ -298,6 +298,96 @@ describe('JWW images', () => {
     expect(bmpPixel(cropped, 4, 1)).toEqual({ x: 7, y: 5 })
     expect(result.dxf).toContain('\n1\ngrad~trim1.bmp\n')
     expect(result.dxf).toContain('\n1\ngrad.bmp\n')
+  })
+
+  it('leaves trims of other embedded formats to cropJwwImages', async () => {
+    const doc = ezjww.newJwwDocument()
+    doc.entities.push(
+      imageText(
+        0,
+        0,
+        0,
+        '^@BM%temp%photo.png,10,4,0.15,0.2,0.25,0,255,255,255'
+      ),
+      imageText(9, 0, 0, '^@BM%temp%photo.png,10,4,0.15,0.2,0.25,0,255,255,255')
+    )
+    doc.images = [{ name: 'photo.png', data: PNG.toString('base64') }]
+    const result = convertJwwToDxf(ezjww, ezjww.toJwwBytes(doc))
+    expect(result.dxf).toContain('\n1\nphoto~trim1.png\n')
+    expect(result.images.map(i => i.name)).toEqual(['photo.png'])
+    expect(result.imageCrops).toHaveLength(1)
+    expect(result.imageCrops![0]).toMatchObject({
+      name: 'photo~trim1.png',
+      reference: { width: 10, height: 4 },
+      trim: { left: 0.15, bottom: 0.2, width: 0.25 }
+    })
+
+    // Node has no image decoder: the whole image stands in, with a warning.
+    const cropped = await cropJwwImages(result)
+    expect(cropped.imageCrops).toBeUndefined()
+    expect(cropped.images.map(i => i.name)).toEqual([
+      'photo.png',
+      'photo~trim1.png'
+    ])
+    expect(cropped.images[1].data).toBe(cropped.images[0].data)
+    expect(cropped.warnings).toHaveLength(1)
+  })
+
+  it('cuts other formats with the browser decoder', async () => {
+    const drawImage = jest.fn()
+    const convertToBlob = jest.fn(async () => new Blob([new Uint8Array([9])]))
+    const close = jest.fn()
+    const globals = globalThis as Record<string, unknown>
+    globals.createImageBitmap = jest.fn(async () => ({
+      width: 20,
+      height: 10,
+      close
+    }))
+    globals.OffscreenCanvas = jest.fn((width: number, height: number) => ({
+      width,
+      height,
+      getContext: () => ({ drawImage }),
+      convertToBlob
+    }))
+    try {
+      const result = await cropJwwImages({
+        dxf: '',
+        unsupportedEntities: [],
+        images: [],
+        warnings: [],
+        imageCrops: [
+          {
+            name: 'photo~trim1.jpg',
+            source: new Uint8Array([0xff, 0xd8, 0xff]),
+            reference: { width: 10, height: 4 },
+            trim: { left: 0.15, bottom: 0.2, width: 0.25 }
+          }
+        ]
+      })
+      // Same pixels as the BMP case: 3..7 x 4..5 from the top.
+      expect(drawImage).toHaveBeenCalledWith(
+        expect.anything(),
+        3,
+        4,
+        5,
+        2,
+        0,
+        0,
+        5,
+        2
+      )
+      expect(globals.OffscreenCanvas).toHaveBeenCalledWith(5, 2)
+      expect(convertToBlob).toHaveBeenCalledWith({
+        type: 'image/jpeg',
+        quality: 0.95
+      })
+      expect(close).toHaveBeenCalled()
+      expect(result.warnings).toEqual([])
+      expect([...result.images[0].data]).toEqual([9])
+    } finally {
+      delete globals.createImageBitmap
+      delete globals.OffscreenCanvas
+    }
   })
 
   it('shows other trimmed images whole, with a warning', () => {

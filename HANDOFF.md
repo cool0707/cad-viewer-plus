@@ -71,7 +71,11 @@
   同梱 BMP はそのピクセルを切り出して別の同梱画像 `<名前>~trimN.bmp` (24bit BMP) にし、その IMAGEDEF を参照させる
   (`JwwDxfWriter.imagePath()`、`jwwTrimPixelRect()`・`cropBmp()`)。画面・SVG・PDF のどれでも同じに出るよう、
   DXF の IMAGE クリップ境界ではなく画像自体を切っている (data-model / AcTrImage のクリップ処理は UV が境界の外接矩形基準で使えない)。
-  Jw_cad の同梱画像は常に BMP (名前が `…_bmp.bmp` / `…_jpg.bmp` になる) なので BMP だけ対応。外部参照の画像や BMP 以外は警告を出して画像全体を表示。
+  BMP 以外 (Jw_cad の画像拡張で同梱される JPEG・PNG・GIF など) は wasm Worker の同期変換では切れないので、
+  `convertJwwToDxf()` は `imageCrops` に積むだけにして、`cropJwwImages()` (Worker / main thread 両方で変換直後に呼ぶ) が
+  `createImageBitmap` + `OffscreenCanvas` で切り出す (JPEG は JPEG、他は PNG。名前は `<名前>~trimN.jpg|png`)。
+  ピクセル数はデコード後に分かるので、範囲の計算もそこで行う。Node (テスト) など切り出せない環境では元画像全体 + 警告。
+  外部参照の画像は警告を出して画像全体を表示。
   4 番目以降 (`0,255,255,255`、回転・透過色らしい) が既定と違うときは警告だけ出して無視する。
   回転した画像は元々正しく描けていなかったので、data-model パッチ④と `three-renderer/src/object/AcTrImage.ts` の UV (画像の軸に沿って計算) も直した。SVG / PDF 書き出しの回転画像は未確認。
 - 未対応: JWS、外部参照画像のトリミング、Worker 無しの main thread モードはテストのみで使用 (`wasmUrl` 指定で動く)。外部参照 (XATTACH) は DWG/DXF のまま。
