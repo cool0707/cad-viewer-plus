@@ -262,7 +262,7 @@ describe('buildSvgMText', () => {
   })
 
   it('uses directionVector for rotation when provided', () => {
-    const { localSvg } = buildSvgMText(
+    const { localSvg, box } = buildSvgMText(
       {
         text: 'Rotated',
         height: 10,
@@ -275,10 +275,17 @@ describe('buildSvgMText', () => {
       ctx
     )
 
-    expect(localSvg).toContain('rotate(-90')
+    // The SVG flips Y, so +90 is counter-clockwise: the text reads upwards.
+    expect(localSvg).toContain('rotate(90)')
+    // The extents follow the rotation: up the Y axis, and the top-left
+    // attachment hangs the text to the right of it.
+    expect(box.max.y).toBeGreaterThan(30)
+    expect(box.min.y).toBeGreaterThan(-1e-6)
+    expect(box.min.x).toBeGreaterThan(-1e-6)
+    expect(box.max.x).toBeCloseTo(10, 6)
   })
 
-  it('lays out bottom-to-top vertical text for TEXT-style flow', () => {
+  it('keeps TEXT (bottom-to-top flow) on one horizontal line', () => {
     const { localSvg } = buildSvgMText(
       {
         text: 'ABC',
@@ -292,9 +299,10 @@ describe('buildSvgMText', () => {
       ctx
     )
 
-    const baselines = runBaselines(localSvg)
-    expect(baselines.length).toBeGreaterThan(1)
-    expect(baselines[0]).toBeGreaterThan(baselines[baselines.length - 1])
+    // TEXT / ATTRIB always pass BOTTOM_TO_TOP; mtext-renderer still draws
+    // them left to right, so the SVG must not stack the characters.
+    expect(runBaselines(localSvg)).toHaveLength(1)
+    expect(localSvg).toContain('>ABC</text>')
   })
 
   it('applies inline color formatting', () => {

@@ -111,8 +111,7 @@ interface LayoutBounds {
 enum FlowMode {
   HorizontalLtr,
   HorizontalRtl,
-  VerticalTtb,
-  VerticalBtt
+  VerticalTtb
 }
 
 export interface AcSvgMTextBuildResult {
@@ -147,8 +146,10 @@ function resolveFlowMode(drawingDirection?: AcGiMTextFlowDirection): FlowMode {
       return FlowMode.HorizontalRtl
     case AcGiMTextFlowDirection.TOP_TO_BOTTOM:
       return FlowMode.VerticalTtb
+    // TEXT / ATTRIB pass BOTTOM_TO_TOP. Like mtext-renderer, it only means
+    // the baseline sits at the insertion point; the characters still run
+    // left to right.
     case AcGiMTextFlowDirection.BOTTOM_TO_TOP:
-      return FlowMode.VerticalBtt
     case AcGiMTextFlowDirection.LEFT_TO_RIGHT:
     case AcGiMTextFlowDirection.BY_STYLE:
     default:
@@ -323,11 +324,14 @@ export function buildSvgMText(
     attachmentBounds
   )
   const { x, y } = position
-  const rotDeg = (resolveRotation(mtext) * 180) / Math.PI
+  const rotation = resolveRotation(mtext)
+  const rotDeg = (rotation * 180) / Math.PI
 
   const transformParts = [`translate(${x},${y})`]
   if (rotDeg !== 0) {
-    transformParts.push(`rotate(${-rotDeg})`)
+    // The document flips Y (CAD Y up), so a positive SVG angle is
+    // counter-clockwise like the CAD rotation.
+    transformParts.push(`rotate(${rotDeg})`)
   }
   transformParts.push(`translate(${attachment.x},${attachment.y})`)
   transformParts.push('scale(1,-1)')
@@ -339,7 +343,7 @@ export function buildSvgMText(
     { transform: transformParts.join(' ') },
     innerMarkup
   )
-  expandBox(box, bounds, attachment, x, y)
+  expandBox(box, bounds, attachment, x, y, rotation)
 
   return { localSvg, box }
 }
@@ -349,7 +353,8 @@ function expandBox(
   bounds: LayoutBounds,
   attachment: { x: number; y: number },
   originX: number,
-  originY: number
+  originY: number,
+  rotation: number
 ) {
   if (bounds.maxX <= bounds.minX && bounds.maxY <= bounds.minY) {
     return
@@ -360,8 +365,13 @@ function expandBox(
     { x: bounds.minX + attachment.x, y: attachment.y - bounds.maxY },
     { x: bounds.maxX + attachment.x, y: attachment.y - bounds.maxY }
   ]
+  const cos = Math.cos(rotation)
+  const sin = Math.sin(rotation)
   for (const corner of corners) {
-    box.expandByPoint({ x: originX + corner.x, y: originY + corner.y })
+    box.expandByPoint({
+      x: originX + corner.x * cos - corner.y * sin,
+      y: originY + corner.x * sin + corner.y * cos
+    })
   }
 }
 
@@ -1070,12 +1080,6 @@ class MTextSvgLayout {
     } else if (this.isVerticalTtb()) {
       this.x = left
       this.y = this.columnStartY + indent
-    } else if (this.isVerticalBtt()) {
-      this.x = left
-      this.y =
-        (this.wrapWidth != null ? this.wrapWidth : this.baseHeight * 10) -
-        indent
-      this.columnStartY = this.y
     } else {
       this.x = left + indent
       this.y = this.columnStartY
@@ -1146,8 +1150,6 @@ class MTextSvgLayout {
       this.x -= width
     } else if (this.isVerticalTtb()) {
       this.y += fontSize
-    } else if (this.isVerticalBtt()) {
-      this.y -= fontSize
     } else {
       this.x += width
     }
@@ -1200,15 +1202,6 @@ class MTextSvgLayout {
     top: number
     bottom: number
   } {
-    if (this.isVerticalBtt()) {
-      const bottom =
-        this.columnStartY - tokenCtx.paragraph.right * this.baseHeight
-      const top =
-        this.wrapWidth != null
-          ? this.columnStartY - this.wrapWidth + this.firstLineIndent(tokenCtx)
-          : Number.NEGATIVE_INFINITY
-      return { top, bottom }
-    }
     const top = this.columnStartY + this.firstLineIndent(tokenCtx)
     const bottom =
       this.wrapWidth != null
@@ -1309,18 +1302,11 @@ class MTextSvgLayout {
   }
 
   private isVertical(): boolean {
-    return (
-      this.flowMode === FlowMode.VerticalTtb ||
-      this.flowMode === FlowMode.VerticalBtt
-    )
+    return this.flowMode === FlowMode.VerticalTtb
   }
 
   private isVerticalTtb(): boolean {
     return this.flowMode === FlowMode.VerticalTtb
-  }
-
-  private isVerticalBtt(): boolean {
-    return this.flowMode === FlowMode.VerticalBtt
   }
 }
 
