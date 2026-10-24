@@ -66,6 +66,25 @@ const TEXT_FONT_METRICS = {
   mincho: { capHeight: 1587 / 2048, descender: 246 / 2048 }
 }
 
+/**
+ * DXF rotation (degrees) of a JWW text.
+ *
+ * Jw_cad 縦字 uses a Windows vertical font (`@ＭＳ ゴシック`), which the
+ * viewer draws vertically along the text rotation like AutoCAD does. Such a
+ * text must therefore be rotated along the string, which runs from the start
+ * point to the end point (downwards for 縦字 at 0°), not by the angle of the
+ * characters.
+ */
+function jwwTextRotation(e: EzDxfEntity, font: string) {
+  const rotation = typeof e.rotation === 'number' ? e.rotation : 0
+  if (!font.trim().startsWith('@')) return rotation
+  const dx = Number(e.end_x) - Number(e.x)
+  const dy = Number(e.end_y) - Number(e.y)
+  if (!(Math.hypot(dx, dy) > 1e-9)) return (((rotation - 90) % 360) + 360) % 360
+  const degrees = (Math.atan2(dy, dx) * 180) / Math.PI
+  return ((degrees % 360) + 360) % 360
+}
+
 /** Metrics of the font the viewer substitutes for a Jw_cad font name. */
 export function jwwTextFontMetrics(font: string) {
   return /明朝|mincho/i.test(font)
@@ -475,7 +494,8 @@ class JwwDxfWriter {
         // is the baseline, one descender above it.
         const metrics = jwwTextFontMetrics(font)
         const cell = n('height')
-        const angle = (n('rotation') * Math.PI) / 180
+        const rotation = jwwTextRotation(e, font)
+        const angle = (rotation * Math.PI) / 180
         const rise = cell * metrics.descender
         const x = n('x') - Math.sin(angle) * rise
         const y = n('y') + Math.cos(angle) * rise
@@ -484,7 +504,7 @@ class JwwDxfWriter {
         this.pair(40, fmt(cell * metrics.capHeight * s))
         this.pair(41, fmt(width))
         this.pair(1, oneLine(content))
-        this.pair(50, fmt(n('rotation')))
+        this.pair(50, fmt(rotation))
         this.pair(7, style)
         break
       }

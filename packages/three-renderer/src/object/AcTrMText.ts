@@ -8,6 +8,10 @@ import { MTextData, MTextObject } from '@mlightcad/mtext-renderer'
 import { AcTrMTextRenderer } from '../renderer/AcTrMTextRenderer'
 import { AcTrRenderContext } from '../renderer/AcTrRenderContext'
 import { resolveMTextRenderRoot } from '../util/AcTrObjectUserData'
+import {
+  AcTrVerticalTextLayout,
+  acTrVerticalTextMode
+} from '../util/AcTrVerticalText'
 import { AcTrGlyphEntity } from './AcTrGlyphEntity'
 
 /**
@@ -73,7 +77,8 @@ export class AcTrMText extends AcTrGlyphEntity {
       this._style.font ?? '',
       this._style.extendedFont ?? '',
       this._style.widthFactor ?? 1,
-      this._text.widthFactor ?? 1
+      this._text.widthFactor ?? 1,
+      acTrVerticalTextMode(this._text, this._style) ?? ''
     ].join('\0')
   }
 
@@ -105,6 +110,22 @@ export class AcTrMText extends AcTrGlyphEntity {
   }
 
   /**
+   * Layout for vertical text (縦書き): an `@` font or a vertical text style.
+   *
+   * @returns `undefined` for horizontal text.
+   */
+  private verticalLayout() {
+    const mode = acTrVerticalTextMode(this._text, this._style)
+    return mode
+      ? new AcTrVerticalTextLayout(
+          mode,
+          this.toPlanViewMTextData(),
+          this._style
+        )
+      : undefined
+  }
+
+  /**
    * Annotative MTEXT must stay unbatched so paper-space viewports can rescale
    * individual drawables for the active annotation scale.
    */
@@ -119,6 +140,14 @@ export class AcTrMText extends AcTrGlyphEntity {
    * @inheritdoc
    */
   protected override renderSync(renderer: AcTrMTextRenderer) {
+    const vertical = this.verticalLayout()
+    if (vertical) {
+      return vertical.compose(
+        vertical.pieces.map(piece =>
+          renderer.syncRenderMText(piece.data, piece.style, this._colorSettings)
+        )
+      )
+    }
     return renderer.syncRenderMText(
       this.toPlanViewMTextData(),
       this._style,
@@ -130,6 +159,20 @@ export class AcTrMText extends AcTrGlyphEntity {
    * @inheritdoc
    */
   protected override async renderAsync(renderer: AcTrMTextRenderer) {
+    const vertical = this.verticalLayout()
+    if (vertical) {
+      return vertical.compose(
+        await Promise.all(
+          vertical.pieces.map(piece =>
+            renderer.asyncRenderMText(
+              piece.data,
+              piece.style,
+              this._colorSettings
+            )
+          )
+        )
+      )
+    }
     const rendered = await renderer.asyncRenderMText(
       this.toPlanViewMTextData(),
       this._style,
