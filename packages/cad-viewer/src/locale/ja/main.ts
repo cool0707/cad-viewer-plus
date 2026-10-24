@@ -673,7 +673,7 @@ export default {
         propValCopied: 'プロパティの値をコピーしました',
         failedToCopyPropVal: 'プロパティの値をコピーできませんでした。',
         selection: '選択範囲',
-        mixed: '混在',
+        mixed: '複数の値',
         x: 'X',
         y: 'Y',
         width: '幅',
