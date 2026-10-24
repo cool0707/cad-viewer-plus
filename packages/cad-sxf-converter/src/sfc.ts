@@ -28,6 +28,8 @@ import {
   sampleSpline,
   type SxfCurve,
   SxfDrawing,
+  sxfImageFileName,
+  sxfImageFromPaths,
   type SxfStyle,
   transformCurve
 } from './drawing'
@@ -623,8 +625,32 @@ export class SfcDrawingBuilder {
     const local = placement(pt(f, 2), num(f, 4), num(f, 5) || 1, num(f, 6) || 1)
     const nextActive = new Set(active).add(definitionId)
     const placed = compose(t, local)
-    for (const id of definition.components) {
-      this.render(id, placed, nextLayer, visible, nextActive)
+    const renderComponents = () => {
+      for (const id of definition.components) {
+        this.render(id, placed, nextLayer, visible, nextActive)
+      }
+    }
+    const imageFile = sxfImageFileName(definition.name)
+    if (imageFile) this.renderImage(imageFile, renderComponents)
+    else renderComponents()
+  }
+
+  /** Draws an image attribute's rectangle as an image (else as lines). */
+  private renderImage(fileName: string, renderComponents: () => void) {
+    const saved = this.drawing.paths
+    this.drawing.paths = []
+    renderComponents()
+    const paths = this.drawing.paths
+    this.drawing.paths = saved
+    const image = sxfImageFromPaths(fileName, paths)
+    if (image) {
+      this.drawing.images.push(image)
+    } else {
+      this.drawing.paths.push(...paths)
+      this.drawing.warnOnce(
+        `image-shape-${fileName}`,
+        `Image "${fileName}" has no rectangle; drawn as lines`
+      )
     }
   }
 

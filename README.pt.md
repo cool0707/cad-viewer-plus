@@ -108,6 +108,9 @@ O JWW guarda as coordenadas em milímetros de papel. Por padrão tudo é escalad
 grupo de camadas principal (o que tem mais entidades), então o desenho fica igual ao Jw_cad e o
 desenho principal é medido em milímetros reais. `scaleMode: 'layer-group'` usa a escala de cada
 grupo e `scaleMode: 'paper'` mantém milímetros de papel. O formato antigo JWC é convertido da mesma forma (não guarda fontes, então o texto usa ＭＳ ゴシック).
+Imagens posicionadas com `^@BM` aparecem como imagens raster: as embutidas no JWW são exibidas diretamente e
+as que apontam para arquivos externos aparecem como imagens ausentes, que podem ser indicadas no visualizador.
+O recorte de imagens ainda não é aplicado.
 
 ## Suporte a SXF
 
@@ -125,7 +128,9 @@ registerSxfConverter()
 As coordenadas SXF estão em milímetros de papel e os desenhos parciais são posicionados com uma escala. Por
 padrão tudo é escalado pela escala do desenho parcial principal: a folha fica como impressa e a vista
 principal é medida em milímetros reais; `scaleMode: 'paper'` mantém milímetros de papel. Círculos, arcos e
-elipses continuam curvas e o texto segue a caixa SXF. Atributos (SAF) e imagens raster não são carregados.
+elipses continuam curvas e o texto segue a caixa SXF. Imagens raster (atributos de imagem do SXF 3.1) aparecem quando o arquivo de imagem está incluído no
+`.sfz` / `.p2z`; TIFF monocromático (G4) é convertido para o navegador e JPEG é usado como está. Um `.sfc` /
+`.p21` isolado mostra o quadro da imagem como imagem ausente. Arquivos de atributos (SAF) não são carregados.
 
 ## Licença
 

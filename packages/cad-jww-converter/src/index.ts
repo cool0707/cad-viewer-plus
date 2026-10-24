@@ -1,5 +1,6 @@
 export * from './AcDbJwwConverter'
 export * from './constants'
+export * from './jwwImage'
 export * from './jwwPaper'
 export * from './jwwToDxf'
 export * from './registerJwwConverter'

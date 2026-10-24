@@ -74,11 +74,15 @@ describe('SFC parsing', () => {
       kind: 'string',
       value: '通り芯'
     })
-    expect(model.definitions.size).toBe(1)
-    const [plan] = model.definitions.values()
+    // The plan and the image attribute (a kind-3 group around a rectangle).
+    expect(model.definitions.size).toBe(2)
+    const [image, plan] = model.definitions.values()
     expect(plan).toEqual(expect.objectContaining({ name: '平面図', kind: 1 }))
+    expect(image).toEqual(expect.objectContaining({ kind: 3 }))
+    expect(image.name).toMatch(/^\$\$ATRU\$\$.*\$\$画像\$\$SXF-MAP\.TIF/)
     expect(model.hatches.size).toBe(2)
-    expect(model.sheetComponents.length).toBe(5) // placement + border, title block, 2 texts
+    // 2 placements + border, title block, 3 texts
+    expect(model.sheetComponents.length).toBe(7)
   })
 
   it('flattens the drawing with placement scales', () => {

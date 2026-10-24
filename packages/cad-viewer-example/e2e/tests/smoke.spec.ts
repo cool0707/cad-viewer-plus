@@ -61,10 +61,10 @@ async function getInsertInheritedColorPixelCounts(page: Page) {
       magenta: 0
     }
 
-    // Sample every other pixel for speed. This still captures enough signal
-    // for stable color-presence checks across CI environments.
-    for (let y = 0; y < height; y += 2) {
-      for (let x = 0; x < width; x += 2) {
+    // Count every pixel: the lines are 1px wide, so sampling every other
+    // pixel misses too many of them once the docked palette narrows the canvas.
+    for (let y = 0; y < height; y++) {
+      for (let x = 0; x < width; x++) {
         const index = (y * width + x) * 4
         const r = data[index]
         const g = data[index + 1]

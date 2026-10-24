@@ -34,10 +34,12 @@ function init(wasmUrl?: string) {
 self.onmessage = async (event: MessageEvent<JwwWorkerRequest>) => {
   const { id, data, wasmUrl, scaleMode } = event.data
   let response: JwwWorkerResponse
+  let transfer: Transferable[] = []
   try {
     await init(wasmUrl)
     const result = convertJwwToDxf(ezjww, new Uint8Array(data), { scaleMode })
     response = { id, ok: true, ...result }
+    transfer = result.images.map(image => image.data.buffer as ArrayBuffer)
   } catch (error) {
     response = {
       id,
@@ -45,5 +47,5 @@ self.onmessage = async (event: MessageEvent<JwwWorkerRequest>) => {
       error: error instanceof Error ? error.message : String(error)
     }
   }
-  self.postMessage(response)
+  self.postMessage(response, transfer)
 }

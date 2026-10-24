@@ -74,6 +74,19 @@ export interface SxfMarker extends Primitive {
   position: Point
 }
 
+/**
+ * Raster image placed by an SXF 3.1 image attribute: the parallelogram
+ * `origin + a·u + b·v` (0 ≤ a, b ≤ 1), lower-left corner at `origin`.
+ */
+export interface SxfImage extends Primitive {
+  /** Image file name as written in the attribute (relative to the drawing). */
+  fileName: string
+  origin: Point
+  /** Width direction (bottom edge) and height direction (left edge). */
+  u: Point
+  v: Point
+}
+
 export interface SxfSheet {
   name: string
   width: number
@@ -85,6 +98,7 @@ export class SxfDrawing {
   fills: SxfFill[] = []
   texts: SxfText[] = []
   markers: SxfMarker[] = []
+  images: SxfImage[] = []
   warnings: string[] = []
   sheet?: SxfSheet
   private warned = new Set<string>()
@@ -426,3 +440,34 @@ export function near(a: Point, b: Point) {
 }
 
 export { deg, rad }
+
+/**
+ * Image file named by a composite figure that carries the SXF 3.1 image
+ * attribute (`$$ATRU$$<id>$$<figure>$$画像$$<file>[$$STR]`). P21 subfigure
+ * names keep their `$$SXF_G_` prefix.
+ */
+export function sxfImageFileName(definitionName: string) {
+  const name = definitionName.replace(/^\$\$SXF_[A-Z]+_/i, '')
+  if (!name.startsWith('$$ATRU$$')) return undefined
+  const fields = name.slice('$$ATRU$$'.length).split('$$')
+  return fields[2] === '画像' && fields[3] ? fields[3] : undefined
+}
+
+/**
+ * Turns the rectangle of an image attribute into an image placement. SXF
+ * writes it clockwise from the lower-left corner: lower-left, upper-left,
+ * upper-right, lower-right.
+ */
+export function sxfImageFromPaths(
+  fileName: string,
+  paths: SxfPath[]
+): SxfImage | undefined {
+  if (paths.length !== 1) return undefined
+  const [path] = paths
+  const p = path.points
+  if (p.length < 4 || path.curve) return undefined
+  const v: Point = [p[1][0] - p[0][0], p[1][1] - p[0][1]]
+  const u: Point = [p[3][0] - p[0][0], p[3][1] - p[0][1]]
+  if (!(Math.hypot(...u) > 1e-9) || !(Math.hypot(...v) > 1e-9)) return undefined
+  return { fileName, origin: p[0], u, v, style: path.style, scale: path.scale }
+}

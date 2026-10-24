@@ -23,7 +23,7 @@ overrides:
 
 patchedDependencies:
   '@mlightcad/data-model@1.15.14':
-    hash: 871f264c2f67748d46f0b722857a086168308d44eca1094e6426ce0286ecbd9b
+    hash: 5f379fa93af7ea2afeed779881601591f28b8ac7feb6747239e9ddc18d2e556f
     path: patches/@mlightcad__data-model@1.15.14.patch
   '@mlightcad/geometry-engine@3.15.14':
     hash: 1508b868aeb420986b9c32cd37a40653cdf969d914d6b0e9adcc7712ad1e97ae
@@ -34,6 +34,9 @@ patchedDependencies:
   '@mlightcad/mtext-renderer@0.13.5':
     hash: 0d988d98fc2da267cf496f084984c2e0401e53b13eeee61a5455f6343eb16c68
     path: patches/@mlightcad__mtext-renderer@0.13.5.patch
+  '@mlightcad/ui-components@0.1.11':
+    hash: 01956158551d8748d54ee916485959bc5011e56e1d23c3f4d3af88f48cd74182
+    path: patches/@mlightcad__ui-components@0.1.11.patch
   ezjww@0.7.3:
     hash: b0f1a6d5ff3af15261eeaccd15fd95661ca43329d99fb10facb7a015cc722bb3
     path: patches/ezjww@0.7.3.patch
@@ -147,7 +150,7 @@ importers:
         version: link:../cad-simple-viewer
       '@mlightcad/data-model':
         specifier: 1.15.14
-        version: 1.15.14(patch_hash=871f264c2f67748d46f0b722857a086168308d44eca1094e6426ce0286ecbd9b)
+        version: 1.15.14(patch_hash=5f379fa93af7ea2afeed779881601591f28b8ac7feb6747239e9ddc18d2e556f)
 
   packages/cad-agent-plugin:
     dependencies:
@@ -175,7 +178,7 @@ importers:
         version: link:../cad-simple-viewer
       '@mlightcad/data-model':
         specifier: 1.15.14
-        version: 1.15.14(patch_hash=871f264c2f67748d46f0b722857a086168308d44eca1094e6426ce0286ecbd9b)
+        version: 1.15.14(patch_hash=5f379fa93af7ea2afeed779881601591f28b8ac7feb6747239e9ddc18d2e556f)
       '@vitejs/plugin-vue':
         specifier: ^6.0.8
         version: 6.0.8(vite@6.4.3(@types/node@24.12.4)(sass@1.98.0)(yaml@2.8.3))(vue@3.5.31(typescript@5.9.3))
@@ -196,7 +199,7 @@ importers:
         version: link:../cad-simple-viewer
       '@mlightcad/data-model':
         specifier: 1.15.14
-        version: 1.15.14(patch_hash=871f264c2f67748d46f0b722857a086168308d44eca1094e6426ce0286ecbd9b)
+        version: 1.15.14(patch_hash=5f379fa93af7ea2afeed779881601591f28b8ac7feb6747239e9ddc18d2e556f)
 
   packages/cad-diff-viewer-example:
     dependencies:
@@ -211,10 +214,10 @@ importers:
         version: link:../cad-simple-viewer
       '@mlightcad/data-model':
         specifier: 1.15.14
-        version: 1.15.14(patch_hash=871f264c2f67748d46f0b722857a086168308d44eca1094e6426ce0286ecbd9b)
+        version: 1.15.14(patch_hash=5f379fa93af7ea2afeed779881601591f28b8ac7feb6747239e9ddc18d2e556f)
       '@mlightcad/libredwg-converter':
         specifier: 3.15.14
-        version: 3.15.14(patch_hash=3aabab971edb4741b73076fc4f7bffcca3dd0bca89993bbb9fede4cba94c5c5e)(@mlightcad/data-model@1.15.14(patch_hash=871f264c2f67748d46f0b722857a086168308d44eca1094e6426ce0286ecbd9b))
+        version: 3.15.14(patch_hash=3aabab971edb4741b73076fc4f7bffcca3dd0bca89993bbb9fede4cba94c5c5e)(@mlightcad/data-model@1.15.14(patch_hash=5f379fa93af7ea2afeed779881601591f28b8ac7feb6747239e9ddc18d2e556f))
       '@mlightcad/mtext-parser':
         specifier: 1.5.5
         version: 1.5.5
@@ -235,7 +238,7 @@ importers:
         version: link:../cad-simple-viewer
       '@mlightcad/data-model':
         specifier: 1.15.14
-        version: 1.15.14(patch_hash=871f264c2f67748d46f0b722857a086168308d44eca1094e6426ce0286ecbd9b)
+        version: 1.15.14(patch_hash=5f379fa93af7ea2afeed779881601591f28b8ac7feb6747239e9ddc18d2e556f)
       '@types/gapi':
         specifier: ^0.0.47
         version: 0.0.47
@@ -254,7 +257,7 @@ importers:
     devDependencies:
       '@mlightcad/data-model':
         specifier: 1.15.14
-        version: 1.15.14(patch_hash=871f264c2f67748d46f0b722857a086168308d44eca1094e6426ce0286ecbd9b)
+        version: 1.15.14(patch_hash=5f379fa93af7ea2afeed779881601591f28b8ac7feb6747239e9ddc18d2e556f)
       '@mlightcad/three-renderer':
         specifier: workspace:*
         version: link:../three-renderer
@@ -275,10 +278,10 @@ importers:
         version: link:../cad-html-core
       '@mlightcad/data-model':
         specifier: 1.15.14
-        version: 1.15.14(patch_hash=871f264c2f67748d46f0b722857a086168308d44eca1094e6426ce0286ecbd9b)
+        version: 1.15.14(patch_hash=5f379fa93af7ea2afeed779881601591f28b8ac7feb6747239e9ddc18d2e556f)
       '@mlightcad/libredwg-converter':
         specifier: 3.15.14
-        version: 3.15.14(patch_hash=3aabab971edb4741b73076fc4f7bffcca3dd0bca89993bbb9fede4cba94c5c5e)(@mlightcad/data-model@1.15.14(patch_hash=871f264c2f67748d46f0b722857a086168308d44eca1094e6426ce0286ecbd9b))
+        version: 3.15.14(patch_hash=3aabab971edb4741b73076fc4f7bffcca3dd0bca89993bbb9fede4cba94c5c5e)(@mlightcad/data-model@1.15.14(patch_hash=5f379fa93af7ea2afeed779881601591f28b8ac7feb6747239e9ddc18d2e556f))
       '@mlightcad/libredwg-web':
         specifier: 0.8.2
         version: 0.8.2
@@ -321,7 +324,7 @@ importers:
         version: link:../cad-simple-viewer
       '@mlightcad/data-model':
         specifier: 1.15.14
-        version: 1.15.14(patch_hash=871f264c2f67748d46f0b722857a086168308d44eca1094e6426ce0286ecbd9b)
+        version: 1.15.14(patch_hash=5f379fa93af7ea2afeed779881601591f28b8ac7feb6747239e9ddc18d2e556f)
       '@mlightcad/three-renderer':
         specifier: workspace:*
         version: link:../three-renderer
@@ -349,10 +352,13 @@ importers:
       ezjww:
         specifier: 0.7.3
         version: 0.7.3(patch_hash=b0f1a6d5ff3af15261eeaccd15fd95661ca43329d99fb10facb7a015cc722bb3)
+      fflate:
+        specifier: 0.8.2
+        version: 0.8.2
     devDependencies:
       '@mlightcad/data-model':
         specifier: 1.15.14
-        version: 1.15.14(patch_hash=871f264c2f67748d46f0b722857a086168308d44eca1094e6426ce0286ecbd9b)
+        version: 1.15.14(patch_hash=5f379fa93af7ea2afeed779881601591f28b8ac7feb6747239e9ddc18d2e556f)
 
   packages/cad-onedrive-plugin:
     dependencies:
@@ -365,7 +371,7 @@ importers:
         version: link:../cad-simple-viewer
       '@mlightcad/data-model':
         specifier: 1.15.14
-        version: 1.15.14(patch_hash=871f264c2f67748d46f0b722857a086168308d44eca1094e6426ce0286ecbd9b)
+        version: 1.15.14(patch_hash=5f379fa93af7ea2afeed779881601591f28b8ac7feb6747239e9ddc18d2e556f)
 
   packages/cad-pdf-plugin:
     devDependencies:
@@ -374,7 +380,7 @@ importers:
         version: link:../cad-simple-viewer
       '@mlightcad/data-model':
         specifier: 1.15.14
-        version: 1.15.14(patch_hash=871f264c2f67748d46f0b722857a086168308d44eca1094e6426ce0286ecbd9b)
+        version: 1.15.14(patch_hash=5f379fa93af7ea2afeed779881601591f28b8ac7feb6747239e9ddc18d2e556f)
       '@mlightcad/mtext-parser':
         specifier: 1.5.5
         version: 1.5.5
@@ -426,7 +432,7 @@ importers:
         version: link:../cad-simple-viewer
       '@mlightcad/data-model':
         specifier: 1.15.14
-        version: 1.15.14(patch_hash=871f264c2f67748d46f0b722857a086168308d44eca1094e6426ce0286ecbd9b)
+        version: 1.15.14(patch_hash=5f379fa93af7ea2afeed779881601591f28b8ac7feb6747239e9ddc18d2e556f)
       vite:
         specifier: ^6.4.3
         version: 6.4.3(@types/node@24.12.4)(sass@1.98.0)(yaml@2.8.3)
@@ -438,13 +444,13 @@ importers:
         version: link:../cad-simple-viewer
       '@mlightcad/data-model':
         specifier: 1.15.14
-        version: 1.15.14(patch_hash=871f264c2f67748d46f0b722857a086168308d44eca1094e6426ce0286ecbd9b)
+        version: 1.15.14(patch_hash=5f379fa93af7ea2afeed779881601591f28b8ac7feb6747239e9ddc18d2e556f)
 
   packages/cad-simple-viewer:
     devDependencies:
       '@mlightcad/data-model':
         specifier: 1.15.14
-        version: 1.15.14(patch_hash=871f264c2f67748d46f0b722857a086168308d44eca1094e6426ce0286ecbd9b)
+        version: 1.15.14(patch_hash=5f379fa93af7ea2afeed779881601591f28b8ac7feb6747239e9ddc18d2e556f)
       '@mlightcad/mtext-input-box':
         specifier: 0.3.5
         version: 0.3.5(@mlightcad/mtext-parser@1.5.5)(@mlightcad/mtext-renderer@0.13.5(patch_hash=0d988d98fc2da267cf496f084984c2e0401e53b13eeee61a5455f6343eb16c68)(@mlightcad/mtext-parser@1.5.5)(three@0.186.1))(three@0.186.1)
@@ -498,10 +504,10 @@ importers:
         version: link:../cad-svg-plugin
       '@mlightcad/data-model':
         specifier: 1.15.14
-        version: 1.15.14(patch_hash=871f264c2f67748d46f0b722857a086168308d44eca1094e6426ce0286ecbd9b)
+        version: 1.15.14(patch_hash=5f379fa93af7ea2afeed779881601591f28b8ac7feb6747239e9ddc18d2e556f)
       '@mlightcad/libredwg-converter':
         specifier: 3.15.14
-        version: 3.15.14(patch_hash=3aabab971edb4741b73076fc4f7bffcca3dd0bca89993bbb9fede4cba94c5c5e)(@mlightcad/data-model@1.15.14(patch_hash=871f264c2f67748d46f0b722857a086168308d44eca1094e6426ce0286ecbd9b))
+        version: 3.15.14(patch_hash=3aabab971edb4741b73076fc4f7bffcca3dd0bca89993bbb9fede4cba94c5c5e)(@mlightcad/data-model@1.15.14(patch_hash=5f379fa93af7ea2afeed779881601591f28b8ac7feb6747239e9ddc18d2e556f))
       '@mlightcad/mtext-parser':
         specifier: 1.5.5
         version: 1.5.5
@@ -568,10 +574,10 @@ importers:
         version: link:../cad-svg-plugin
       '@mlightcad/data-model':
         specifier: 1.15.14
-        version: 1.15.14(patch_hash=871f264c2f67748d46f0b722857a086168308d44eca1094e6426ce0286ecbd9b)
+        version: 1.15.14(patch_hash=5f379fa93af7ea2afeed779881601591f28b8ac7feb6747239e9ddc18d2e556f)
       '@mlightcad/libredwg-converter':
         specifier: 3.15.14
-        version: 3.15.14(patch_hash=3aabab971edb4741b73076fc4f7bffcca3dd0bca89993bbb9fede4cba94c5c5e)(@mlightcad/data-model@1.15.14(patch_hash=871f264c2f67748d46f0b722857a086168308d44eca1094e6426ce0286ecbd9b))
+        version: 3.15.14(patch_hash=3aabab971edb4741b73076fc4f7bffcca3dd0bca89993bbb9fede4cba94c5c5e)(@mlightcad/data-model@1.15.14(patch_hash=5f379fa93af7ea2afeed779881601591f28b8ac7feb6747239e9ddc18d2e556f))
       '@mlightcad/mtext-parser':
         specifier: 1.5.5
         version: 1.5.5
@@ -615,7 +621,7 @@ importers:
         version: link:../cad-simple-viewer
       '@mlightcad/data-model':
         specifier: 1.15.14
-        version: 1.15.14(patch_hash=871f264c2f67748d46f0b722857a086168308d44eca1094e6426ce0286ecbd9b)
+        version: 1.15.14(patch_hash=5f379fa93af7ea2afeed779881601591f28b8ac7feb6747239e9ddc18d2e556f)
       '@mlightcad/mtext-parser':
         specifier: 1.5.5
         version: 1.5.5
@@ -628,10 +634,13 @@ importers:
       fflate:
         specifier: 0.8.2
         version: 0.8.2
+      utif2:
+        specifier: 4.1.0
+        version: 4.1.0
     devDependencies:
       '@mlightcad/data-model':
         specifier: 1.15.14
-        version: 1.15.14(patch_hash=871f264c2f67748d46f0b722857a086168308d44eca1094e6426ce0286ecbd9b)
+        version: 1.15.14(patch_hash=5f379fa93af7ea2afeed779881601591f28b8ac7feb6747239e9ddc18d2e556f)
 
   packages/cad-vertical-text: {}
 
@@ -669,7 +678,7 @@ importers:
         version: link:../cad-svg-plugin
       '@mlightcad/data-model':
         specifier: 1.15.14
-        version: 1.15.14(patch_hash=871f264c2f67748d46f0b722857a086168308d44eca1094e6426ce0286ecbd9b)
+        version: 1.15.14(patch_hash=5f379fa93af7ea2afeed779881601591f28b8ac7feb6747239e9ddc18d2e556f)
       '@mlightcad/pdf-renderer':
         specifier: workspace:*
         version: link:../pdf-renderer
@@ -684,7 +693,7 @@ importers:
         version: 0.0.9(three@0.186.1)
       '@mlightcad/ui-components':
         specifier: 0.1.11
-        version: 0.1.11(element-plus@2.13.6(typescript@5.9.3)(vue@3.5.31(typescript@5.9.3)))(vue@3.5.31(typescript@5.9.3))
+        version: 0.1.11(patch_hash=01956158551d8748d54ee916485959bc5011e56e1d23c3f4d3af88f48cd74182)(element-plus@2.13.6(typescript@5.9.3)(vue@3.5.31(typescript@5.9.3)))(vue@3.5.31(typescript@5.9.3))
       '@vitejs/plugin-vue':
         specifier: ^6.0.8
         version: 6.0.8(vite@6.4.3(@types/node@24.12.4)(sass@1.98.0)(yaml@2.8.3))(vue@3.5.31(typescript@5.9.3))
@@ -774,10 +783,10 @@ importers:
         version: link:../cad-viewer
       '@mlightcad/data-model':
         specifier: 1.15.14
-        version: 1.15.14(patch_hash=871f264c2f67748d46f0b722857a086168308d44eca1094e6426ce0286ecbd9b)
+        version: 1.15.14(patch_hash=5f379fa93af7ea2afeed779881601591f28b8ac7feb6747239e9ddc18d2e556f)
       '@mlightcad/libredwg-converter':
         specifier: 3.15.14
-        version: 3.15.14(patch_hash=3aabab971edb4741b73076fc4f7bffcca3dd0bca89993bbb9fede4cba94c5c5e)(@mlightcad/data-model@1.15.14(patch_hash=871f264c2f67748d46f0b722857a086168308d44eca1094e6426ce0286ecbd9b))
+        version: 3.15.14(patch_hash=3aabab971edb4741b73076fc4f7bffcca3dd0bca89993bbb9fede4cba94c5c5e)(@mlightcad/data-model@1.15.14(patch_hash=5f379fa93af7ea2afeed779881601591f28b8ac7feb6747239e9ddc18d2e556f))
       '@mlightcad/mtext-parser':
         specifier: 1.5.5
         version: 1.5.5
@@ -869,7 +878,7 @@ importers:
     devDependencies:
       '@mlightcad/data-model':
         specifier: 1.15.14
-        version: 1.15.14(patch_hash=871f264c2f67748d46f0b722857a086168308d44eca1094e6426ce0286ecbd9b)
+        version: 1.15.14(patch_hash=5f379fa93af7ea2afeed779881601591f28b8ac7feb6747239e9ddc18d2e556f)
       '@mlightcad/mtext-parser':
         specifier: 1.5.5
         version: 1.5.5
@@ -888,7 +897,7 @@ importers:
     devDependencies:
       '@mlightcad/data-model':
         specifier: 1.15.14
-        version: 1.15.14(patch_hash=871f264c2f67748d46f0b722857a086168308d44eca1094e6426ce0286ecbd9b)
+        version: 1.15.14(patch_hash=5f379fa93af7ea2afeed779881601591f28b8ac7feb6747239e9ddc18d2e556f)
       '@mlightcad/mtext-parser':
         specifier: 1.5.5
         version: 1.5.5
@@ -2473,8 +2482,8 @@ packages:
   '@maxim_mazurok/gapi.client.discovery-v1@0.6.20200806':
     resolution: {integrity: sha512-QN6aGmIbLXcJW0SEf8tz9UWCpQTBMy2u4xSuZ04YofzMGknhWwMeUecySLntCZYAEstHzDoSgwxCf5Gb8GqIRQ==}
 
-  '@maxim_mazurok/gapi.client.drive-v3@0.3.20261012':
-    resolution: {integrity: sha512-pyIFD7bd5Ly1lkpjzT0hxFUsB7ZbzXUCf2LK8BQN0sggFHeGS4CyCoqdyDI8qQFm6Lhdd2DhIjSXLXeFMR+e3Q==}
+  '@maxim_mazurok/gapi.client.drive-v3@0.3.20261020':
+    resolution: {integrity: sha512-j8ZEjp03eOCHWV9Mevpb/TWUqhVW96HntTJ1cx+rXxd1zqh3H+zA69aOyh9r0cOQXZDznK8QMHitpVmMRVghCQ==}
 
   '@microsoft/api-extractor-model@7.33.5':
     resolution: {integrity: sha512-Xh4dXuusndVQqVz4nEN9xOp0DyzsKxeD2FFJkSPg4arAjDSKPcy6cAc7CaeBPA7kF2wV1fuDlo2p/bNMpVr8yg==}
@@ -6308,6 +6317,9 @@ packages:
   uri-js@4.4.1:
     resolution: {integrity: sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg==}
 
+  utif2@4.1.0:
+    resolution: {integrity: sha512-+oknB9FHrJ7oW7A2WZYajOcv4FcDR4CfoGB0dPNfxbi4GO05RRnFmt5oa23+9w32EanrYcSJWspUiJkLMs+37w==}
+
   util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
 
@@ -8478,7 +8490,7 @@ snapshots:
       '@types/gapi.client': 1.0.8
       '@types/gapi.client.discovery-v1': 0.0.4
 
-  '@maxim_mazurok/gapi.client.drive-v3@0.3.20261012':
+  '@maxim_mazurok/gapi.client.drive-v3@0.3.20261020':
     dependencies:
       '@types/gapi.client': 1.0.8
       '@types/gapi.client.discovery-v1': 0.0.4
@@ -8527,7 +8539,7 @@ snapshots:
     dependencies:
       loglevel: 1.9.2
 
-  '@mlightcad/data-model@1.15.14(patch_hash=871f264c2f67748d46f0b722857a086168308d44eca1094e6426ce0286ecbd9b)':
+  '@mlightcad/data-model@1.15.14(patch_hash=5f379fa93af7ea2afeed779881601591f28b8ac7feb6747239e9ddc18d2e556f)':
     dependencies:
       '@mlightcad/common': 1.15.14
       '@mlightcad/emf-converter': 1.15.14
@@ -8546,9 +8558,9 @@ snapshots:
       '@mlightcad/common': 1.15.14
       '@mlightcad/geometry-engine': 3.15.14(patch_hash=1508b868aeb420986b9c32cd37a40653cdf969d914d6b0e9adcc7712ad1e97ae)(@mlightcad/common@1.15.14)
 
-  '@mlightcad/libredwg-converter@3.15.14(patch_hash=3aabab971edb4741b73076fc4f7bffcca3dd0bca89993bbb9fede4cba94c5c5e)(@mlightcad/data-model@1.15.14(patch_hash=871f264c2f67748d46f0b722857a086168308d44eca1094e6426ce0286ecbd9b))':
+  '@mlightcad/libredwg-converter@3.15.14(patch_hash=3aabab971edb4741b73076fc4f7bffcca3dd0bca89993bbb9fede4cba94c5c5e)(@mlightcad/data-model@1.15.14(patch_hash=5f379fa93af7ea2afeed779881601591f28b8ac7feb6747239e9ddc18d2e556f))':
     dependencies:
-      '@mlightcad/data-model': 1.15.14(patch_hash=871f264c2f67748d46f0b722857a086168308d44eca1094e6426ce0286ecbd9b)
+      '@mlightcad/data-model': 1.15.14(patch_hash=5f379fa93af7ea2afeed779881601591f28b8ac7feb6747239e9ddc18d2e556f)
       '@mlightcad/libredwg-web': 0.8.2
 
   '@mlightcad/libredwg-web@0.8.2': {}
@@ -8587,7 +8599,7 @@ snapshots:
     dependencies:
       three: 0.186.1
 
-  '@mlightcad/ui-components@0.1.11(element-plus@2.13.6(typescript@5.9.3)(vue@3.5.31(typescript@5.9.3)))(vue@3.5.31(typescript@5.9.3))':
+  '@mlightcad/ui-components@0.1.11(patch_hash=01956158551d8748d54ee916485959bc5011e56e1d23c3f4d3af88f48cd74182)(element-plus@2.13.6(typescript@5.9.3)(vue@3.5.31(typescript@5.9.3)))(vue@3.5.31(typescript@5.9.3))':
     dependencies:
       element-plus: 2.13.6(typescript@5.9.3)(vue@3.5.31(typescript@5.9.3))
       vue: 3.5.31(typescript@5.9.3)
@@ -9105,7 +9117,7 @@ snapshots:
 
   '@types/gapi.client.drive-v3@0.0.5':
     dependencies:
-      '@maxim_mazurok/gapi.client.drive-v3': 0.3.20261012
+      '@maxim_mazurok/gapi.client.drive-v3': 0.3.20261020
 
   '@types/gapi.client@1.0.8': {}
 
@@ -12587,6 +12599,10 @@ snapshots:
   uri-js@4.4.1:
     dependencies:
       punycode: 2.3.1
+
+  utif2@4.1.0:
+    dependencies:
+      pako: 1.0.11
 
   util-deprecate@1.0.2: {}
 
