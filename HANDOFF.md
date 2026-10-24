@@ -86,7 +86,7 @@
 - `cad-vertical-text` の使い方: `VerticalTextLayout` が文字を「ピース」(立てる 1 文字か、横倒しのままの塊) に分け、描画側が各ピースを原点に横書きで描いて送り幅を返すと、`place()` が各ピースを縦の列へ動かす行列 (`[a,b,c,d,e,f]`、SVG `matrix()` / PDF `cm` と同じ) を返す。使う側には通常の `dependencies` として入れているので、各パッケージのビルドに同梱される (アプリ側の設定は不要)。Jest は `jest.config.ts` の `moduleNameMapper` で src を読むが、ts-jest の型チェックは `lib/` を見るので、先に `cad-vertical-text` をビルドしておくこと。
 - SVG 出力 (`cad-svg-plugin`): 縦書きは 1 ピース = 1 つの `<text>` に `matrix()` を付けて出す。SVG は文字幅を推定 (半角 0.6、全角 1) しているので、立てる文字は `text-anchor="middle"` で閲覧側に中央揃えさせる。書式コードは外す。
 - PDF 出力: ベクターモードは `cad-pdf-plugin` のグリフ生成器が画面と同じ `AcTrVerticalTextLayout` を使うので画面と一致する。テキストモード (検索可) は `pdf-renderer` が 1 ピース = 1 つの文字列として位置・角度・横倍率付きで書く (PDF の縦書きモード Identity-V / WMode 1 は使っていない。pdf-lib が非対応)。検索・コピーはできるが、コピーした文字列はビューアによって 1 文字ずつ改行される。
-- **PDF テキストモードの既存不具合 (未修正)**: 横書きも含め、一部の文字の字形が描かれない (例: 「居間・食堂」が「居間」だけ、「サンプル平面図」が「ル 図」だけ)。文字の抽出は全部できる。変更前 (HEAD) でも同じなので縦書きとは無関係。`pdffonts` では BIZ UD が subset なし (`sub no`) で埋め込まれており、pdf.js も「TT: undefined function」と警告するので、`AcPdfFontManager` の WOFF → 埋め込みあたりが怪しい。ベクターモードは問題なし。
+- **PDF テキストモードで一部の文字が描かれない不具合 (修正済み)**: 「居間・食堂」が「居間」だけになるなど。原因は pdf-lib が使う `@pdf-lib/fontkit` のサブセット化 (TTFSubset) で、グリフのバイト列をそのままコピーし、小さいサブセットでは short 形式の `loca` (オフセット ÷ 2) を書く。BIZ UD は奇数長のグリフを持つ (long `loca` なら合法) ため、最初の奇数長グリフ以降のオフセットがずれて字形が壊れていた。`AcPdfFontManager` の `decodeFontProgram` で WOFF / TTF を読むときに全グリフを 4 バイト境界にパディングし `loca` を long で書き直して回避 (`__tests__/AcPdfFontSubset.spec.ts`)。`pdffonts` の `sub no` は pdf-lib がサブセット名に `ABCDEF+` を付けないだけで、実際はサブセット埋め込み。
 - SVG の SHX 以外のフォントは閲覧側のフォントで描かれる (縦書き以前からの仕様)。SXF の縦書き (DOWN / 方向 2) は従来どおり 90° 回転で代用。Jw_cad 縦字の文字幅・高さの向き (`size_x` / `size_y`) と終点の扱いは実図面で未確認。
 
 ### 2.1 ビューア側の差し込み口 (調査済み)
