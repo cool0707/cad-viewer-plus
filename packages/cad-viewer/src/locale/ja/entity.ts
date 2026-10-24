@@ -119,7 +119,7 @@ export default {
     color: '色',
     layer: 'レイヤー',
     linetype: '線の種類',
-    linetypeScale: '線の種類の尺度',
+    linetypeScale: '線の間隔スケール',
     lineWeight: '線の太さ',
     thickness: '厚さ',
     transparency: '透過性',
