@@ -15,7 +15,7 @@ export default {
   example: {
     fileUpload: {
       title: '表示する CAD ファイルを選択',
-      subtitle: 'DWG / DXF / JWW (Jw_cad) 図面をビューアに読み込みます',
+      subtitle: 'DWG / DXF / JWW・JWC (Jw_cad) / SXF 図面をビューアに読み込みます',
       fontCdnNotice:
         '日本語フォント (BIZ UD) はビューアに同梱されています。その他の文字 (中国語、韓国語、欧文の代替フォントなど) のフォントは、図面で必要になったときに Google Fonts からダウンロードします。Google Fonts にアクセスできない環境では、それらの文字が正しく表示されない場合があります。',
       newDrawing: '新規図面',
@@ -85,7 +85,7 @@ export default {
       exportDisableHint: '書き出しコマンドとファイルメニューの項目を隠す',
 
       invalidFileType:
-        'ファイルの種類が無効です。DWG / DXF / JWW ファイルをアップロードしてください。'
+        'ファイルの種類が無効です。DWG / DXF / JWW / JWC / SXF (SFC・P21・SFZ・P2Z) ファイルをアップロードしてください。'
     }
   }
 }

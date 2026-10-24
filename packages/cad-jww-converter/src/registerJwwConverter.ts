@@ -4,10 +4,11 @@ import {
   AcDbJwwConverter,
   type AcDbJwwConverterConfig
 } from './AcDbJwwConverter'
-import { JWW_FILE_TYPE } from './constants'
+import { JWC_FILE_TYPE, JWW_FILE_TYPE } from './constants'
 
 /**
- * Registers {@link AcDbJwwConverter} for `.jww` files.
+ * Registers {@link AcDbJwwConverter} for Jw_cad files (`.jww` and the older
+ * `.jwc`).
  *
  * @param parserWorkerUrl - URL of `jww-parser-worker.js` (with
  *   `jww-parser.wasm` next to it)
@@ -19,5 +20,6 @@ export function registerJwwConverter(
 ): AcDbJwwConverter {
   const converter = new AcDbJwwConverter({ ...config, parserWorkerUrl })
   AcDbDatabaseConverterManager.instance.register(JWW_FILE_TYPE, converter)
+  AcDbDatabaseConverterManager.instance.register(JWC_FILE_TYPE, converter)
   return converter
 }

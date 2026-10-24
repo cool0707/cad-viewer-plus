@@ -619,6 +619,16 @@ importers:
         specifier: 0.13.5
         version: 0.13.5(patch_hash=0d988d98fc2da267cf496f084984c2e0401e53b13eeee61a5455f6343eb16c68)(@mlightcad/mtext-parser@1.5.5)(three@0.186.1)
 
+  packages/cad-sxf-converter:
+    dependencies:
+      fflate:
+        specifier: 0.8.2
+        version: 0.8.2
+    devDependencies:
+      '@mlightcad/data-model':
+        specifier: 1.15.14
+        version: 1.15.14(patch_hash=871f264c2f67748d46f0b722857a086168308d44eca1094e6426ce0286ecbd9b)
+
   packages/cad-viewer:
     devDependencies:
       '@element-plus/icons-vue':
@@ -750,6 +760,9 @@ importers:
       '@mlightcad/cad-simple-viewer':
         specifier: workspace:*
         version: link:../cad-simple-viewer
+      '@mlightcad/cad-sxf-converter':
+        specifier: workspace:*
+        version: link:../cad-sxf-converter
       '@mlightcad/cad-viewer':
         specifier: workspace:*
         version: link:../cad-viewer

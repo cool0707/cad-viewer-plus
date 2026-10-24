@@ -39,11 +39,14 @@ acontecem no cliente, então os desenhos nunca saem do dispositivo do usuário.
 - **Troca do modo de seleção** — um botão da barra de status alterna entre o estilo CAD
   (cada clique adiciona) e substituir ao clicar (Shift + clique adiciona ou remove, clicar no vazio
   limpa a seleção). Por enquanto o estilo CAD continua sendo o padrão.
-- **Importação de JWW (Jw_cad)** — o app de exemplo abre arquivos `.jww` com
+- **Importação de JWW / JWC (Jw_cad)** — o app de exemplo abre arquivos `.jww` e `.jwc` (formato antigo) com
   `@mlightcad/cad-jww-converter` (MIT; analisador [ezjww](https://github.com/monozukuri-ai/ezjww),
   Rust → WebAssembly, em um Web Worker). As coordenadas passam de milímetros de papel para
   milímetros reais com a escala do grupo de camadas, e a folha vira os limites do desenho.
-- Planejado: importação de **SXF** (P21 / SFC).
+- **Importação de SXF** (padrão japonês de intercâmbio CAD para obras públicas) — o app de exemplo abre
+  `.sfc`, `.p21` e as versões ZIP `.sfz` / `.p2z` com `@mlightcad/cad-sxf-converter` (MIT, TypeScript,
+  portado do [ezsxf](https://github.com/monozukuri-ai/ezsxf)). Desenhos parciais aparecem no tamanho real
+  da vista principal, e a folha vira os limites do desenho.
 
 ## Demonstração
 
@@ -85,9 +88,9 @@ DXF é lido pelo analisador MIT embutido. DWG é opcional por meio do
 [LibreDWG](https://github.com/LibreDWG/libredwg) e licenciado sob **GPL-3.0**;
 verifique as implicações da GPL antes de distribuí-lo.
 
-## Suporte a JWW
+## Suporte a JWW / JWC
 
-`@mlightcad/cad-jww-converter` lê desenhos do Jw_cad (`.jww`): analisa o arquivo com ezjww (MIT)
+`@mlightcad/cad-jww-converter` lê desenhos do Jw_cad (`.jww` / `.jwc`): analisa o arquivo com ezjww (MIT)
 em um Web Worker, converte para DXF e carrega com o leitor DXF embutido. Registre-o e publique
 `jww-parser-worker.js` e `jww-parser.wasm` (em `dist/` do pacote) na mesma pasta:
 
@@ -100,7 +103,25 @@ registerJwwConverter('./assets/jww-parser-worker.js')
 O JWW guarda as coordenadas em milímetros de papel. Por padrão tudo é escalado pela escala do
 grupo de camadas principal (o que tem mais entidades), então o desenho fica igual ao Jw_cad e o
 desenho principal é medido em milímetros reais. `scaleMode: 'layer-group'` usa a escala de cada
-grupo e `scaleMode: 'paper'` mantém milímetros de papel. O formato antigo JWC ainda não é suportado.
+grupo e `scaleMode: 'paper'` mantém milímetros de papel. O formato antigo JWC é convertido da mesma forma (não guarda fontes, então o texto usa ＭＳ ゴシック).
+
+## Suporte a SXF
+
+`@mlightcad/cad-sxf-converter` lê desenhos SXF Ver.3.1: SFC (`.sfc`), P21 (`.p21`, AP202) e as versões ZIP
+(`.sfz`, `.p2z`). O analisador é escrito em TypeScript (sem WebAssembly) e o tratamento das entidades foi
+portado do ezsxf (MIT). O desenho é convertido em linhas, curvas, textos, preenchimentos e hachuras e
+carregado pelo leitor DXF embutido.
+
+```ts
+import { registerSxfConverter } from '@mlightcad/cad-sxf-converter'
+
+registerSxfConverter()
+```
+
+As coordenadas SXF estão em milímetros de papel e os desenhos parciais são posicionados com uma escala. Por
+padrão tudo é escalado pela escala do desenho parcial principal: a folha fica como impressa e a vista
+principal é medida em milímetros reais; `scaleMode: 'paper'` mantém milímetros de papel. Círculos, arcos e
+elipses continuam curvas e o texto segue a caixa SXF. Atributos (SAF) e imagens raster não são carregados.
 
 ## Licença
 

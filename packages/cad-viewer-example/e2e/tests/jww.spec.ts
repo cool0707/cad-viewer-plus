@@ -32,3 +32,25 @@ test('opens a Jw_cad (.jww) drawing through the JWW parser worker', async ({
   await expect(page.getByText(/Failed to open/)).toHaveCount(0)
   expect(pageErrors).toEqual([])
 })
+
+test('opens an old-format Jw_cad (.jwc) drawing', async ({ page }) => {
+  const pageErrors: string[] = []
+  page.on('pageerror', error => pageErrors.push(error.message))
+
+  await page.goto('/')
+  const fileInput = page.locator('input[type="file"]').first()
+  await expect(fileInput).toHaveAttribute('accept', /\.jwc/)
+  // ezjww's MIT JWC test drawing (line, circle, text, point).
+  await uploadFixture(
+    page,
+    path.resolve(
+      currentDir,
+      '../../../cad-jww-converter/__tests__/fixtures/q070.jwc'
+    )
+  )
+
+  await expect(page.locator('.ml-cad-container canvas').first()).toBeVisible()
+  await expect(page.getByText('q070.jwc').first()).toBeVisible()
+  await expect(page.getByText(/Failed to open/)).toHaveCount(0)
+  expect(pageErrors).toEqual([])
+})
