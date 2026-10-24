@@ -37,6 +37,11 @@ export class AcEdMTextCompositionPreview {
   private readonly element: HTMLDivElement
   private composing = false
   private text = ''
+  private fontMetrics: {
+    capHeight: number
+    ascent: number
+    descent: number
+  } | null = null
 
   private readonly doc: Document
 
@@ -58,7 +63,7 @@ export class AcEdMTextCompositionPreview {
       display: 'none',
       pointerEvents: 'none',
       whiteSpace: 'pre',
-      lineHeight: '1.2',
+      lineHeight: '1',
       padding: '0 1px',
       color: options.textColor,
       background: options.backgroundColor,
@@ -109,17 +114,54 @@ export class AcEdMTextCompositionPreview {
     const worldHeight = Math.max(this.inputBox.getCurrentFormat().fontSize, 0)
     const center = toScreen(caret.x, caret.y, caret.z)
     const top = toScreen(caret.x, caret.y + worldHeight, caret.z)
-    // MTEXT height is the cap height; a CSS font-size of ~1.4x that renders
-    // capitals at roughly the same size as the drawn text.
-    const fontPx = Math.min(Math.max(Math.abs(center.y - top.y) * 1.4, 12), 200)
+    // MTEXT height is the cap height, and the caret sits at the middle of the
+    // capitals. Which CSS font the browser actually uses (and so its cap
+    // height per em) differs by OS, so size and place the preview from the
+    // metrics of the font as rendered rather than from a fixed ratio.
+    const capPx = Math.abs(center.y - top.y)
+    const metrics = this.measureFont()
+    const fontPx = Math.min(Math.max(capPx / metrics.capHeight, 8), 400)
+    // With `line-height: 1` the baseline is half the leading plus the ascent
+    // below the top of the box.
+    const baselineFromTop =
+      ((1 - metrics.ascent - metrics.descent) / 2 + metrics.ascent) * fontPx
+    const baselineY = center.y + capPx / 2
 
     this.element.textContent = this.text
     Object.assign(this.element.style, {
       display: 'block',
       fontSize: `${fontPx}px`,
       left: `${Math.round(center.x)}px`,
-      top: `${Math.round(center.y - fontPx * 0.6)}px`
+      top: `${baselineY - baselineFromTop}px`
     })
+  }
+
+  /**
+   * Returns cap height, ascent and descent of the preview font per 1px of
+   * font size, measured with the font the browser resolves for the overlay.
+   * Cached for the current composition; re-measured on the next one so a web
+   * font that finished loading in between is picked up.
+   */
+  private measureFont() {
+    if (this.fontMetrics) return this.fontMetrics
+    const fallback = { capHeight: 0.72, ascent: 0.88, descent: 0.12 }
+    const sizePx = 100
+    const ctx = this.doc.createElement('canvas').getContext('2d')
+    if (!ctx) return fallback
+    const { fontFamily, fontStyle, fontWeight } =
+      this.doc.defaultView?.getComputedStyle(this.element) ?? this.element.style
+    ctx.font = `${fontStyle || 'normal'} ${fontWeight || 'normal'} ${sizePx}px ${fontFamily}`
+    const cap = ctx.measureText('H')
+    const capHeight = cap.actualBoundingBoxAscent / sizePx
+    const ascent = (cap.fontBoundingBoxAscent ?? NaN) / sizePx
+    const descent = (cap.fontBoundingBoxDescent ?? NaN) / sizePx
+    const valid = (v: number) => Number.isFinite(v) && v > 0
+    this.fontMetrics = {
+      capHeight: valid(capHeight) ? capHeight : fallback.capHeight,
+      ascent: valid(ascent) ? ascent : fallback.ascent,
+      descent: valid(descent) ? descent : fallback.descent
+    }
+    return this.fontMetrics
   }
 
   /** Removes the overlay and its listeners. */
@@ -140,6 +182,7 @@ export class AcEdMTextCompositionPreview {
     if (!this.isOwnImeEvent(event)) return
     this.composing = true
     this.text = ''
+    this.fontMetrics = null
     this.update()
   }
 
