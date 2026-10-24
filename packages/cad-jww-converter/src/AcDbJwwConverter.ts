@@ -13,6 +13,7 @@ import {
 import { imageMimeType, type JwwImageFile, jwwImageKey } from './jwwImage'
 import {
   convertJwwToDxf,
+  cropJwwImages,
   type JwwConversionResult,
   type JwwScaleMode
 } from './jwwToDxf'
@@ -125,9 +126,11 @@ export class AcDbJwwConverter extends AcDbDatabaseConverter {
       }
       await ezjww.initAsync(await response.arrayBuffer())
     }
-    return convertJwwToDxf(ezjww, new Uint8Array(data), {
-      scaleMode: config.scaleMode
-    })
+    return cropJwwImages(
+      convertJwwToDxf(ezjww, new Uint8Array(data), {
+        scaleMode: config.scaleMode
+      })
+    )
   }
 
   /** Stops the parser worker. A later read starts a new one. */

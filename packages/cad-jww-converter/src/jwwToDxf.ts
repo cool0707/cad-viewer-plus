@@ -1,9 +1,17 @@
 import type { DxfDocument, JwcDocument, JwwDocument } from 'ezjww'
 
 import {
+  bmpSize,
+  cropBmp,
+  cropJwwImage,
   decodeJwwImages,
+  imageMimeType,
+  type JwwImageCrop,
   jwwImageDisplayPath,
   type JwwImageFile,
+  jwwImageKey,
+  type JwwImageReference,
+  jwwTrimPixelRect,
   parseJwwImageReference
 } from './jwwImage'
 import { jwwPaperSize } from './jwwPaper'
@@ -58,6 +66,11 @@ export interface JwwConversionResult {
   images: JwwImageFile[]
   /** Parts of the drawing that were converted only approximately. */
   warnings: string[]
+  /**
+   * Trimmed parts of non-BMP images still to be cut out (they need the
+   * browser's image decoder); {@link cropJwwImages} adds them to `images`.
+   */
+  imageCrops?: JwwImageCrop[]
 }
 
 /** Text style used when a JWW text record names no font (and for JWC). */
@@ -251,13 +264,42 @@ export function convertJwwToDxf(
     explodeInserts: false,
     jwcCoordinates: 'paper_millimeters'
   })
-  const writer = new JwwDxfWriter(source, dxfDoc, options.scaleMode ?? 'drawing')
+  const writer = new JwwDxfWriter(
+    source,
+    dxfDoc,
+    options.scaleMode ?? 'drawing'
+  )
   return {
     dxf: writer.write(),
     unsupportedEntities: [...(dxfDoc.unsupported_entities ?? [])],
-    images: source.images,
-    warnings: writer.warnings
+    images: [...source.images, ...writer.trimmedImages],
+    warnings: writer.warnings,
+    ...(writer.imageCrops.length > 0 ? { imageCrops: writer.imageCrops } : {})
   }
+}
+
+/**
+ * Cuts out the trimmed parts of non-BMP images that {@link convertJwwToDxf}
+ * left in `imageCrops`. Where the browser cannot do it, the whole image is
+ * used (shown stretched over the trimmed frame) and a warning is added.
+ */
+export async function cropJwwImages(
+  result: JwwConversionResult
+): Promise<JwwConversionResult> {
+  const { imageCrops = [], ...rest } = result
+  if (imageCrops.length === 0) return rest
+  const images = [...rest.images]
+  const warnings = [...rest.warnings]
+  for (const crop of imageCrops) {
+    const data = await cropJwwImage(crop)
+    if (!data) {
+      const warning =
+        'Some trimmed images could not be cut out and are shown whole'
+      if (!warnings.includes(warning)) warnings.push(warning)
+    }
+    images.push({ name: crop.name, data: data ?? crop.source })
+  }
+  return { ...rest, images, warnings }
 }
 
 /**
@@ -346,6 +388,12 @@ class JwwDxfWriter {
   private readonly blockRecords = new Map<string, string>()
   /** Image path → IMAGEDEF handle. */
   private readonly imageDefs = new Map<string, string>()
+  /** Trimmed parts of embedded images, cut out as their own image files. */
+  readonly trimmedImages: JwwImageFile[] = []
+  /** Trimmed parts of other embedded images, cut out later. */
+  readonly imageCrops: JwwImageCrop[] = []
+  /** Embedded image key + trimmed part → trimmed image name. */
+  private readonly trimmedNames = new Map<string, string>()
   readonly warnings: string[] = []
 
   constructor(
@@ -514,9 +562,17 @@ class JwwDxfWriter {
         if (image) {
           // Keep the per-text width factors aligned with ezjww's texts.
           this.textWidthIndex++
-          this.writeImage(e, s, image.path, image.width, image.height)
+          this.writeImage(
+            e,
+            s,
+            this.imagePath(image),
+            image.width,
+            image.height
+          )
           if (image.hasExtra) {
-            this.warnOnce('Image trimming is not supported; whole images are shown')
+            this.warnOnce(
+              'Image parameters other than trimming (rotation, transparent colour) are ignored'
+            )
           }
           break
         }
@@ -574,6 +630,61 @@ class JwwDxfWriter {
       default:
         break
     }
+  }
+
+  /**
+   * Path of the image file a placement shows. A trimmed placement of an
+   * embedded image gets the trimmed pixels as an image file of its own (so
+   * every renderer and exporter shows just that part): BMPs are cut here,
+   * other formats by {@link cropJwwImages}. Trimmed images that are not
+   * embedded are shown whole, stretched over the trimmed frame.
+   */
+  private imagePath(image: JwwImageReference) {
+    const trim = image.trim
+    if (!trim) return image.path
+    const key = jwwImageKey(image.path)
+    const file = this.source.images.find(f => jwwImageKey(f.name) === key)
+    if (!file) {
+      this.warnOnce(
+        'Trimming of images not stored in the drawing is not supported; they are shown whole'
+      )
+      return image.path
+    }
+    const base = jwwImageDisplayPath(image.path).replace(/\.[^.\\/]*$/, '')
+    const size = bmpSize(file.data)
+    if (size) {
+      const rect = jwwTrimPixelRect(image, trim, size.width, size.height)
+      const data = rect && cropBmp(file.data, rect)
+      if (!rect || !data) return image.path
+      const id = `${key}|${rect.x},${rect.y},${rect.width},${rect.height}`
+      return `%temp%${this.trimmedName(id, base, '.bmp', name =>
+        this.trimmedImages.push({ name, data })
+      )}`
+    }
+    // Other formats: the pixel size is known only once the image is decoded.
+    const ratio = image.height / image.width
+    const id = `${key}|${trim.left},${trim.bottom},${trim.width},${ratio}`
+    const ext =
+      imageMimeType(file.data, file.name) === 'image/jpeg' ? '.jpg' : '.png'
+    return `%temp%${this.trimmedName(id, base, ext, name =>
+      this.imageCrops.push({ name, source: file.data, reference: image, trim })
+    )}`
+  }
+
+  /** Name of a trimmed image; `add` stores it the first time `id` is seen. */
+  private trimmedName(
+    id: string,
+    base: string,
+    ext: string,
+    add: (name: string) => void
+  ) {
+    let name = this.trimmedNames.get(id)
+    if (!name) {
+      name = `${base}~trim${this.trimmedNames.size + 1}${ext}`
+      this.trimmedNames.set(id, name)
+      add(name)
+    }
+    return name
   }
 
   /**

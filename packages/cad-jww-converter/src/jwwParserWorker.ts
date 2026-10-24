@@ -6,7 +6,7 @@
 import * as ezjww from 'ezjww'
 
 import { JWW_PARSER_WASM_FILE } from './constants'
-import { convertJwwToDxf } from './jwwToDxf'
+import { convertJwwToDxf, cropJwwImages } from './jwwToDxf'
 import type { JwwWorkerRequest, JwwWorkerResponse } from './jwwWorkerProtocol'
 
 let ready: Promise<void> | undefined
@@ -37,9 +37,14 @@ self.onmessage = async (event: MessageEvent<JwwWorkerRequest>) => {
   let transfer: Transferable[] = []
   try {
     await init(wasmUrl)
-    const result = convertJwwToDxf(ezjww, new Uint8Array(data), { scaleMode })
+    const result = await cropJwwImages(
+      convertJwwToDxf(ezjww, new Uint8Array(data), { scaleMode })
+    )
     response = { id, ok: true, ...result }
-    transfer = result.images.map(image => image.data.buffer as ArrayBuffer)
+    // An image left whole for a trim shares its buffer with the original.
+    transfer = [
+      ...new Set(result.images.map(image => image.data.buffer as ArrayBuffer))
+    ]
   } catch (error) {
     response = {
       id,

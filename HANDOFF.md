@@ -63,9 +63,22 @@
   `JwwConversionResult.images` で返し、DXF 読み込み後に `attachJwwImages()` が `AcDbRasterImage.image` に Blob を入れる。
   外部パスの画像は Blob 無しのまま = 既存の「見つからない画像」(ステータスバー・リソースパレット) に出るので、ユーザーがファイルを指定できる。
   ezjww の writer は `.gz` 名の同梱画像を `%temp%<.gz を除いた名前>` で参照する。サンプル JWW には gzip 同梱の BMP を 1 枚入れた。
-  追加パラメータ (既定 `0,0,1,0,255,255,255`。トリミングらしいが資料が見つからない) が既定と違うときは警告だけ出して画像全体を表示する。
+  追加パラメータ `,<左>,<下>,<幅の比>,<?>,<R>,<G>,<B>` (既定 `0,0,1,0,255,255,255`) の先頭 3 つはトリミング。
+  Jw_cad で実際にトリミングした図面とスクリーンショットから解析した (例: 100×66.6667 の画像 →
+  `64.2072,29.8105,0.154785,0.196061,0.642072,…`): <左>・<下> はトリミング範囲の左下の角の、元画像の左下からの位置、
+  <幅の比> はトリミング後の幅 (= 1 番目の幅) ÷ 元画像の幅。**3 つとも元画像の「幅」に対する比** (下も高さではなく幅で割る)。
+  文字の基点はトリミング範囲の左下に移る (画像は動かない)。
+  同梱 BMP はそのピクセルを切り出して別の同梱画像 `<名前>~trimN.bmp` (24bit BMP) にし、その IMAGEDEF を参照させる
+  (`JwwDxfWriter.imagePath()`、`jwwTrimPixelRect()`・`cropBmp()`)。画面・SVG・PDF のどれでも同じに出るよう、
+  DXF の IMAGE クリップ境界ではなく画像自体を切っている (data-model / AcTrImage のクリップ処理は UV が境界の外接矩形基準で使えない)。
+  BMP 以外 (Jw_cad の画像拡張で同梱される JPEG・PNG・GIF など) は wasm Worker の同期変換では切れないので、
+  `convertJwwToDxf()` は `imageCrops` に積むだけにして、`cropJwwImages()` (Worker / main thread 両方で変換直後に呼ぶ) が
+  `createImageBitmap` + `OffscreenCanvas` で切り出す (JPEG は JPEG、他は PNG。名前は `<名前>~trimN.jpg|png`)。
+  ピクセル数はデコード後に分かるので、範囲の計算もそこで行う。Node (テスト) など切り出せない環境では元画像全体 + 警告。
+  外部参照の画像は警告を出して画像全体を表示。
+  4 番目以降 (`0,255,255,255`、回転・透過色らしい) が既定と違うときは警告だけ出して無視する。
   回転した画像は元々正しく描けていなかったので、data-model パッチ④と `three-renderer/src/object/AcTrImage.ts` の UV (画像の軸に沿って計算) も直した。SVG / PDF 書き出しの回転画像は未確認。
-- 未対応: JWS、画像のトリミング、Worker 無しの main thread モードはテストのみで使用 (`wasmUrl` 指定で動く)。外部参照 (XATTACH) は DWG/DXF のまま。
+- 未対応: JWS、外部参照画像のトリミング、Worker 無しの main thread モードはテストのみで使用 (`wasmUrl` 指定で動く)。外部参照 (XATTACH) は DWG/DXF のまま。
 
 以下は着手前の調査メモ (JWW 部分は上記で対応済み)。
 
