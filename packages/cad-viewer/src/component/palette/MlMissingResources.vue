@@ -399,7 +399,7 @@ const handleApply = async () => {
 
 .ml-missing-resources__tab.is-active {
   color: var(--el-text-color-primary, #303133);
-  border-bottom-color: var(--el-color-primary, #409eff);
+  border-bottom-color: var(--el-color-primary, #af61da);
 }
 
 .ml-missing-resources__body {

@@ -1,12 +1,12 @@
-# CAD-Viewer Plus
+# RemixCAD
 
 [English](./README.md) | [日本語](./README.ja.md) | [简体中文](./README.zh-CN.md) | [한국어](./README.ko.md) | [Español](./README.es.md) | [Português](./README.pt.md) | [Русский](./README.ru.md) | [Čeština](./README.cs.md)
 
-> **This is a fork.** CAD-Viewer Plus is a fork of
+> **This is a fork.** RemixCAD is a fork of
 > [mlightcad/cad-viewer](https://github.com/mlightcad/cad-viewer) (MIT License).
 > It is maintained independently and is **not affiliated with or supported by
 > the upstream author**. Please report problems with this fork in
-> [this repository's issues](https://github.com/cool0707/cad-viewer-plus/issues),
+> [this repository's issues](https://github.com/cool0707/remix-cad/issues),
 > not upstream.
 
 A DXF/DWG viewer and editor that runs entirely in the browser — parsing,
@@ -56,7 +56,7 @@ drawings never leave the user's device.
 
 ## Demo
 
-- Online: <https://cool0707.github.io/cad-viewer-plus/> (published from the
+- Online: <https://cool0707.github.io/remix-cad/> (published from the
   `gh-pages` branch by `.github/workflows/demo.yml`)
 - Local:
 
@@ -81,8 +81,8 @@ simple viewer, the diff viewer and a font test drawing
 ### Install
 
 ```bash
-git clone https://github.com/cool0707/cad-viewer-plus.git
-cd cad-viewer-plus
+git clone https://github.com/cool0707/remix-cad.git
+cd remix-cad
 pnpm install
 ```
 

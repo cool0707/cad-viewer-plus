@@ -126,12 +126,12 @@ export function acuiEnsureUiStyles() {
     }
 
     .ml-ex-ui-layer-name-sort:hover {
-      color: var(--ml-ui-accent, #409eff);
+      color: var(--ml-ui-accent, #af61da);
     }
 
     .ml-ex-ui-layer-name-header.is-sorted-asc .ml-ex-ui-layer-name-sort,
     .ml-ex-ui-layer-name-header.is-sorted-desc .ml-ex-ui-layer-name-sort {
-      color: var(--ml-ui-accent, #409eff);
+      color: var(--ml-ui-accent, #af61da);
     }
 
     .ml-ex-ui-layer-sort-indicator {
@@ -164,7 +164,7 @@ export function acuiEnsureUiStyles() {
     }
 
     .ml-ex-ui-layer-current-marker {
-      color: var(--ml-ui-accent, #409eff);
+      color: var(--ml-ui-accent, #af61da);
       font-weight: 600;
     }
 
@@ -239,8 +239,8 @@ export function acuiEnsureUiStyles() {
     }
 
     .ml-ex-ui-btn-primary {
-      border-color: var(--ml-ui-accent, #409eff);
-      background: var(--ml-ui-accent, #409eff);
+      border-color: var(--ml-ui-accent, #af61da);
+      background: var(--ml-ui-accent, #af61da);
       color: #fff;
     }
 
@@ -382,7 +382,7 @@ export function acuiEnsureUiStyles() {
     }
 
     .ml-ex-ui-review-row.is-selected {
-      background: var(--ml-ui-accent-soft, rgba(64, 158, 255, 0.12));
+      background: var(--ml-ui-accent-soft, rgba(175, 97, 218, 0.12));
     }
 
     .ml-ex-ui-review-empty-row td {
@@ -509,8 +509,8 @@ export function acuiEnsureUiStyles() {
     }
 
     .ml-ex-ui-measure-filter-btn.is-active {
-      background: var(--ml-ui-accent-soft, rgba(64, 158, 255, 0.16));
-      color: var(--ml-ui-accent, #409eff);
+      background: var(--ml-ui-accent-soft, rgba(175, 97, 218, 0.16));
+      color: var(--ml-ui-accent, #af61da);
     }
 
     .ml-ex-ui-measure-btn {
@@ -584,7 +584,7 @@ export function acuiEnsureUiStyles() {
     }
 
     .ml-ex-ui-measure-row.is-selected {
-      background: var(--ml-ui-accent-soft, rgba(64, 158, 255, 0.12));
+      background: var(--ml-ui-accent-soft, rgba(175, 97, 218, 0.12));
     }
 
     .ml-ex-ui-measure-empty-row td {
@@ -665,7 +665,7 @@ export function acuiEnsureUiStyles() {
     }
 
     .ml-ex-ui-find-row.is-selected {
-      background: var(--ml-ui-accent-soft, rgba(64, 158, 255, 0.12));
+      background: var(--ml-ui-accent-soft, rgba(175, 97, 218, 0.12));
     }
 
     .ml-ex-ui-find-layout {
@@ -936,7 +936,7 @@ export function acuiEnsureUiStyles() {
     }
 
     .ml-ex-ui-dock-tab-overflow-btn.is-active {
-      border-bottom-color: var(--ml-ui-accent, #409eff);
+      border-bottom-color: var(--ml-ui-accent, #af61da);
     }
 
     .ml-ex-ui-dock-tab[hidden] {
@@ -962,7 +962,7 @@ export function acuiEnsureUiStyles() {
 
     .ml-ex-ui-dock-tab.is-active {
       color: var(--ml-ui-text, #303133);
-      border-bottom-color: var(--ml-ui-accent, #409eff);
+      border-bottom-color: var(--ml-ui-accent, #af61da);
     }
 
     .ml-ex-ui-dock-actions {
@@ -1046,7 +1046,7 @@ export function acuiEnsureUiStyles() {
     }
 
     .ml-ex-ui-dock-side-menu-item.is-selected {
-      color: var(--ml-ui-accent, #409eff);
+      color: var(--ml-ui-accent, #af61da);
     }
 
     .ml-ex-ui-dock-tab-overflow-menu {
@@ -1078,7 +1078,7 @@ export function acuiEnsureUiStyles() {
     }
 
     .ml-ex-ui-dock-tab-overflow-menu-item.is-selected {
-      color: var(--ml-ui-accent, #409eff);
+      color: var(--ml-ui-accent, #af61da);
     }
 
     @media (max-width: ${ML_UI_MOBILE_MAX_WIDTH}px) {

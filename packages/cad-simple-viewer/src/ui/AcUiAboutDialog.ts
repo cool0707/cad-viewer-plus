@@ -126,7 +126,7 @@ export class AcUiAboutDialog extends AcUiDialog {
   align-items: center;
   gap: 10px;
   margin-bottom: 10px;
-  color: var(--ml-ui-accent, #0b84ff);
+  color: var(--ml-ui-accent, #af61da);
 }
 
 .ml-ui-about-brand .ml-brand-mark-icon {
@@ -169,7 +169,7 @@ export class AcUiAboutDialog extends AcUiDialog {
 }
 
 .ml-ui-about-link {
-  color: var(--ml-ui-accent, #0b84ff);
+  color: var(--ml-ui-accent, #af61da);
   font-size: 12px;
   text-decoration: none;
 }

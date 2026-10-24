@@ -625,7 +625,7 @@ export class AcApDiffSettingsDialog extends AcUiDialog {
 .ml-diff-settings-tab.is-active {
   color: var(--ml-ui-text, #e5eaf3);
   font-weight: 600;
-  box-shadow: inset 0 -2px 0 var(--ml-ui-accent, #409eff);
+  box-shadow: inset 0 -2px 0 var(--ml-ui-accent, #af61da);
 }
 
 .ml-diff-settings-panels {
@@ -751,7 +751,7 @@ export class AcApDiffSettingsDialog extends AcUiDialog {
   flex: 0 0 auto;
   width: 16px;
   height: 16px;
-  accent-color: var(--ml-ui-accent, #409eff);
+  accent-color: var(--ml-ui-accent, #af61da);
   cursor: pointer;
 }
 
@@ -777,7 +777,7 @@ export class AcApDiffSettingsDialog extends AcUiDialog {
 
 .ml-diff-settings-slider {
   width: 100%;
-  accent-color: var(--ml-ui-accent, #409eff);
+  accent-color: var(--ml-ui-accent, #af61da);
 }
 
 .ml-diff-settings-footer {

@@ -28,7 +28,7 @@ export interface AcApProgressOptions {
   /**
    * Color of the animated spinner arc.
    * Accepts any valid CSS color format.
-   * @defaultValue `"#0b84ff"`
+   * @defaultValue `"#af61da"`
    */
   color?: string
 
@@ -125,7 +125,7 @@ export class AcApProgress {
     this.options = {
       size: options.size ?? (showBrand ? '72px' : '48px'),
       borderWidth: options.borderWidth ?? (showBrand ? '4px' : '5px'),
-      color: options.color ?? 'var(--ml-ui-accent, #0b84ff)',
+      color: options.color ?? 'var(--ml-ui-accent, #af61da)',
       host: options.host ?? document.body,
       overlay: options.overlay ?? true,
       overlayColor:
@@ -339,7 +339,7 @@ export class AcApProgress {
     border-radius: 50%;
     border-style: solid;
     border-color: var(--ml-ui-border, rgba(0,0,0,0.25));
-    border-top-color: var(--ml-ui-accent, #0b84ff);
+    border-top-color: var(--ml-ui-accent, #af61da);
     animation: ml-ccl-rotate 0.85s linear infinite;
     box-sizing: border-box;
   }
@@ -349,7 +349,7 @@ export class AcApProgress {
     inset: 0;
     margin: auto;
     display: inline-flex;
-    color: var(--ml-ui-accent, #0b84ff);
+    color: var(--ml-ui-accent, #af61da);
     pointer-events: none;
     user-select: none;
   }

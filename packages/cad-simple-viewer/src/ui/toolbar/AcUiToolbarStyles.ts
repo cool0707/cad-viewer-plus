@@ -155,8 +155,8 @@ export function acuiEnsureToolbarStyles(): void {
 
 @media (hover: hover) {
   .ml-ex-ui-toolbar-grip:hover {
-    background: var(--ml-ui-accent-soft, rgba(64, 158, 255, 0.12));
-    color: var(--ml-ui-accent, #409eff);
+    background: var(--ml-ui-accent-soft, rgba(175, 97, 218, 0.12));
+    color: var(--ml-ui-accent, #af61da);
   }
 }
 
@@ -218,13 +218,13 @@ export function acuiEnsureToolbarStyles(): void {
 
 @media (hover: hover) {
   .ml-ex-ui-toolbar-layout-btn:hover {
-    background: var(--ml-ui-accent-soft, rgba(64, 158, 255, 0.12));
-    color: var(--ml-ui-accent, #409eff);
+    background: var(--ml-ui-accent-soft, rgba(175, 97, 218, 0.12));
+    color: var(--ml-ui-accent, #af61da);
   }
 }
 
 .ml-ex-ui-toolbar-layout-btn[aria-expanded='true'] {
-  color: var(--ml-ui-accent, #409eff);
+  color: var(--ml-ui-accent, #af61da);
 }
 
 .ml-ex-ui-toolbar-layout-btn .ml-ex-ui-icon {
@@ -288,9 +288,9 @@ export function acuiEnsureToolbarStyles(): void {
 
 @media (hover: hover) {
   .ml-ex-ui-toolbar-btn:hover:not(:disabled) {
-    background: var(--ml-ui-accent-soft, rgba(64, 158, 255, 0.12));
+    background: var(--ml-ui-accent-soft, rgba(175, 97, 218, 0.12));
     border-color: var(--ml-ui-border, #dcdfe6);
-    color: var(--ml-ui-accent, #409eff);
+    color: var(--ml-ui-accent, #af61da);
   }
 }
 
@@ -301,9 +301,9 @@ export function acuiEnsureToolbarStyles(): void {
 
 .ml-ex-ui-toolbar-btn.is-open,
 .ml-ex-ui-toolbar-btn.is-toggled {
-  border-color: var(--ml-ui-accent, #409eff);
-  color: var(--ml-ui-accent, #409eff);
-  background: var(--ml-ui-accent-soft, rgba(64, 158, 255, 0.12));
+  border-color: var(--ml-ui-accent, #af61da);
+  color: var(--ml-ui-accent, #af61da);
+  background: var(--ml-ui-accent-soft, rgba(175, 97, 218, 0.12));
 }
 
 /* Flyout mark: a small opaque right triangle in the corner toward the
@@ -675,8 +675,8 @@ export function acuiEnsureToolbarStyles(): void {
 }
 
 .ml-ex-ui-dropdown-item.is-toggled {
-  color: var(--ml-ui-accent, #409eff);
-  background: var(--ml-ui-accent-soft, rgba(64, 158, 255, 0.12));
+  color: var(--ml-ui-accent, #af61da);
+  background: var(--ml-ui-accent-soft, rgba(175, 97, 218, 0.12));
 }  `
   document.head.appendChild(style)
 }

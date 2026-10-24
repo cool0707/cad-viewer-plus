@@ -1,12 +1,12 @@
-# CAD-Viewer Plus
+# RemixCAD
 
 [English](./README.md) | [日本語](./README.ja.md) | [简体中文](./README.zh-CN.md) | [한국어](./README.ko.md) | [Español](./README.es.md) | [Português](./README.pt.md) | [Русский](./README.ru.md) | [Čeština](./README.cs.md)
 
-> **Это форк.** CAD-Viewer Plus — форк проекта
+> **Это форк.** RemixCAD — форк проекта
 > [mlightcad/cad-viewer](https://github.com/mlightcad/cad-viewer) (лицензия MIT).
 > Он развивается независимо и **не связан с автором исходного проекта и не
 > поддерживается им**. Сообщайте о проблемах этого форка в
-> [issues этого репозитория](https://github.com/cool0707/cad-viewer-plus/issues),
+> [issues этого репозитория](https://github.com/cool0707/remix-cad/issues),
 > а не в исходный проект.
 
 Просмотрщик и редактор DXF/DWG, полностью работающий в браузере: разбор
@@ -53,7 +53,7 @@
 
 ## Демо
 
-- Онлайн: <https://cool0707.github.io/cad-viewer-plus/>
+- Онлайн: <https://cool0707.github.io/remix-cad/>
 - Локально:
 
   ```bash
@@ -67,8 +67,8 @@
 Требуются [Node.js](https://nodejs.org/) >= 24 и [pnpm](https://pnpm.io/) >= 10.
 
 ```bash
-git clone https://github.com/cool0707/cad-viewer-plus.git
-cd cad-viewer-plus
+git clone https://github.com/cool0707/remix-cad.git
+cd remix-cad
 pnpm install
 pnpm dev          # полнофункциональный просмотрщик
 pnpm dev:simple   # простой просмотрщик

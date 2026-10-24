@@ -1,11 +1,11 @@
-# CAD-Viewer Plus
+# RemixCAD
 
 [English](./README.md) | [日本語](./README.ja.md) | [简体中文](./README.zh-CN.md) | [한국어](./README.ko.md) | [Español](./README.es.md) | [Português](./README.pt.md) | [Русский](./README.ru.md) | [Čeština](./README.cs.md)
 
-> **这是一个分支（fork）。** CAD-Viewer Plus 分支自
+> **这是一个分支（fork）。** RemixCAD 分支自
 > [mlightcad/cad-viewer](https://github.com/mlightcad/cad-viewer)（MIT 许可证），
 > 由本仓库独立维护，**与上游作者无关，也不在上游的支持范围内**。
-> 如有问题，请在[本仓库的 Issues](https://github.com/cool0707/cad-viewer-plus/issues)
+> 如有问题，请在[本仓库的 Issues](https://github.com/cool0707/remix-cad/issues)
 > 中反馈，不要提交到上游。
 
 一个完全在浏览器中运行的 DXF/DWG 查看器和编辑器。图纸解析、几何处理和渲染
@@ -40,7 +40,7 @@
 
 ## 演示
 
-- 在线：<https://cool0707.github.io/cad-viewer-plus/>
+- 在线：<https://cool0707.github.io/remix-cad/>
 - 本地：
 
   ```bash
@@ -54,8 +54,8 @@
 需要 [Node.js](https://nodejs.org/) >= 24 和 [pnpm](https://pnpm.io/) >= 10。
 
 ```bash
-git clone https://github.com/cool0707/cad-viewer-plus.git
-cd cad-viewer-plus
+git clone https://github.com/cool0707/remix-cad.git
+cd remix-cad
 pnpm install
 pnpm dev          # 完整查看器
 pnpm dev:simple   # 简易查看器

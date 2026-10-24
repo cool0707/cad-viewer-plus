@@ -23,7 +23,7 @@ ez.initSync(readFileSync(require.resolve('ezjww/wasm/ezjww_wasm_bg.wasm')))
 const doc = ez.newJwwDocument()
 const options = doc.options
 options.paper_size = 3 // A3
-options.memo = 'cad-viewer-plus JWW sample'
+options.memo = 'RemixCAD JWW sample'
 options.write_layer_group = 0
 
 const plan = options.layer_groups[0]

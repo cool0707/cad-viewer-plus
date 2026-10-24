@@ -586,9 +586,9 @@ const isValidFile = (file: File): boolean => acapIsDrawingFileName(file.name)
   width: 36px;
   height: 36px;
   border-radius: 10px;
-  background: linear-gradient(135deg, #667eea 0%, #5b6fd6 100%);
+  background: linear-gradient(90deg, #ea60d4 0%, #9c62dc 100%);
   color: #ffffff;
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.28);
+  box-shadow: 0 4px 12px rgba(175, 97, 218, 0.28);
 }
 
 .upload-hero-text {
@@ -749,8 +749,8 @@ const isValidFile = (file: File): boolean => acapIsDrawingFileName(file.name)
 }
 
 .pill-option.is-active {
-  background: #f1f5ff;
-  color: #4f5fd0;
+  background: #f7effb;
+  color: #af61da;
 }
 
 /* Narrow viewports: stack upload + settings as two vertical rows */

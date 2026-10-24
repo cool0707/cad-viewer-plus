@@ -18,12 +18,12 @@ const ISOLATED_THEME_TOKENS: Record<AcEdUiTheme, Record<string, string>> = {
     '--ml-ui-border': '#dcdfe6',
     '--ml-ui-shadow': '0 2px 6px rgba(0, 0, 0, 0.12)',
     '--ml-ui-overlay': 'rgba(0, 0, 0, 0.18)',
-    '--ml-ui-accent': '#409eff',
+    '--ml-ui-accent': '#af61da',
     '--ml-ui-accent-alt': '#909399',
     '--ml-ui-danger': '#f56c6c',
-    '--ml-ui-canvas-line': '#409eff',
-    '--ml-ui-canvas-fill': 'rgba(64, 158, 255, 0.2)',
-    '--ml-ui-canvas-fill-mix': 'color-mix(in srgb, #409eff 20%, transparent)'
+    '--ml-ui-canvas-line': '#af61da',
+    '--ml-ui-canvas-fill': 'rgba(175, 97, 218, 0.2)',
+    '--ml-ui-canvas-fill-mix': 'color-mix(in srgb, #af61da 20%, transparent)'
   },
   dark: {
     '--ml-ui-text': '#e5eaf3',
@@ -32,12 +32,12 @@ const ISOLATED_THEME_TOKENS: Record<AcEdUiTheme, Record<string, string>> = {
     '--ml-ui-border': '#4c4d4f',
     '--ml-ui-shadow': '0 6px 18px rgba(0, 0, 0, 0.35)',
     '--ml-ui-overlay': 'rgba(0, 0, 0, 0.5)',
-    '--ml-ui-accent': '#409eff',
+    '--ml-ui-accent': '#af61da',
     '--ml-ui-accent-alt': '#909399',
     '--ml-ui-danger': '#f56c6c',
-    '--ml-ui-canvas-line': '#409eff',
-    '--ml-ui-canvas-fill': 'rgba(64, 158, 255, 0.2)',
-    '--ml-ui-canvas-fill-mix': 'color-mix(in srgb, #409eff 20%, transparent)'
+    '--ml-ui-canvas-line': '#af61da',
+    '--ml-ui-canvas-fill': 'rgba(175, 97, 218, 0.2)',
+    '--ml-ui-canvas-fill-mix': 'color-mix(in srgb, #af61da 20%, transparent)'
   }
 }
 
@@ -50,14 +50,14 @@ const THEME_TOKENS: Record<AcEdUiTheme, Record<string, string>> = {
     '--ml-ui-shadow': 'var(--el-box-shadow, 0 2px 6px rgba(0, 0, 0, 0.12))',
     '--ml-ui-overlay': 'var(--el-overlay-color-lighter, rgba(0, 0, 0, 0.18))',
 
-    '--ml-ui-accent': 'var(--el-color-primary, #409eff)',
+    '--ml-ui-accent': 'var(--el-color-primary, #af61da)',
     '--ml-ui-accent-alt': 'var(--el-color-info, #909399)',
     '--ml-ui-danger': 'var(--el-color-danger, #f56c6c)',
 
-    '--ml-ui-canvas-line': 'var(--el-color-primary, #409eff)',
-    '--ml-ui-canvas-fill': 'rgba(64, 158, 255, 0.2)',
+    '--ml-ui-canvas-line': 'var(--el-color-primary, #af61da)',
+    '--ml-ui-canvas-fill': 'rgba(175, 97, 218, 0.2)',
     '--ml-ui-canvas-fill-mix':
-      'color-mix(in srgb, var(--el-color-primary, #409eff) 20%, transparent)'
+      'color-mix(in srgb, var(--el-color-primary, #af61da) 20%, transparent)'
   },
   dark: {
     '--ml-ui-text': 'var(--el-text-color-primary, #e5eaf3)',
@@ -67,14 +67,14 @@ const THEME_TOKENS: Record<AcEdUiTheme, Record<string, string>> = {
     '--ml-ui-shadow': 'var(--el-box-shadow, 0 6px 18px rgba(0, 0, 0, 0.35))',
     '--ml-ui-overlay': 'var(--el-overlay-color-lighter, rgba(0, 0, 0, 0.5))',
 
-    '--ml-ui-accent': 'var(--el-color-primary, #409eff)',
+    '--ml-ui-accent': 'var(--el-color-primary, #af61da)',
     '--ml-ui-accent-alt': 'var(--el-color-info, #909399)',
     '--ml-ui-danger': 'var(--el-color-danger, #f56c6c)',
 
-    '--ml-ui-canvas-line': 'var(--el-color-primary, #409eff)',
-    '--ml-ui-canvas-fill': 'rgba(64, 158, 255, 0.2)',
+    '--ml-ui-canvas-line': 'var(--el-color-primary, #af61da)',
+    '--ml-ui-canvas-fill': 'rgba(175, 97, 218, 0.2)',
     '--ml-ui-canvas-fill-mix':
-      'color-mix(in srgb, var(--el-color-primary, #409eff) 20%, transparent)'
+      'color-mix(in srgb, var(--el-color-primary, #af61da) 20%, transparent)'
   }
 }
 

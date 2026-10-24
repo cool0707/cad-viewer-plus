@@ -26,7 +26,7 @@ export const ACEX_HTML_SHELL_CSS = `
     --mlcad-ui-text: #e8eaed;
     --mlcad-ui-muted: #9aa0a6;
     --mlcad-accent: #08e8de;
-    --mlcad-accent-active: #1a8cff;
+    --mlcad-accent-active: #af61da;
     /* Shared measure-tool SVGs read --el-color-primary (Element Plus in cad-viewer). */
     --el-color-primary: var(--mlcad-accent);
     --ml-ui-accent: var(--mlcad-accent);
@@ -35,8 +35,8 @@ export const ACEX_HTML_SHELL_CSS = `
     --ml-ui-border: var(--mlcad-ui-border);
     --ml-ui-text: var(--mlcad-ui-text);
     --ml-ui-muted: var(--mlcad-ui-muted);
-    --mlcad-tool-btn-active-border: rgba(26, 140, 255, 0.55);
-    --mlcad-tool-btn-active-bg: rgba(26, 140, 255, 0.22);
+    --mlcad-tool-btn-active-border: rgba(175, 97, 218, 0.55);
+    --mlcad-tool-btn-active-bg: rgba(175, 97, 218, 0.22);
     --mlcad-measure-accent: #08e8de;
     --mlcad-measure-accent-border: rgba(8, 232, 222, 0.45);
     --mlcad-measure-accent-fill: rgba(8, 232, 222, 0.2);
@@ -269,7 +269,7 @@ export const ACEX_HTML_SHELL_CSS = `
   }
   .mlcad-dropdown-item.active,
   .mlcad-dropdown-item.is-toggled {
-    background: rgba(26, 140, 255, 0.22);
+    background: rgba(175, 97, 218, 0.22);
     color: #fff;
   }
   .mlcad-dropdown-icon {
@@ -336,12 +336,12 @@ export const ACEX_HTML_SHELL_CSS = `
   #mlcad-selection-rect[data-mode='window'] {
     border-style: solid;
     border-color: #00ff5a;
-    background: rgba(64, 158, 255, 0.12);
+    background: rgba(175, 97, 218, 0.12);
   }
   #mlcad-selection-rect[data-mode='crossing'] {
     border-style: dashed;
     border-color: #00d1ff;
-    background: rgba(64, 158, 255, 0.12);
+    background: rgba(175, 97, 218, 0.12);
   }
 
   #mlcad-layer-drawer,
@@ -521,7 +521,7 @@ export const ACEX_HTML_SHELL_CSS = `
     max-width: 90px;
   }
   .mlcad-review-table tr.is-selected td {
-    background: rgba(26, 140, 255, 0.22);
+    background: rgba(175, 97, 218, 0.22);
   }
   .mlcad-review-table tr { cursor: pointer; }
   .mlcad-review-empty td { text-align: center; color: var(--mlcad-ui-muted); cursor: default; }
@@ -1089,22 +1089,22 @@ export const ACEX_HTML_SHELL_CSS = `
   }
   .mlcad-access-field input:focus {
     outline: none;
-    border-color: rgba(26, 140, 255, 0.65);
-    box-shadow: 0 0 0 2px rgba(26, 140, 255, 0.2);
+    border-color: rgba(175, 97, 218, 0.65);
+    box-shadow: 0 0 0 2px rgba(175, 97, 218, 0.2);
   }
   .mlcad-access-submit {
     width: 100%;
     height: 36px;
-    border: 1px solid rgba(26, 140, 255, 0.55);
+    border: 1px solid rgba(175, 97, 218, 0.55);
     border-radius: 6px;
-    background: rgba(26, 140, 255, 0.22);
+    background: rgba(175, 97, 218, 0.22);
     color: #fff;
     font: inherit;
     font-weight: 600;
     cursor: pointer;
   }
   .mlcad-access-submit:hover {
-    background: rgba(26, 140, 255, 0.32);
+    background: rgba(175, 97, 218, 0.32);
   }
   .mlcad-access-error {
     margin: 0;

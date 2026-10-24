@@ -69,7 +69,7 @@ const MEASURE_ICON_RULER =
  * maps it through `--ml-ui-accent`. Exported HTML aliases both to `--mlcad-accent`.
  */
 const TOOL_ICON_ACCENT =
-  'var(--el-color-primary, var(--ml-ui-accent, #409eff))'
+  'var(--el-color-primary, var(--ml-ui-accent, #af61da))'
 
 /** Composes a measure-tool icon: unique glyph on top, shared ruler on the bottom. */
 function measureToolIcon(glyph: string): string {
