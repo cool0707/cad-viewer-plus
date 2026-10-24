@@ -605,6 +605,10 @@ importers:
         version: 4.1.1(vite@6.4.3(@types/node@24.12.4)(sass@1.98.0)(yaml@2.8.3))
 
   packages/cad-svg-plugin:
+    dependencies:
+      '@mlightcad/cad-vertical-text':
+        specifier: workspace:*
+        version: link:../cad-vertical-text
     devDependencies:
       '@mlightcad/cad-simple-viewer':
         specifier: workspace:*
@@ -628,6 +632,8 @@ importers:
       '@mlightcad/data-model':
         specifier: 1.15.14
         version: 1.15.14(patch_hash=871f264c2f67748d46f0b722857a086168308d44eca1094e6426ce0286ecbd9b)
+
+  packages/cad-vertical-text: {}
 
   packages/cad-viewer:
     devDependencies:
@@ -848,6 +854,9 @@ importers:
 
   packages/pdf-renderer:
     dependencies:
+      '@mlightcad/cad-vertical-text':
+        specifier: workspace:*
+        version: link:../cad-vertical-text
       '@pdf-lib/fontkit':
         specifier: ^1.1.1
         version: 1.1.1
@@ -870,6 +879,9 @@ importers:
 
   packages/three-renderer:
     dependencies:
+      '@mlightcad/cad-vertical-text':
+        specifier: workspace:*
+        version: link:../cad-vertical-text
       '@velipso/polybool':
         specifier: ^1.1.1
         version: 1.1.1

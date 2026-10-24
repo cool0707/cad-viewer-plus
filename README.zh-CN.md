@@ -34,6 +34,9 @@
 - **导入 SXF**（日本公共工程 CAD 数据交换标准）— 示例应用可打开 `.sfc`、`.p21` 及其 ZIP 形式
   `.sfz` / `.p2z`（`@mlightcad/cad-sxf-converter`，MIT，TypeScript，移植自
   [ezsxf](https://github.com/monozukuri-ai/ezsxf)）。局部图按主视图比例以实际尺寸显示，图纸幅面作为图形界限。
+- **竖排文字（縦書き）** — 使用 Windows 竖排字体（`@ＭＳ ゴシック` 等，包括 Jw_cad 的縦字）的文字，
+  以及文字样式设置了 AutoCAD“垂直”标志的 TEXT，在屏幕上和 SVG / PDF 导出中都会从上到下书写，
+  直接使用内置的 BIZ UD 字体（`@mlightcad/cad-vertical-text`）。
 
 ## 演示
 

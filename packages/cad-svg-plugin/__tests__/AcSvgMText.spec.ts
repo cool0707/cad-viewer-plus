@@ -550,3 +550,63 @@ describe('buildSvgMText', () => {
     expect(localSvg).toContain('font-size="5"')
   })
 })
+
+describe('buildSvgMText vertical text (縦書き)', () => {
+  /** Origins (e, f) and x-axis angle of each run's matrix. */
+  function pieces(svg: string) {
+    return [
+      ...svg.matchAll(
+        /<g transform="matrix\(([^)]+)\) scale\([^)]+\)"><text[^>]*>([^<]*)<\/text>/g
+      )
+    ].map(match => {
+      const [a, b, , , e, f] = match[1].split(',').map(Number)
+      return { text: match[2], x: e, y: f, angle: Math.atan2(b, a) }
+    })
+  }
+
+  function verticalText(text: string) {
+    return {
+      text,
+      height: 10,
+      width: Infinity,
+      position: { x: 100, y: 200, z: 0 },
+      rotation: (3 * Math.PI) / 2,
+      drawingDirection: AcGiMTextFlowDirection.BOTTOM_TO_TOP,
+      attachmentPoint: 10
+    } as never
+  }
+
+  it('stacks the characters of an @ font upright down a column', () => {
+    const { localSvg, box } = buildSvgMText(
+      verticalText('縦書き'),
+      { font: '@ＭＳ ゴシック' } as never,
+      createTraits(),
+      ctx
+    )
+    const runs = pieces(localSvg)
+    expect(runs.map(r => r.text)).toEqual(['縦', '書', 'き'])
+    for (const run of runs) {
+      expect(run.angle).toBeCloseTo(0, 6)
+      expect(run.x).toBeCloseTo(runs[0].x, 6)
+    }
+    // One em (the SVG font-size) per character, downwards.
+    expect(runs[0].y - runs[1].y).toBeCloseTo(10, 6)
+    expect(localSvg).toContain('text-anchor="middle"')
+    // The font is looked up without the @.
+    expect(localSvg).not.toContain('@')
+    expect(box.max.y).toBeCloseTo(200, 6)
+    expect(box.min.y).toBeCloseTo(170, 6)
+  })
+
+  it('uses the vertical flag of the text style for TEXT', () => {
+    const { localSvg } = buildSvgMText(
+      verticalText('縦ー'),
+      { font: 'ＭＳ ゴシック', standardFlag: 4 } as never,
+      createTraits(),
+      ctx
+    )
+    const [upright, sideways] = pieces(localSvg)
+    expect(upright.angle).toBeCloseTo(0, 6)
+    expect(sideways.angle).toBeCloseTo(-Math.PI / 2, 6)
+  })
+})

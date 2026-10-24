@@ -46,6 +46,9 @@ takže výkresy nikdy neopustí zařízení uživatele.
   `.p21` a jejich ZIP verze `.sfz` / `.p2z` pomocí `@mlightcad/cad-sxf-converter` (MIT, TypeScript,
   převzato z [ezsxf](https://github.com/monozukuri-ai/ezsxf)). Dílčí výkresy se zobrazí ve skutečné velikosti
   hlavního pohledu a list se použije jako meze výkresu.
+- **Svislé písmo (縦書き)** — text ve svislém písmu Windows (`@ＭＳ ゴシック`, např. 縦字 z Jw_cad)
+  a TEXT se stylem s příznakem AutoCAD „svislý“ se píše shora dolů na obrazovce i v exportu
+  SVG / PDF, s přibalenými písmy BIZ UD (`@mlightcad/cad-vertical-text`).
 
 ## Ukázka
 

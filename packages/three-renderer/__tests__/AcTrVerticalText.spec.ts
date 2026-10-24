@@ -11,7 +11,6 @@ import * as THREE from 'three'
 
 import {
   AcTrVerticalTextLayout,
-  acTrVerticalTextLines,
   acTrVerticalTextMode
 } from '../src/util/AcTrVerticalText'
 
@@ -110,17 +109,6 @@ describe('acTrVerticalTextMode', () => {
       undefined
     )
     expect(acTrVerticalTextMode(mtext, style('@ＭＳ ゴシック'))).toBe('atFont')
-  })
-})
-
-describe('acTrVerticalTextLines', () => {
-  it('drops MTEXT formatting and splits paragraphs', () => {
-    expect(
-      acTrVerticalTextLines('{\\fBIZ UDGothic|b0;縦}書き\\P\\H2x;2行目%%d')
-    ).toEqual(['縦書き', '2行目°'])
-    expect(acTrVerticalTextLines('a\\\\b\\{c\\}\\U+3042\\S1^2;')).toEqual([
-      'a\\b{c}あ1/2'
-    ])
   })
 })
 

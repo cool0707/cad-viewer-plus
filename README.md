@@ -49,6 +49,10 @@ drawings never leave the user's device.
   `@mlightcad/cad-sxf-converter` (MIT, TypeScript; ported from
   [ezsxf](https://github.com/monozukuri-ai/ezsxf)). Partial drawings are shown at
   the real size of the main view, the sheet becomes the drawing limits.
+- **Vertical text (縦書き)** — text in a Windows vertical font (`@ＭＳ ゴシック`, e.g. Jw_cad
+  縦字) and TEXT whose text style has the AutoCAD "vertical" flag are written top to bottom
+  on screen and in SVG / PDF export, with the bundled BIZ UD fonts
+  (`@mlightcad/cad-vertical-text`).
 
 ## Demo
 
@@ -133,6 +137,7 @@ The monorepo layout is unchanged from upstream:
 | `@mlightcad/three-renderer` | Three.js rendering |
 | `@mlightcad/cad-jww-converter` | JWW (Jw_cad) reader (ezjww, WebAssembly) |
 | `@mlightcad/cad-sxf-converter` | SXF (SFC / P21 / SFZ / P2Z) reader (TypeScript) |
+| `@mlightcad/cad-vertical-text` | Vertical text (縦書き) layout shared by screen, SVG and PDF |
 
 Package names keep the upstream `@mlightcad/` scope; this fork is not
 published to npm.

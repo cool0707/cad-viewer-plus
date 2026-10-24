@@ -40,6 +40,9 @@
   `.sfz` / `.p2z`를 열 수 있습니다(`@mlightcad/cad-sxf-converter`, MIT, TypeScript,
   [ezsxf](https://github.com/monozukuri-ai/ezsxf)에서 이식). 부분도는 주 뷰의 축척으로 실제 크기로
   표시하고, 용지를 도면 한계로 설정합니다.
+- **세로쓰기(縦書き)** — Windows 세로쓰기 글꼴(`@ＭＳ ゴシック` 등, Jw_cad 縦字 포함)의 문자와
+  문자 스타일에 AutoCAD "세로" 플래그가 있는 TEXT를 화면과 SVG / PDF 내보내기에서 위에서 아래로
+  씁니다. 번들된 BIZ UD 글꼴을 그대로 사용합니다(`@mlightcad/cad-vertical-text`).
 
 ## 데모
 

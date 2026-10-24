@@ -52,4 +52,9 @@ export {
   type AcTrHighlightOverlayGroupUserData
 } from './util/AcTrObjectUserData'
 export { isObjectHierarchyVisible } from './util/AcTrVisibility'
+export {
+  acTrVerticalTextMode,
+  AcTrVerticalTextLayout,
+  type AcTrVerticalTextMode
+} from './util/AcTrVerticalText'
 export { effectiveLayer } from './util/AcTrEffectiveLayer'

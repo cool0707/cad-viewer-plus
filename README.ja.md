@@ -45,6 +45,9 @@
   `.sfc`・`.p21` と ZIP 版の `.sfz`・`.p2z` を開けます（`@mlightcad/cad-sxf-converter`、
   MIT、TypeScript。[ezsxf](https://github.com/monozukuri-ai/ezsxf) から移植）。
   部分図は主となる部分図の縮尺で実寸表示し、用紙を図面範囲にします。
+- **縦書き** — 縦書きフォント（`@ＭＳ ゴシック` など。Jw_cad の縦字を含む）の文字と、
+  文字スタイルで「縦書き」を指定した TEXT を、同梱の BIZ UD フォントのまま縦に表示します。
+  SVG・PDF 出力も縦書きになります（`@mlightcad/cad-vertical-text`）。
 
 ## デモ
 
@@ -127,6 +130,7 @@ SHX フォントは同梱していません。SHX を使う文字は BIZ UD ゴ�
 | `@mlightcad/three-renderer` | Three.js による描画 |
 | `@mlightcad/cad-jww-converter` | JWW / JWC（Jw_cad）の読み込み（ezjww、WebAssembly） |
 | `@mlightcad/cad-sxf-converter` | SXF（SFC / P21 / SFZ / P2Z）の読み込み（TypeScript） |
+| `@mlightcad/cad-vertical-text` | 縦書きの組み方（画面・SVG・PDF で共通） |
 
 パッケージ名はフォーク元の `@mlightcad/` スコープのままです。このフォークは npm には
 公開していません。

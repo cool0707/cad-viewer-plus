@@ -1,4 +1,10 @@
 import {
+  horizontalTextStyle,
+  VerticalTextLayout,
+  type VerticalTextMode,
+  verticalTextMode
+} from '@mlightcad/cad-vertical-text'
+import {
   AcCmColor,
   AcCmTransparency,
   AcDbDatabase,
@@ -541,9 +547,14 @@ export class AcPdfRenderer implements AcGiRenderer<AcPdfEntity> {
       )
     }
     const localPos = { x: 0, y: 0 }
+    // Vertical text (縦書き) is drawn without the @ of its font; the vector
+    // path keeps the style as is so the glyph provider sees it is vertical.
+    const vertical = verticalTextMode(mtext, style)
     if (this._textMode === 'text' && this._fonts) {
       const fonts = this._fonts
-      const fontName = mapped.font
+      const fontName = vertical
+        ? this.resolveStyle(horizontalTextStyle(style)).font
+        : mapped.font
       const contents = mtext.text ?? ''
       if (contents.trim() !== '') {
         // Prefer a synchronous path when the font is already loaded. Nested
@@ -551,14 +562,24 @@ export class AcPdfRenderer implements AcGiRenderer<AcPdfEntity> {
         // layout through `Promise.then` leaves empty ops in the parent cache.
         if (fonts.has(fontName)) {
           if (
-            this.applyTextLayout(
-              entity,
-              mtext,
-              fontName,
-              fill,
-              localPos,
-              mapped.widthFactor
-            )
+            vertical
+              ? this.applyVerticalTextLayout(
+                  entity,
+                  vertical,
+                  mtext,
+                  fontName,
+                  fill,
+                  localPos,
+                  mapped.widthFactor
+                )
+              : this.applyTextLayout(
+                  entity,
+                  mtext,
+                  fontName,
+                  fill,
+                  localPos,
+                  mapped.widthFactor
+                )
           ) {
             return this.pushEntity(entity)
           }
@@ -764,6 +785,80 @@ export class AcPdfRenderer implements AcGiRenderer<AcPdfEntity> {
           }
         }
       }
+    }
+    if (position.x !== 0 || position.y !== 0) {
+      entity.applyMatrix(
+        new AcGeMatrix3d().makeTranslation(position.x, position.y, 0)
+      )
+    } else {
+      // Position was pre-baked in mtext(); rebase the local layout box.
+      entity.rebaseLocalBoxThroughMatrix()
+    }
+    return true
+  }
+
+  /**
+   * Lays vertical text (縦書き) out as real PDF text: one run per character
+   * (or run of sideways characters), each with its own position and angle,
+   * so the text stays selectable and searchable. Returns `false` when the
+   * font does not cover the text so the caller falls back to vector glyphs.
+   */
+  private applyVerticalTextLayout(
+    entity: AcPdfEntity,
+    mode: VerticalTextMode,
+    mtext: AcGiMTextData,
+    fontName: string,
+    fill: ReturnType<typeof AcPdfStyleUtil.fillStyle>,
+    position: { x: number; y: number },
+    styleWidthFactor?: number
+  ): boolean {
+    const fonts = this._fonts
+    if (!fonts) {
+      return false
+    }
+    const layout = new VerticalTextLayout(
+      mode,
+      { ...mtext, position },
+      styleWidthFactor
+    )
+    if (
+      layout.pieces.length === 0 ||
+      layout.pieces.some(piece => !fonts.covers(fontName, piece.text))
+    ) {
+      return false
+    }
+    const advances = layout.pieces.map(piece =>
+      fonts.widthOfText(fontName, piece.text, mtext.height, piece.widthFactor)
+    )
+    // widthOfText draws one em at height × capital-A scale.
+    const size = mtext.height * fonts.scaleFactor(fontName)
+    const { matrices, corners } = layout.place(advances, size)
+    layout.pieces.forEach((piece, i) => {
+      const [a, b, c, d, e, f] = matrices[i]
+      // Text ops start at the left end of the baseline; upright pieces are
+      // placed by the centre of theirs.
+      const left =
+        piece.anchor === 'baselineCenter' ? -(advances[i] ?? 0) / 2 : 0
+      // A text op scales only its own x, so a stretch along the glyph's
+      // height (the line direction of @ fonts) becomes size and hScale.
+      const sx = Math.hypot(a, b)
+      const sy = Math.hypot(c, d)
+      entity.addOp({
+        kind: 'text',
+        text: piece.text,
+        hex: '',
+        font: fontName,
+        size: size * sy,
+        x: a * left + e,
+        y: b * left + f,
+        angleDeg: (Math.atan2(b, a) * 180) / Math.PI,
+        hScale: (piece.widthFactor * sx) / sy,
+        tracking: 1,
+        style: fill
+      })
+    })
+    for (const corner of corners) {
+      entity.box.expandByPoint(corner)
     }
     if (position.x !== 0 || position.y !== 0) {
       entity.applyMatrix(

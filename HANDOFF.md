@@ -60,7 +60,7 @@
 ### 2.0.1 縦書き (2026-10-24)
 
 同梱の BIZ UD には縦書き用の `@` フォントが無いので、`@` フォントのまま描くと横書きの回転になってしまう。
-そこで **three-renderer 側で縦に組む** ようにした (`packages/three-renderer/src/util/AcTrVerticalText.ts`、`AcTrMText` から使う)。
+そこで **描画側で縦に組む** ようにした。組み方は `packages/cad-vertical-text` (依存なし) にまとめ、画面 (three-renderer の `AcTrVerticalTextLayout`、`AcTrMText` から使う)・SVG・PDF で共有している。
 
 - 対象: ① フォント名 (`font` / `extendedFont`) が `@` で始まる文字 (TEXT・MTEXT。Jw_cad 縦字、AutoCAD の `@ＭＳ ゴシック` など)、
   ② 文字スタイルの「縦書き」フラグ (グループ 70 の bit 4) が立った TEXT / ATTRIB。AutoCAD と同じく MTEXT には効かない
@@ -71,8 +71,11 @@
   - 共通: 「ー」「～」「…」・括弧類は横倒し、「、」「。」は右上、小書きの仮名は少し右上へ。MTEXT の書式コードは外して素の文字列で描く (文字ごとの色・高さ変更は無視)。
 - JWW: 縦字 (`@` フォント) の回転角は文字の角度ではなく **始点 → 終点の向き** にする (`jwwTextRotation()`)。サンプル JWW に縦字「収納（押入れ）」を追加。
 - SVG 出力の既存不具合を修正 (2026-10-24): TEXT の描画方向 `BOTTOM_TO_TOP` を縦書き (下から上) として扱っていたため、普通の TEXT まで縦に並んでいた。mtext-renderer と同じく横書きとして扱う。回転も逆向き (`rotate(-θ)`、文書全体が Y 反転しているので正しくは `+θ`) で、範囲計算は回転を無視していたので併せて修正。
-- SVG / PDF の縦書き (今後): 並べ方の計算を three.js に依存しない関数にして **別パッケージ** に切り出し、three-renderer・SVG・PDF で共有する方針。PDF ベクターは `AcTrVerticalTextLayout` をそのまま使える。PDF テキストは 1 文字ずつの配置か、PDF 本来の縦書きモード (Identity-V / WMode 1、pdf-lib は非対応なので自前) で検索可能にする。
-- 未対応: SVG / PDF 出力は横書きのまま。SXF の縦書き (DOWN / 方向 2) は従来どおり 90° 回転で代用。Jw_cad 縦字の文字幅・高さの向き (`size_x` / `size_y`) と終点の扱いは実図面で未確認。
+- `cad-vertical-text` の使い方: `VerticalTextLayout` が文字を「ピース」(立てる 1 文字か、横倒しのままの塊) に分け、描画側が各ピースを原点に横書きで描いて送り幅を返すと、`place()` が各ピースを縦の列へ動かす行列 (`[a,b,c,d,e,f]`、SVG `matrix()` / PDF `cm` と同じ) を返す。使う側には通常の `dependencies` として入れているので、各パッケージのビルドに同梱される (アプリ側の設定は不要)。Jest は `jest.config.ts` の `moduleNameMapper` で src を読むが、ts-jest の型チェックは `lib/` を見るので、先に `cad-vertical-text` をビルドしておくこと。
+- SVG 出力 (`cad-svg-plugin`): 縦書きは 1 ピース = 1 つの `<text>` に `matrix()` を付けて出す。SVG は文字幅を推定 (半角 0.6、全角 1) しているので、立てる文字は `text-anchor="middle"` で閲覧側に中央揃えさせる。書式コードは外す。
+- PDF 出力: ベクターモードは `cad-pdf-plugin` のグリフ生成器が画面と同じ `AcTrVerticalTextLayout` を使うので画面と一致する。テキストモード (検索可) は `pdf-renderer` が 1 ピース = 1 つの文字列として位置・角度・横倍率付きで書く (PDF の縦書きモード Identity-V / WMode 1 は使っていない。pdf-lib が非対応)。検索・コピーはできるが、コピーした文字列はビューアによって 1 文字ずつ改行される。
+- **PDF テキストモードの既存不具合 (未修正)**: 横書きも含め、一部の文字の字形が描かれない (例: 「居間・食堂」が「居間」だけ、「サンプル平面図」が「ル 図」だけ)。文字の抽出は全部できる。変更前 (HEAD) でも同じなので縦書きとは無関係。`pdffonts` では BIZ UD が subset なし (`sub no`) で埋め込まれており、pdf.js も「TT: undefined function」と警告するので、`AcPdfFontManager` の WOFF → 埋め込みあたりが怪しい。ベクターモードは問題なし。
+- SVG の SHX 以外のフォントは閲覧側のフォントで描かれる (縦書き以前からの仕様)。SXF の縦書き (DOWN / 方向 2) は従来どおり 90° 回転で代用。Jw_cad 縦字の文字幅・高さの向き (`size_x` / `size_y`) と終点の扱いは実図面で未確認。
 
 ### 2.1 ビューア側の差し込み口 (調査済み)
 

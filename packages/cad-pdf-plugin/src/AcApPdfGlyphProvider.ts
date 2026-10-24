@@ -11,7 +11,12 @@ import type {
   AcPdfGlyphPrimitives,
   AcPdfGlyphProvider
 } from '@mlightcad/pdf-renderer'
-import { AcTrMTextRenderer } from '@mlightcad/three-renderer'
+import {
+  AcTrMTextRenderer,
+  AcTrVerticalTextLayout,
+  type AcTrVerticalTextMode,
+  acTrVerticalTextMode
+} from '@mlightcad/three-renderer'
 
 type BufferAttr = {
   count: number
@@ -67,13 +72,19 @@ export function createViewerPdfGlyphProvider(): AcPdfGlyphProvider {
     ) {
       try {
         const renderer = AcTrMTextRenderer.getInstance()
-        const object = (await renderer.asyncRenderMText(
-          // AcGi and mtext-renderer attachment enums are structurally compatible
-          // at runtime but diverge in the TypeScript type graph.
-          data as never,
-          style as never,
-          toMTextColorSettings(colorSettings) as never
-        )) as SceneNode
+        const colors = toMTextColorSettings(colorSettings)
+        const vertical = acTrVerticalTextMode(data, style)
+        const object = (
+          vertical
+            ? await renderVerticalMText(renderer, vertical, data, style, colors)
+            : await renderer.asyncRenderMText(
+                // AcGi and mtext-renderer attachment enums are structurally
+                // compatible at runtime but diverge in the TypeScript type graph.
+                data as never,
+                style as never,
+                colors as never
+              )
+        ) as SceneNode
         const contents =
           (data as { contents?: string }).contents ??
           (data as { text?: string }).text ??
@@ -106,6 +117,27 @@ export function createViewerPdfGlyphProvider(): AcPdfGlyphProvider {
       }
     }
   }
+}
+
+/**
+ * Renders vertical text (縦書き) like the screen does: one piece per
+ * character, moved into the vertical line.
+ */
+async function renderVerticalMText(
+  renderer: AcTrMTextRenderer,
+  mode: AcTrVerticalTextMode,
+  data: AcGiMTextData,
+  style: AcGiTextStyle,
+  colors: ReturnType<typeof toMTextColorSettings>
+) {
+  const layout = new AcTrVerticalTextLayout(mode, data as never, style as never)
+  return layout.compose(
+    await Promise.all(
+      layout.pieces.map(piece =>
+        renderer.asyncRenderMText(piece.data, piece.style, colors as never)
+      )
+    )
+  )
 }
 
 function toMTextColorSettings(settings?: AcPdfGlyphColorSettings): {

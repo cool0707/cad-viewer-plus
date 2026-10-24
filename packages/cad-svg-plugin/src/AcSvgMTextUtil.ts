@@ -1,4 +1,10 @@
 import {
+  horizontalTextStyle,
+  VerticalTextLayout,
+  type VerticalTextMode,
+  verticalTextMode
+} from '@mlightcad/cad-vertical-text'
+import {
   AcCmColor,
   AcGeBox2d,
   AcGiMTextAttachmentPoint,
@@ -263,6 +269,11 @@ export function buildSvgMText(
     return { localSvg: '', box }
   }
 
+  const vertical = verticalTextMode(mtext, style)
+  if (vertical) {
+    return buildVerticalSvgMText(vertical, mtext, style, traits, ctx)
+  }
+
   const baseHeight = height
   const lineAdvance = resolveLineAdvance(baseHeight, mtext)
   const wrapWidth = resolveWrapWidth(mtext)
@@ -346,6 +357,66 @@ export function buildSvgMText(
   expandBox(box, bounds, attachment, x, y, rotation)
 
   return { localSvg, box }
+}
+
+/**
+ * Vertical text (縦書き): one `<text>` per character, or run of sideways
+ * characters, placed by {@link VerticalTextLayout} like on screen. Inline
+ * formatting is dropped. Advances are estimated like horizontal SVG text,
+ * so viewers centre upright characters themselves (`text-anchor`).
+ */
+function buildVerticalSvgMText(
+  mode: VerticalTextMode,
+  mtext: AcGiMTextData,
+  style: AcGiTextStyle,
+  traits: AcGiSubEntityTraits,
+  ctx: AcSvgStyleContext
+): AcSvgMTextBuildResult {
+  const box = new AcGeBox2d()
+  const horizontal = horizontalTextStyle(style)
+  const cadFont = normalizeCadFontName(
+    horizontal.extendedFont || horizontal.font
+  )
+  // SVG font-size is the em, as for horizontal text.
+  const size = mtext.height * resolveSvgFontSizeScale(cadFont)
+  const textAttrs: Record<string, string> = {
+    'font-size': String(size),
+    'font-family': resolveSvgFontFamily(cadFont, 'sans-serif'),
+    fill: resolveMTextFill(new MTextContext().color, traits, ctx)
+  }
+  const layout = new VerticalTextLayout(mode, mtext, style.widthFactor)
+  const advances = layout.pieces.map(
+    piece =>
+      [...piece.text].reduce(
+        (sum, ch) =>
+          sum +
+          (isWideCharacter(ch)
+            ? WIDE_CHAR_WIDTH_FACTOR
+            : LATIN_CHAR_WIDTH_FACTOR),
+        0
+      ) *
+      size *
+      piece.widthFactor
+  )
+  const { matrices, corners } = layout.place(advances, size)
+  let markup = ''
+  layout.pieces.forEach((piece, i) => {
+    // Glyphs are drawn Y-down inside the Y-up document.
+    const transform = `matrix(${matrices[i].join(',')}) scale(${piece.widthFactor},-1)`
+    const attrs =
+      piece.anchor === 'baselineCenter'
+        ? { ...textAttrs, 'text-anchor': 'middle' }
+        : textAttrs
+    markup += AcSvgStyleUtil.tag(
+      'g',
+      { transform },
+      AcSvgStyleUtil.tag('text', attrs, escapeXml(piece.text))
+    )
+  })
+  for (const corner of corners) {
+    box.expandByPoint(corner)
+  }
+  return { localSvg: AcSvgStyleUtil.tag('g', {}, markup), box }
 }
 
 function expandBox(
