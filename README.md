@@ -32,9 +32,10 @@ drawings never leave the user's device.
   block attribute → symbol property, Model space → Canvas, Layout → Print page,
   Hatch → Pattern fill, Xref → Linked drawing, Quick Select → Select by Criteria, and so on.
   Tooltips keep the CAD term in parentheses (all locales).
-- **Movable tool bar** — drag the grip (⠿) to move the tool bar anywhere; the ⋯ next to it switches
-  between vertical and horizontal or puts the bar back on the left edge. Sub-menus open toward the
-  centre of the screen, and the position is remembered.
+- **Movable tool bar** — drag the grip (⠿) to move the tool bar anywhere; the ⋯ menu next to it switches
+  between vertical and horizontal or puts the bar back in its home position: the left edge, or the right
+  edge while the panel (layers etc.) is on the left. A bar the panel would cover goes back there by itself.
+  Sub-menus open toward the centre of the screen, and the position is remembered.
 - **Selection style switch** — a status bar button switches clicks between
   CAD style (every click adds) and replace on click (Shift + click adds or removes,
   clicking empty space clears the selection). CAD style stays the default for now.
