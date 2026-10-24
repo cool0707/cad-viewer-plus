@@ -34,6 +34,9 @@ patchedDependencies:
   '@mlightcad/mtext-renderer@0.13.5':
     hash: 0d988d98fc2da267cf496f084984c2e0401e53b13eeee61a5455f6343eb16c68
     path: patches/@mlightcad__mtext-renderer@0.13.5.patch
+  '@mlightcad/ui-components@0.1.11':
+    hash: 01956158551d8748d54ee916485959bc5011e56e1d23c3f4d3af88f48cd74182
+    path: patches/@mlightcad__ui-components@0.1.11.patch
   ezjww@0.7.3:
     hash: b0f1a6d5ff3af15261eeaccd15fd95661ca43329d99fb10facb7a015cc722bb3
     path: patches/ezjww@0.7.3.patch
@@ -678,7 +681,7 @@ importers:
         version: 0.0.9(three@0.186.1)
       '@mlightcad/ui-components':
         specifier: 0.1.11
-        version: 0.1.11(element-plus@2.13.6(typescript@5.9.3)(vue@3.5.31(typescript@5.9.3)))(vue@3.5.31(typescript@5.9.3))
+        version: 0.1.11(patch_hash=01956158551d8748d54ee916485959bc5011e56e1d23c3f4d3af88f48cd74182)(element-plus@2.13.6(typescript@5.9.3)(vue@3.5.31(typescript@5.9.3)))(vue@3.5.31(typescript@5.9.3))
       '@vitejs/plugin-vue':
         specifier: ^6.0.8
         version: 6.0.8(vite@6.4.3(@types/node@24.12.4)(sass@1.98.0)(yaml@2.8.3))(vue@3.5.31(typescript@5.9.3))
@@ -8575,7 +8578,7 @@ snapshots:
     dependencies:
       three: 0.186.1
 
-  '@mlightcad/ui-components@0.1.11(element-plus@2.13.6(typescript@5.9.3)(vue@3.5.31(typescript@5.9.3)))(vue@3.5.31(typescript@5.9.3))':
+  '@mlightcad/ui-components@0.1.11(patch_hash=01956158551d8748d54ee916485959bc5011e56e1d23c3f4d3af88f48cd74182)(element-plus@2.13.6(typescript@5.9.3)(vue@3.5.31(typescript@5.9.3)))(vue@3.5.31(typescript@5.9.3))':
     dependencies:
       element-plus: 2.13.6(typescript@5.9.3)(vue@3.5.31(typescript@5.9.3))
       vue: 3.5.31(typescript@5.9.3)
