@@ -31,7 +31,7 @@ export class AcTrImage extends AcTrEntity {
 
     const shape = new THREE.Shape(style.boundary as unknown as THREE.Vector2[])
     const geometry = new THREE.ShapeGeometry(shape)
-    this.generateUVs(geometry)
+    this.generateUVs(geometry, style.roation)
 
     // Spatial pick / box selection index entities via wcsBbox. Without this,
     // filled RasterImage / Ole2Frame meshes never enter the pick candidates
@@ -80,24 +80,40 @@ export class AcTrImage extends AcTrEntity {
    * Generate UVs for the specified THREE.ShapeGeometry instance. THREE.ShapeGeometry does not automatically
    * generate UVs. To apply textures, we need to manually generate the UV coordinates for your shape.
    * @param geometry Input geometry to generate UVs
+   * @param rotation Image rotation in radians; UVs follow the image axes
    */
-  protected generateUVs(geometry: THREE.ShapeGeometry) {
+  protected generateUVs(geometry: THREE.ShapeGeometry, rotation = 0) {
     const position = geometry.attributes.position.array
-    const uv = new Float32Array((position.length / 3) * 2)
+    const count = position.length / 3
+    const uv = new Float32Array(count * 2)
 
-    const minX = Math.min(...position.filter((_, i) => i % 3 === 0))
-    const maxX = Math.max(...position.filter((_, i) => i % 3 === 0))
-    const minY = Math.min(...position.filter((_, i) => i % 3 === 1))
-    const maxY = Math.max(...position.filter((_, i) => i % 3 === 1))
+    // Express the vertices in the image's own (unrotated) axes.
+    const cos = Math.cos(-rotation)
+    const sin = Math.sin(-rotation)
+    const local = new Float32Array(count * 2)
+    let minX = Infinity
+    let maxX = -Infinity
+    let minY = Infinity
+    let maxY = -Infinity
+    for (let i = 0; i < count; i++) {
+      const x = position[i * 3]
+      const y = position[i * 3 + 1]
+      const lx = x * cos - y * sin
+      const ly = x * sin + y * cos
+      local[i * 2] = lx
+      local[i * 2 + 1] = ly
+      minX = Math.min(minX, lx)
+      maxX = Math.max(maxX, lx)
+      minY = Math.min(minY, ly)
+      maxY = Math.max(maxY, ly)
+    }
 
     const width = maxX - minX
     const height = maxY - minY
 
-    for (let i = 0; i < position.length; i += 3) {
-      const x = position[i]
-      const y = position[i + 1]
-      uv[(i / 3) * 2] = (x - minX) / width
-      uv[(i / 3) * 2 + 1] = (y - minY) / height
+    for (let i = 0; i < count; i++) {
+      uv[i * 2] = (local[i * 2] - minX) / width
+      uv[i * 2 + 1] = (local[i * 2 + 1] - minY) / height
     }
 
     geometry.setAttribute('uv', new THREE.BufferAttribute(uv, 2))

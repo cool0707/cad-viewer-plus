@@ -3,12 +3,15 @@
  *
  * A small A3 floor plan: layer group 0 "平面図" at 1/100 (grid lines, walls,
  * a door swing, room names, a dimension, a block) and layer group 1 "図枠" at
- * 1/1 (sheet border and title). Run: node tools/make-jww-sample.mjs
+ * 1/1 (sheet border, title and an embedded image). Run:
+ * node tools/make-jww-sample.mjs
  */
+import { Buffer } from 'node:buffer'
 import { readFileSync, writeFileSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { gzipSync } from 'node:zlib'
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const require = createRequire(
@@ -262,8 +265,73 @@ entities.push(...rect(base(1, 0, 2), 90, -138.5, 200, -108.5))
 entities.push(text(base(1, 0, 2), 95, -120, 5, 'サンプル平面図', 'ＭＳ 明朝'))
 entities.push(text(base(1, 0, 2), 95, -132, 3.5, 'S=1/100  A3'))
 
+// Embedded image (Jw_cad stores it gzip-compressed in the JWW): a simple
+// drawn picture of a house, 90 x 60 mm on the sheet.
+entities.push({
+  ...text(base(1, 1, 2), 100, -95, 2.5, ''),
+  content: ez.imageReferenceContent('%temp%exterior.bmp', 90, 60)
+})
+entities.push(text(base(1, 1, 2), 100, -101, 3, '外観イメージ (同梱画像)'))
+doc.images = [
+  {
+    name: 'exterior.bmp.gz',
+    data: gzipSync(houseBitmap(180, 120)).toString('base64'),
+    compressed: true
+  }
+]
+
 doc.entities = entities
 const bytes = ez.toJwwBytes(doc)
 const out = resolve(root, 'resources/cad-data/samples/jww-sample.jww')
 writeFileSync(out, bytes)
 console.log(`wrote ${out} (${bytes.length} bytes)`)
+
+/** 24-bit BMP of a house under a sky gradient. */
+function houseBitmap(width, height) {
+  const stride = Math.ceil((width * 3) / 4) * 4
+  const data = Buffer.alloc(54 + stride * height)
+  data.write('BM', 0)
+  data.writeUInt32LE(data.length, 2)
+  data.writeUInt32LE(54, 10)
+  data.writeUInt32LE(40, 14)
+  data.writeInt32LE(width, 18)
+  data.writeInt32LE(height, 22)
+  data.writeUInt16LE(1, 26)
+  data.writeUInt16LE(24, 28)
+  data.writeUInt32LE(stride * height, 34)
+  const color = (x, y) => {
+    // y = 0 is the bottom row.
+    const ground = height * 0.25
+    const wallTop = height * 0.55
+    const left = width * 0.3
+    const right = width * 0.7
+    const roofTop = height * 0.8
+    if (y < ground) return [96, 160, 72]
+    if (x >= left && x < right && y < wallTop) {
+      const door = x >= width * 0.46 && x < width * 0.54 && y < height * 0.45
+      const window = x >= width * 0.58 && x < width * 0.66 &&
+        y >= height * 0.38 && y < height * 0.48
+      if (door) return [120, 72, 40]
+      if (window) return [170, 210, 240]
+      return [236, 228, 210]
+    }
+    const half = ((right - left) / 2) * 1.15
+    const cx = width / 2
+    if (y >= wallTop && y < roofTop) {
+      const reach = half * (1 - (y - wallTop) / (roofTop - wallTop))
+      if (Math.abs(x - cx) <= reach) return [168, 60, 48]
+    }
+    const t = y / height
+    return [Math.round(150 + 80 * t), Math.round(200 + 40 * t), 250]
+  }
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      const [r, g, b] = color(x, y)
+      const i = 54 + y * stride + x * 3
+      data[i] = b
+      data[i + 1] = g
+      data[i + 2] = r
+    }
+  }
+  return data
+}

@@ -4,6 +4,7 @@ import {
   type Rgb,
   type SxfCurve,
   SxfDrawing,
+  type SxfImage,
   type SxfPath,
   type SxfStyle
 } from './drawing'
@@ -141,6 +142,8 @@ class SxfDxfWriter {
   private readonly styles = new Map<string, string>([
     [DEFAULT_FONT, 'STANDARD']
   ])
+  /** Image file name → IMAGEDEF handle. */
+  private readonly imageDefs = new Map<string, string>()
 
   constructor(
     private readonly drawing: SxfDrawing,
@@ -151,6 +154,8 @@ class SxfDxfWriter {
 
   write() {
     const entities = this.capture(() => {
+      // Images first so that lines and text are drawn over them.
+      for (const image of this.drawing.images) this.writeImage(image)
       for (const fill of this.drawing.fills)
         this.writeFill(fill.outer, fill.holes, fill.style)
       for (const path of this.drawing.paths) this.writePath(path)
@@ -211,6 +216,7 @@ class SxfDxfWriter {
     this.section('ENTITIES')
     this.out.push(entities)
     this.pair(0, 'ENDSEC')
+    this.writeObjects()
     this.pair(0, 'EOF')
     return this.out.join('')
   }
@@ -299,6 +305,64 @@ class SxfDxfWriter {
       this.pair(42, fmt(end))
     }
     return true
+  }
+
+  /** The pixel size is left at 1 × 1 so U / V carry the whole extent. */
+  private writeImage(image: SxfImage) {
+    let defHandle = this.imageDefs.get(image.fileName)
+    if (!defHandle) {
+      defHandle = this.nextHandle()
+      this.imageDefs.set(image.fileName, defHandle)
+    }
+    this.entity('IMAGE', image.style, 'AcDbRasterImage')
+    this.pair(90, '0')
+    this.point(10, image.origin)
+    this.point(11, image.u)
+    this.point(12, image.v)
+    this.pair(13, '1.0')
+    this.pair(23, '1.0')
+    this.pair(340, defHandle)
+    this.pair(70, '3')
+    this.pair(280, '0')
+    this.pair(281, '50')
+    this.pair(282, '50')
+    this.pair(283, '0')
+  }
+
+  /** Image definitions referenced by IMAGE entities. */
+  private writeObjects() {
+    if (this.imageDefs.size === 0) return
+    const root = this.nextHandle()
+    const dict = this.nextHandle()
+    this.section('OBJECTS')
+    this.pair(0, 'DICTIONARY')
+    this.pair(5, root)
+    this.pair(100, 'AcDbDictionary')
+    this.pair(3, 'ACAD_IMAGE_DICT')
+    this.pair(350, dict)
+    this.pair(0, 'DICTIONARY')
+    this.pair(5, dict)
+    this.pair(330, root)
+    this.pair(100, 'AcDbDictionary')
+    for (const handle of this.imageDefs.values()) {
+      this.pair(3, `SXF_IMAGE_${handle}`)
+      this.pair(350, handle)
+    }
+    for (const [fileName, handle] of this.imageDefs) {
+      this.pair(0, 'IMAGEDEF')
+      this.pair(5, handle)
+      this.pair(330, dict)
+      this.pair(100, 'AcDbRasterImageDef')
+      this.pair(90, '0')
+      this.pair(1, fileName.replace(/[\r\n]+/g, ' '))
+      this.pair(10, '1.0')
+      this.pair(20, '1.0')
+      this.pair(11, '1.0')
+      this.pair(21, '1.0')
+      this.pair(280, '1')
+      this.pair(281, '0')
+    }
+    this.pair(0, 'ENDSEC')
   }
 
   private writeFill(outer: Point[], holes: Point[][], style: SxfStyle) {
