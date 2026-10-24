@@ -1,6 +1,7 @@
 import {
   collectExportDrawing,
-  type ExportDrawing
+  type ExportDrawing,
+  resolveExportImages
 } from '@mlightcad/cad-export-model'
 import {
   AcDbArc,
@@ -11,6 +12,7 @@ import {
   AcDbEntity,
   acdbHostApplicationServices,
   AcDbLine,
+  AcDbRasterImage,
   AcDbText
 } from '@mlightcad/data-model'
 import * as ezjww from 'ezjww'
@@ -79,6 +81,7 @@ describe('JWW export', () => {
       await open(new Uint8Array(readFileSync(SAMPLE)))
     )
     drawing = collectExportDrawing(original)
+    await resolveExportImages(drawing)
     const { bytes } = writeJwwBytes(ezjww, drawing)
     expect(ezjww.detectFileFormat(bytes)).toBe('jww')
     reopened = await open(bytes)
@@ -154,6 +157,21 @@ describe('JWW export', () => {
       expect(t.h).toBeCloseTo(a[i].h, 4)
       expect(t.r).toBeCloseTo(a[i].r, 6)
     })
+  })
+
+  it('embeds raster images', async () => {
+    const images = (db: AcDbDatabase) =>
+      entitiesOf(db).filter((e): e is AcDbRasterImage => e instanceof AcDbRasterImage)
+    const [before] = images(original)
+    const [after] = images(reopened)
+    expect(images(reopened)).toHaveLength(1)
+    expect(after.position.x).toBeCloseTo(before.position.x, 3)
+    expect(after.position.y).toBeCloseTo(before.position.y, 3)
+    expect(after.width).toBeCloseTo(before.width, 3)
+    expect(after.height).toBeCloseTo(before.height, 3)
+    expect(after.image).toBeDefined()
+    const bytes = async (image: AcDbRasterImage) => new Uint8Array(await image.image!.arrayBuffer())
+    expect(await bytes(after)).toEqual(await bytes(before))
   })
 
   it('keeps pen colours and line types', () => {

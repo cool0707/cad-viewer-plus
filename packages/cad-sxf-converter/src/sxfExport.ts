@@ -13,6 +13,8 @@
 import {
   cellFontMetrics,
   cellFontName,
+  collectExportDrawing,
+  type CollectOptions,
   type ExportDrawing,
   type ExportEntity,
   type ExportStyle,
@@ -21,6 +23,7 @@ import {
   textCells,
   type Vec2
 } from '@mlightcad/cad-export-model'
+import type { AcDbDatabase } from '@mlightcad/data-model'
 import { zipSync } from 'fflate'
 
 import { encodeShiftJis } from './shiftJis'
@@ -301,7 +304,18 @@ class FeatureBuilder {
     for (const entity of drawing.entities) {
       this.addEntity(entity, components, composites, compositeCodes)
     }
-    const elements = this.features.splice(0)
+    // SFC hierarchy: a composite curve owns every feature since the previous
+    // definition, so fill boundaries and their composite curves come first.
+    const boundaryIds = new Set<number>()
+    for (const [id, parts] of composites) {
+      boundaryIds.add(id)
+      parts.forEach(part => boundaryIds.add(part))
+    }
+    const allElements = this.features.splice(0)
+    const elements = [
+      ...allElements.filter(f => boundaryIds.has(f.id)),
+      ...allElements.filter(f => !boundaryIds.has(f.id))
+    ]
 
     const colors = new Map<number, Feature>()
     const lineTypes = new Map<number, Feature>()
@@ -629,7 +643,7 @@ function sfcParam(p: Param): string {
 
 /** Header string (a plain STEP string: apostrophes doubled). */
 function stepText(value: string) {
-  return `'${value.replace(/'/g, "''")}'`
+  return `'${value.replace(/'/g, '\'\'')}'`
 }
 
 /** Builds the SFC text of a drawing. */
@@ -641,9 +655,9 @@ export function sxfToSfcText(
   const lines = [
     'ISO-10303-21;',
     'HEADER;',
-    "FILE_DESCRIPTION(('SCADEC level2 feature_mode'),'2;1');",
+    'FILE_DESCRIPTION((\'SCADEC level2 feature_mode\'),\'2;1\');',
     `FILE_NAME(${stepText(headerFileName(options, 'sfc', model.title))},${stepText(headerTimestamp(options))},(${stepText(options.author ?? '')}),(${stepText(options.organization ?? '')}),'RemixCAD$$3.1','RemixCAD','');`,
-    "FILE_SCHEMA(('ASSOCIATIVE_DRAUGHTING'));",
+    'FILE_SCHEMA((\'ASSOCIATIVE_DRAUGHTING\'));',
     'ENDSEC;',
     'DATA;'
   ]
@@ -1141,9 +1155,9 @@ export function sxfToP21Text(
   const lines = [
     'ISO-10303-21;',
     'HEADER;',
-    "FILE_DESCRIPTION(('SCADEC level2 AP202_mode'),'1');",
+    'FILE_DESCRIPTION((\'SCADEC level2 AP202_mode\'),\'1\');',
     `FILE_NAME('${stepString(headerFileName(options, 'p21', model.title))}','${stepString(headerTimestamp(options))}',('${stepString(options.author ?? '')}'),('${stepString(options.organization ?? '')}'),'RemixCAD$$3.1','RemixCAD','');`,
-    "FILE_SCHEMA(('ASSOCIATIVE_DRAUGHTING'));",
+    'FILE_SCHEMA((\'ASSOCIATIVE_DRAUGHTING\'));',
     'ENDSEC;',
     'DATA;'
   ]
@@ -1334,4 +1348,31 @@ function interiorPoint(polygons: Vec2[][]): Vec2 {
     }
   }
   return polygons[0]?.[0] ?? [0, 0]
+}
+
+/** SXF file forms {@link exportSxf} writes. */
+export type SxfExportFormat = 'sfc' | 'p21' | 'sfz' | 'p2z'
+
+/**
+ * Writes a drawing database as an SXF file (`sfc` / `p21`, or their ZIP
+ * forms `sfz` / `p2z`).
+ *
+ * @param options - Sheet options (paper, orientation, scale; chosen from the
+ *   drawing limits or the drawing size by default), the title and the header
+ */
+export function exportSxf(
+  db: AcDbDatabase,
+  format: SxfExportFormat,
+  options: CollectOptions & SxfWriteOptions = {}
+): SxfWriteResult {
+  const { fileName, timestamp, author, organization, ...collect } = options
+  const drawing = collectExportDrawing(db, collect)
+  const header = { fileName, timestamp, author, organization }
+  const zipped = format === 'sfz' || format === 'p2z'
+  const inner = format === 'sfz' ? 'sfc' : format === 'p2z' ? 'p21' : format
+  const result =
+    inner === 'sfc' ? writeSfc(drawing, header) : writeP21(drawing, header)
+  if (!zipped) return result
+  const name = headerFileName(header, inner, drawing.title)
+  return { ...result, bytes: zipSxf(result.bytes, name) }
 }

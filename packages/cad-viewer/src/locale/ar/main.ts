@@ -13,6 +13,7 @@ export default {
     exportHtml: 'تصدير إلى HTML',
     exportPdf: 'تصدير إلى PDF',
     exportSvg: 'تصدير إلى SVG',
+    exportAs: 'تصدير إلى {format}',
     exportImage: 'تصدير إلى صورة',
     about: 'حول'
   },

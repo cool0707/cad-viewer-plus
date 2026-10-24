@@ -111,9 +111,11 @@ export interface ExportImage extends EntityBase {
   v: Vec2
   /** File name (no directories). */
   fileName: string
-  /** Image file bytes, when the drawing has them. */
+  /** Image file bytes, when the drawing has them (see {@link resolveExportImages}). */
   data?: Uint8Array
   mimeType?: string
+  /** The image as the viewer holds it, until it is read into {@link data}. */
+  blob?: Blob
 }
 
 export type ExportEntity =

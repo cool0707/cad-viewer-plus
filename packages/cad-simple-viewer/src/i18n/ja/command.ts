@@ -35,6 +35,15 @@ export default {
     cdxf: {
       description: '現在の図面を DXF に書き出します'
     },
+    cjww: {
+      description: '現在の図面を JWW (Jw_cad) に書き出します'
+    },
+    csfc: {
+      description: '現在の図面を SXF (SFC) に書き出します'
+    },
+    cp21: {
+      description: '現在の図面を SXF (P21) に書き出します'
+    },
     cpdf: {
       description: '現在の図面を PDF に書き出します'
     },

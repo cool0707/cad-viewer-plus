@@ -1,4 +1,9 @@
-import type { ExportDrawing } from '@mlightcad/cad-export-model'
+import {
+  collectExportDrawing,
+  type CollectOptions,
+  type ExportDrawing,
+  resolveExportImages
+} from '@mlightcad/cad-export-model'
 import {
   AcDbDatabase,
   AcDbDatabaseConverter,
@@ -160,6 +165,20 @@ export class AcDbJwwConverter extends AcDbDatabaseConverter {
       return { bytes: response.bytes, warnings: response.warnings }
     }
     return writeJwwBytes(await this.loadEzjww(), drawing, options)
+  }
+
+  /**
+   * Writes a drawing database as a JWW file: flattens it on this thread and
+   * writes it with {@link writeJww}. Jw_cad sheets are landscape.
+   */
+  async exportDatabase(
+    db: AcDbDatabase,
+    options: Omit<CollectOptions, 'portrait'> & JwwWriteOptions = {}
+  ): Promise<JwwWriteResult> {
+    const { colorMode, memo, ...collect } = options
+    const drawing = collectExportDrawing(db, { ...collect, portrait: false })
+    await resolveExportImages(drawing)
+    return this.writeJww(drawing, { colorMode, memo })
   }
 
   private get usesWorker() {

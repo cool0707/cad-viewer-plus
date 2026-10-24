@@ -8,6 +8,7 @@ export default {
     exportHtml: 'Exportovat do HTML',
     exportPdf: 'Exportovat do PDF',
     exportSvg: 'Exportovat do SVG',
+    exportAs: 'Exportovat do {format}',
     exportImage: 'Exportovat do obrázku',
     about: 'O aplikaci'
   },

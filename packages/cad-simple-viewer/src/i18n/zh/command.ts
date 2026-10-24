@@ -33,6 +33,15 @@ export default {
     cdxf: {
       description: '导出当前图纸为DXF格式'
     },
+    cjww: {
+      description: '导出当前图纸为JWW (Jw_cad)格式'
+    },
+    csfc: {
+      description: '导出当前图纸为SXF (SFC)格式'
+    },
+    cp21: {
+      description: '导出当前图纸为SXF (P21)格式'
+    },
     cpdf: {
       description: '导出当前图纸为PDF格式'
     },

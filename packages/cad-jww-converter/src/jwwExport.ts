@@ -10,7 +10,13 @@ import {
   textCells,
   type Vec2
 } from '@mlightcad/cad-export-model'
-import type { EntityBase, JwwWriteDocument, JwwWriteEntity } from 'ezjww'
+import type {
+  EntityBase,
+  JwwWriteDocument,
+  JwwWriteEntity,
+  JwwWriteImage
+} from 'ezjww'
+import { gzipSync } from 'fflate'
 
 import type { JwwWriteResult } from './jwwWorkerProtocol'
 
@@ -162,6 +168,9 @@ class JwwBuilder {
   private readonly slots = new Map<string, LayerSlot>()
   private readonly penColors: Rgb[]
   private readonly entities: JwwWriteEntity[] = []
+  private readonly images: JwwWriteImage[] = []
+  /** Embedded image name by file name + contents. */
+  private readonly imageNames = new Map<string, string>()
 
   constructor(
     private readonly doc: JwwWriteDocument,
@@ -191,7 +200,11 @@ class JwwBuilder {
     for (const entity of this.drawing.entities) this.add(entity)
     this.doc.entities = this.entities
     this.doc.block_defs = []
-    return { document: this.doc, warnings: this.warnings }
+    this.doc.images = this.images
+    return {
+      document: this.doc,
+      warnings: [...this.drawing.warnings, ...this.warnings]
+    }
   }
 
   private warnOnce(message: string) {
@@ -369,7 +382,7 @@ class JwwBuilder {
         this.addFill(entity.style, entity.loops)
         break
       case 'image':
-        this.warnOnce('Raster images are not exported to JWW')
+        this.addImage(entity)
         break
     }
   }
@@ -471,6 +484,59 @@ class JwwBuilder {
     })
   }
 
+  /**
+   * Places an image with a `^@BM` text (lower-left corner at the text point,
+   * width × height in paper millimetres along the text angle). Images with
+   * pixels are embedded gzip-compressed, like Jw_cad does; others keep their
+   * file name as an external reference.
+   */
+  private addImage(image: Extract<ExportEntity, { kind: 'image' }>) {
+    const width = Math.hypot(image.u[0], image.u[1]) / this.scale
+    const height = Math.hypot(image.v[0], image.v[1]) / this.scale
+    if (!(width > 0 && height > 0)) return
+    // Commas separate the placement parameters.
+    const fileName = image.fileName.replace(/[,\p{Cc}]/gu, '_') || 'image'
+    let path = fileName
+    if (image.data) {
+      const key = `${fileName}\u0000${image.data.length}\u0000${checksum(image.data)}`
+      let name = this.imageNames.get(key)
+      if (!name) {
+        name = fileName
+        const taken = new Set(this.imageNames.values())
+        for (let n = 2; taken.has(name); n++) {
+          name = fileName.replace(/(\.[^.]*)?$/, `~${n}$1`)
+        }
+        this.imageNames.set(key, name)
+        this.images.push({
+          name: `${name}.gz`,
+          data: base64(gzipSync(image.data)),
+          compressed: true
+        })
+      }
+      path = `%temp%${name}`
+    } else {
+      this.warnOnce('Images without pixels are written as references to their file name')
+    }
+    const [x, y] = this.paper(image.origin)
+    const angle = ((Math.atan2(image.u[1], image.u[0]) * 180) / Math.PI + 360) % 360
+    const size = 2.5
+    this.entities.push({
+      type: 'TEXT',
+      base: this.base(image.style, 'text'),
+      start_x: x,
+      start_y: y,
+      end_x: x,
+      end_y: y,
+      text_type: 0,
+      size_x: size,
+      size_y: size,
+      spacing: 0,
+      angle: angle >= 360 - 1e-9 ? 0 : angle,
+      font_name: 'ＭＳ ゴシック',
+      content: `^@BM${path},${trimNumber(width)},${trimNumber(height)},0,0,1,0,255,255,255`
+    })
+  }
+
   private addFill(style: ExportStyle, loops: Vec2[][]) {
     const base = this.base(style, 'fill')
     const color = colorRef(style.foreground ? [0, 0, 0] : style.color)
@@ -495,6 +561,26 @@ class JwwBuilder {
       })
     }
   }
+}
+
+function trimNumber(value: number) {
+  return String(Number(value.toFixed(6)))
+}
+
+function checksum(data: Uint8Array) {
+  let hash = 2166136261
+  for (let i = 0; i < data.length; i++) {
+    hash = Math.imul(hash ^ data[i], 16777619)
+  }
+  return (hash >>> 0).toString(16)
+}
+
+function base64(data: Uint8Array) {
+  let binary = ''
+  for (let i = 0; i < data.length; i += 0x8000) {
+    binary += String.fromCharCode(...data.subarray(i, i + 0x8000))
+  }
+  return btoa(binary)
 }
 
 function normalizeAngle(a: number) {

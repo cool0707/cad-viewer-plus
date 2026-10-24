@@ -120,6 +120,21 @@ export function collectExportDrawing(
   }
 }
 
+/**
+ * Reads the pixels of exported raster images (`blob` → `data`). Call before
+ * handing the drawing to a writer or a worker.
+ */
+export async function resolveExportImages(drawing: ExportDrawing) {
+  for (const entity of drawing.entities) {
+    if (entity.kind !== 'image' || !entity.blob) continue
+    if (!entity.data) {
+      entity.data = new Uint8Array(await entity.blob.arrayBuffer())
+      entity.mimeType ||= entity.blob.type || undefined
+    }
+    delete entity.blob
+  }
+}
+
 /** Bounding box of exported entities (curves by their control box). */
 export function entityExtents(entities: ExportEntity[]): Box | undefined {
   let minX = Infinity
@@ -242,7 +257,7 @@ class Collector {
     if (entity instanceof AcDbViewport || entity instanceof AcDbWipeout) return
     if (entity instanceof AcDbAttributeDefinition) return
     if (entity instanceof AcDbRasterImage) {
-      this.warnOnce('Raster images are not exported')
+      this.visitImage(entity, t, ctx)
       return
     }
     if (!flipped) {
@@ -395,6 +410,37 @@ class Collector {
       if (attrib.isInvisible || !attrib.visibility) continue
       this.visitText(attrib, t, ctx)
     }
+  }
+
+  private visitImage(
+    image: AcDbRasterImage,
+    t: Affine,
+    ctx: InsertContext | undefined
+  ) {
+    if (!(image.width > 0 && image.height > 0)) return
+    if (image.isClipped) {
+      this.warnOnce('Clipped raster images are exported whole')
+    }
+    const p = image.position
+    const r = image.rotation
+    const origin = apply(t, [p.x, p.y])
+    const corner = (x: number, y: number) => {
+      const q = apply(t, [
+        p.x + x * Math.cos(r) - y * Math.sin(r),
+        p.y + x * Math.sin(r) + y * Math.cos(r)
+      ])
+      return [q[0] - origin[0], q[1] - origin[1]] as Vec2
+    }
+    const fileName =
+      image.imageFileName.split(/[\\/]/).pop() || image.imageDisplayName || 'image'
+    this.push(image, ctx, {
+      kind: 'image',
+      origin,
+      u: corner(image.width, 0),
+      v: corner(0, image.height),
+      fileName,
+      blob: image.image
+    })
   }
 
   /** Returns false to fall back to worldDraw (wide polylines). */

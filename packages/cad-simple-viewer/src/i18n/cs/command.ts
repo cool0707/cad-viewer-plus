@@ -37,6 +37,15 @@ export default {
     cdxf: {
       description: 'Exportuje aktuální výkres do DXF'
     },
+    cjww: {
+      description: 'Exportuje aktuální výkres do JWW (Jw_cad)'
+    },
+    csfc: {
+      description: 'Exportuje aktuální výkres do SXF SFC'
+    },
+    cp21: {
+      description: 'Exportuje aktuální výkres do SXF P21'
+    },
     cpdf: {
       description: 'Exportuje aktuální výkres do PDF'
     },

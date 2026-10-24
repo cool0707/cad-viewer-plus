@@ -2,7 +2,7 @@
 
 mlightcad/cad-viewer (MIT) を日本向けにフォークしたブラウザ CAD ビューア。
 JWW / JWC (`packages/cad-jww-converter`) と SXF (SFC・P21・SFZ・P2Z、`packages/cad-sxf-converter`)
-の読み込みは実装済み。経緯と残課題は [`HANDOFF.md`](./HANDOFF.md) を最初に読むこと。
+の読み込みと、JWW・SXF (SFC・P21) への書き出し (`packages/cad-export-model` 経由) は実装済み。経緯と残課題は [`HANDOFF.md`](./HANDOFF.md) を最初に読むこと。
 次の大きな作業は **CAD 未経験者向け UI への作り替え** — 計画と決定事項は [`UX-PLAN.md`](./UX-PLAN.md)。
 
 ## コマンド

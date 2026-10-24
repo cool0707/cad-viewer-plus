@@ -167,6 +167,69 @@ describe('SXF export', () => {
   })
 })
 
+it('keeps fill boundaries apart from the elements written before them', async () => {
+  const style = {
+    layer: 'A',
+    color: [255, 0, 0] as [number, number, number],
+    foreground: false,
+    lineType: 'CONTINUOUS',
+    lineTypePattern: [],
+    lineWeight: 0
+  }
+  const drawing: ExportDrawing = {
+    title: 'fill',
+    layers: [
+      {
+        name: 'A',
+        color: [0, 0, 0],
+        foreground: true,
+        hidden: false,
+        locked: false
+      }
+    ],
+    entities: [
+      {
+        kind: 'polyline',
+        style,
+        points: [
+          [0, 0],
+          [1000, 0]
+        ],
+        closed: false
+      },
+      {
+        kind: 'fill',
+        style,
+        loops: [
+          [
+            [0, 0],
+            [100, 0],
+            [100, 100],
+            [0, 100]
+          ]
+        ]
+      }
+    ],
+    sheet: {
+      paper: 'A4',
+      portrait: false,
+      width: 297,
+      height: 210,
+      scale: 10,
+      origin: [0, 0]
+    },
+    warnings: []
+  }
+  const text = sxfToSfcText(drawing).text
+  expect(text.indexOf('composite_curve_feature')).toBeLessThan(
+    text.indexOf('= line_feature')
+  )
+  const db = await open(writeSfc(drawing).bytes, 'sfc')
+  const entities = entitiesOf(db)
+  expect(entities.filter(e => e instanceof AcDbLine)).toHaveLength(1)
+  expect(entities.filter(e => e instanceof AcDbHatch)).toHaveLength(1)
+})
+
 describe('encodeShiftJis', () => {
   it('round-trips JIS X 0208 text and reports other characters', () => {
     const text = 'ABC ｱｲｳ 日本語・寸法 ①Ⅱ㎡ ¥'

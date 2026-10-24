@@ -16,6 +16,7 @@ import {
   AcApConvertToDxfCmd,
   acapCssColor,
   AcApDocManager,
+  acapDrawingExporters,
   acapDrawStyleKindForCommand,
   acapGetMeasurementColor,
   acapGetMeasurementCustomTextHeightWcs,
@@ -2744,7 +2745,12 @@ const fileMenuItems = computed<FileMenuItemModel[]>(() => {
         {
           id: 'PngOut',
           label: t('main.mainMenu.exportImage')
-        }
+        },
+        // JWW, SXF, … registered by the application.
+        ...acapDrawingExporters().map(exporter => ({
+          id: `ExportFormat:${exporter.command}`,
+          label: t('main.mainMenu.exportAs', { format: exporter.formatName })
+        }))
       ]
     })
   }
@@ -2823,7 +2829,8 @@ const handleFileMenuSelect = async (command: string) => {
       command === 'ExportHtml' ||
       command === 'ExportPdf' ||
       command === 'ExportSvg' ||
-      command === 'PngOut')
+      command === 'PngOut' ||
+      command.startsWith('ExportFormat:'))
   ) {
     return
   }
@@ -2840,6 +2847,10 @@ const handleFileMenuSelect = async (command: string) => {
     AcApDocManager.instance.sendStringToExecute('csvg')
   } else if (command === 'PngOut') {
     AcApDocManager.instance.sendStringToExecute('pngout')
+  } else if (command.startsWith('ExportFormat:')) {
+    AcApDocManager.instance.sendStringToExecute(
+      command.slice('ExportFormat:'.length)
+    )
   } else if (command === 'QNew') {
     const cmd = new AcApQNewCmd()
     cmd.trigger(AcApDocManager.instance.context)
