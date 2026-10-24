@@ -1,6 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <style id="ml-brand-theme">html:root {
+  --ml-brand: #AF61DA;
+  --ml-brand-from: #EA60D4;
+  --ml-brand-to: #9C62DC;
+  --ml-brand-gradient: linear-gradient(90deg, #EA60D4 0%, #9C62DC 100%);
+  --ml-brand-soft: color-mix(in srgb, #AF61DA 12%, transparent);
+  --el-color-primary: #AF61DA;
+  --el-color-primary-light-3: #c790e5;
+  --el-color-primary-light-5: #d7b0ed;
+  --el-color-primary-light-7: #e7d0f4;
+  --el-color-primary-light-8: #efdff8;
+  --el-color-primary-light-9: #f7effb;
+  --el-color-primary-dark-2: #8c4eae;
+}
+html.dark:root {
+  --el-color-primary: #AF61DA;
+  --el-color-primary-light-3: #814a9f;
+  --el-color-primary-light-5: #623b77;
+  --el-color-primary-light-7: #432b4f;
+  --el-color-primary-light-8: #33233c;
+  --el-color-primary-light-9: #241c28;
+  --el-color-primary-dark-2: #bf81e1;
+}
+</style>
+
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
@@ -15,7 +40,7 @@
         --card: #ffffff;
         --text: #1a1f36;
         --muted: #5b6478;
-        --accent: #af61da;
+        --accent: var(--ml-brand);
         --accent-soft: #dbeafe;
         --border: #d8deea;
         --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
@@ -28,7 +53,7 @@
           --card: #171c24;
           --text: #eef2ff;
           --muted: #a6b0c3;
-          --accent: #af61da;
+          --accent: var(--ml-brand);
           --accent-soft: #1e293b;
           --border: #2a3344;
           --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
@@ -51,7 +76,7 @@
         color: var(--text);
         overflow-x: hidden;
         background:
-          radial-gradient(circle at top left, rgba(175, 97, 218, 0.12), transparent 28rem),
+          radial-gradient(circle at top left, color-mix(in srgb, var(--ml-brand) 12%, transparent), transparent 28rem),
           var(--bg);
       }
 
@@ -672,7 +697,7 @@
         }
       }
     </style>
-    <script type="module" crossorigin src="./assets/htmlConverter-DWbz9bPy.js"></script>
+    <script type="module" crossorigin src="./assets/htmlConverter-Cliym3T-.js"></script>
   </head>
   <body>
     <div class="page">
