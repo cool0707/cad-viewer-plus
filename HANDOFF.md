@@ -30,6 +30,7 @@
 | `@mlightcad/libredwg-converter@3.15.14` | DWG ヘッダーの LIMMIN 等を `db` に格納 |
 | `@mlightcad/geometry-engine@3.15.14` | NURBS 評価の高速パス |
 | `@mlightcad/mtext-renderer@0.13.5` | `fonts.json` の絶対 URL (Google Fonts) を許可 |
+| `@mlightcad/ui-components@0.1.11` | `useBoundingRect` (`dist/*.js` と `src/`): 左右にドッキングしたパレットを、ウィンドウのリサイズ時と折りたたみ/展開時に端から位置を計算し直す。元はリサイズ時に幅の差分を足していたので、ビューア側の再配置と合わせて 2 倍ずれていた。折りたたみ中にタイトルバーを押すと記憶位置が折りたたみ位置で上書きされ、展開すると右にはみ出していた |
 | `ezjww@0.7.3` | npm 版は Node 専用 (読み込み時に `fs` で wasm を読む)。`initSync` / `initAsync` を追加し、wasm を後から渡せるようにした (`exports` に wasm パスも追加) |
 
 注意: `lib/dxf/AcDbNativeDxfConverter.js` は末尾に改行が無く、そのまま `pnpm patch-commit` すると最終行 (`}`) が落ちたパッチになりビルドが壊れる。
