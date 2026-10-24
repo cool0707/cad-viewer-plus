@@ -33,6 +33,13 @@ del dispositivo del usuario.
   atributo de bloque → propiedad del símbolo, espacio modelo → lienzo, presentación → página de impresión,
   sombreado → relleno de patrón, referencia externa → plano vinculado, selección rápida → seleccionar por criterios, etc.
   Las descripciones emergentes mantienen el término CAD entre paréntesis (todos los idiomas).
+- **Barra de herramientas movible** — arrastra el asa (⠿) para moverla a cualquier lugar; el menú ⋯ junto a
+  ella la cambia entre vertical y horizontal o la devuelve a su posición inicial: el borde izquierdo, o el
+  derecho cuando el panel (capas, etc.) está a la izquierda. Si el panel la tapa, vuelve allí sola. Los
+  submenús se abren hacia el centro de la pantalla y la posición se recuerda.
+- **Cambio del modo de selección** — un botón de la barra de estado alterna entre el estilo CAD
+  (cada clic añade) y reemplazar al hacer clic (Mayús + clic añade o quita, un clic en vacío
+  borra la selección). Por ahora el estilo CAD sigue siendo el predeterminado.
 - **Importación de JWW (Jw_cad)** — la app de ejemplo abre archivos `.jww` con
   `@mlightcad/cad-jww-converter` (MIT; analizador [ezjww](https://github.com/monozukuri-ai/ezjww),
   Rust → WebAssembly, en un Web Worker). Las coordenadas pasan de milímetros de papel a

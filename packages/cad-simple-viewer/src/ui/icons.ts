@@ -21,11 +21,15 @@ function elementPlusIcon(...pathDs: string[]): string {
 
 /** Select tool icon. */
 export const ICON_SELECT =
-  '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 20 20"><path fill="currentColor" d="M10.4379 15.2979h.002l4.86-4.86-9.722-4.86 4.86 9.72Zm7.562-5.298-3.434 3.434 3.2 3.2-1.132 1.132-3.2-3.2-3.434 3.434-7.6-15.6 15.6 7.6Z"/></svg>'
+  '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 20 20"><path fill="currentColor" stroke="currentColor" stroke-width="1" stroke-linejoin="round" d="M5 2.6v13.6l3.4-3.3 2.5 5.4 2.2-1-2.5-5.3h4.8Z"/></svg>'
 
 /** Pan tool icon. */
 export const ICON_PAN =
   '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 20 20"><path fill="currentColor" d="M15.08 12.8537l.002-.002V5.5897c0-.422-.652-.414-.652 0v3.466c0 .938-1.482.95-1.482 0v-4.83c0-.414-.6381-.414-.6381 0h-.014v4.83c.014.95-1.482.95-1.482 0V3.4437c0-.42-.638-.414-.638 0v5.612c0 .95-1.494.95-1.494 0V4.2317c0-.408-.64-.42-.64 0v6.756c0 .802-1.094 1.088-1.494.388-.26-.446-.518-.892-.776-1.338-.338-.482-1.1-.15-.794.38.326.566.652 1.132.978 1.698.006.012.014.026.02.04.552.946 1.106 1.89 1.658 2.834.19.3.422.578.666.802h-.006c.672.61 1.528.964 2.418 1.052.888.06 1.7921-.124 2.5601-.612.3-.19.572-.416.816-.68.326-.368.57-.776.734-1.204.176-.482.258-.97.258-1.494Zm-.91-8.608-.004-.002c.958-.38 2.058.244 2.058 1.346v7.266c0 .652-.108 1.29-.332 1.894-.216.564-.53 1.114-.964 1.576-.318.34-.666.632-1.046.884-.978.612-2.1461.862-3.2601.774-1.128-.102-2.228-.564-3.098-1.352-.326-.292-.612-.646-.87-1.034-.558-.96-1.114-1.92-1.672-2.88l-.012-.028c-.326-.568-.652-1.138-.978-1.706-.59-1.018.068-2.186 1.156-2.336.536-.074 1.126.116 1.562.72.026.028.04.062.054.096.04.074.082.146.122.218V4.2337c0-1.176 1.244-1.788 2.202-1.278.42-1.278 2.378-1.264 2.792-.014.9721-.51 2.2221.102 2.2221 1.284v.06c.022-.014.046-.026.068-.04Z"/></svg>'
+
+/** Text (MText) tool icon: a "T", as in most drawing software. */
+export const ICON_TEXT =
+  '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 20 20"><path fill="currentColor" d="M3.4 3h13.2v3.6h-1.7V4.8h-3.95v10.5h1.9V17H7.15v-1.7h1.9V4.8H5.1v1.8H3.4Z"/></svg>'
 
 /** Zoom extents icon. */
 const ZOOM_EXTENT_GLYPH =
@@ -280,6 +284,10 @@ export const ICON_DOCK_CLOSE =
 /** Dock panel side menu button icon. */
 export const ICON_DOCK_SIDE_MENU =
   '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 20 20"><circle cx="10" cy="4" r="1.5" fill="currentColor"/><circle cx="10" cy="10" r="1.5" fill="currentColor"/><circle cx="10" cy="16" r="1.5" fill="currentColor"/></svg>'
+
+/** Drag grip of a movable toolbar (six dots, laid out horizontally). */
+export const ICON_DRAG_HANDLE =
+  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" aria-hidden="true"><g fill="currentColor"><circle cx="6" cy="7.5" r="1.4"/><circle cx="10" cy="7.5" r="1.4"/><circle cx="14" cy="7.5" r="1.4"/><circle cx="6" cy="12.5" r="1.4"/><circle cx="10" cy="12.5" r="1.4"/><circle cx="14" cy="12.5" r="1.4"/></g></svg>'
 
 /** Collapse toolbar (chevron toward compact edge). */
 export const ICON_CHEVRON_UP =

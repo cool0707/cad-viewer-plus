@@ -1263,3 +1263,154 @@ describe('AcUiToolbar in-canvas-parent layout', () => {
     toolbar.destroy()
   })
 })
+
+describe('AcUiToolbar movable', () => {
+  afterEach(() => {
+    document.body.replaceChildren()
+    document.getElementById('ml-ui-toolbar-styles')?.remove()
+  })
+
+  const stickyItems: AcUiToolbarItem[] = [
+    {
+      id: 'measure',
+      label: 'toolbar.measure',
+      childrenUi: 'sticky-toolbar',
+      children: [
+        { id: 'measure-distance', label: 'Distance', command: 'measuredistance' }
+      ]
+    }
+  ]
+
+  function createMovableToolbar(
+    options: Partial<ConstructorParameters<typeof AcUiToolbar>[0]> = {}
+  ) {
+    const host = document.createElement('div')
+    Object.defineProperty(host, 'clientWidth', { value: 800 })
+    Object.defineProperty(host, 'clientHeight', { value: 600 })
+    document.body.appendChild(host)
+    const onFloatingLayoutChange = jest.fn()
+    const toolbar = new AcUiToolbar({
+      host,
+      placement: 'right',
+      items: stickyItems,
+      i18n: new AcUiI18n(),
+      onCommand: jest.fn(),
+      movable: true,
+      onFloatingLayoutChange,
+      docState: { hasDocument: true, isOpening: false, openMode: 8 },
+      ...options
+    })
+    const root = host.querySelector<HTMLElement>('.ml-ex-ui-toolbar')!
+    return { host, root, toolbar, onFloatingLayoutChange }
+  }
+
+  function pointer(type: string, target: EventTarget, clientX: number) {
+    const event = new MouseEvent(type, {
+      bubbles: true,
+      cancelable: true,
+      button: 0,
+      clientX,
+      clientY: 300
+    })
+    Object.defineProperty(event, 'pointerId', { value: 1 })
+    target.dispatchEvent(event)
+  }
+
+  it('renders a grip with a layout menu button', () => {
+    const { host, root, toolbar } = createMovableToolbar()
+    expect(root.classList.contains('is-movable')).toBe(true)
+    const handle = host.querySelector('.ml-ex-ui-toolbar-handle')
+    expect(
+      handle?.querySelector('[data-toolbar-item-id="toolbar-grip"]')
+    ).toBeTruthy()
+    expect(
+      handle?.querySelector('[data-toolbar-item-id="toolbar-layout"]')
+    ).toBeTruthy()
+    toolbar.destroy()
+  })
+
+  it('opens sub-toolbars toward the host centre after dragging across it', () => {
+    const { host, root, toolbar, onFloatingLayoutChange } =
+      createMovableToolbar()
+    jest.spyOn(root, 'getBoundingClientRect').mockReturnValue({
+      left: 750,
+      top: 200,
+      width: 40,
+      height: 200,
+      right: 790,
+      bottom: 400,
+      x: 750,
+      y: 200,
+      toJSON: () => ({})
+    })
+    host.querySelector<HTMLButtonElement>('[data-toolbar-item-id="measure"]')!.click()
+    expect(host.querySelector('.ml-ex-ui-subtoolbar.is-right')).toBeTruthy()
+
+    const grip = host.querySelector('[data-toolbar-item-id="toolbar-grip"]')!
+    pointer('pointerdown', grip, 760)
+    expect(root.classList.contains('is-right')).toBe(true)
+    pointer('pointermove', window, 100)
+    expect(root.classList.contains('is-left')).toBe(true)
+    // The sticky strip is reopened on the other side.
+    expect(host.querySelector('.ml-ex-ui-subtoolbar.is-left')).toBeTruthy()
+    pointer('pointerup', window, 100)
+
+    expect(onFloatingLayoutChange).toHaveBeenCalledTimes(1)
+    const layout = onFloatingLayoutChange.mock.calls[0][0]
+    expect(layout.orientation).toBe('vertical')
+    expect(layout.x).toBeLessThan(0.5)
+    toolbar.destroy()
+  })
+
+  it('switches orientation from the layout menu and docks back', () => {
+    const { host, root, toolbar, onFloatingLayoutChange } =
+      createMovableToolbar()
+    const menuItems = () => {
+      host
+        .querySelector<HTMLButtonElement>(
+          '[data-toolbar-item-id="toolbar-layout"]'
+        )!
+        .click()
+      return host.querySelectorAll<HTMLButtonElement>('.ml-ex-ui-dropdown-item')
+    }
+    // Vertical / Horizontal / Reset position; the current one is marked.
+    let items = menuItems()
+    expect(items).toHaveLength(3)
+    expect(items[0].classList.contains('is-toggled')).toBe(true)
+    items[1].click()
+    expect(host.querySelector('.ml-ex-ui-dropdown')).toBeNull()
+    expect(root.classList.contains('is-horizontal')).toBe(true)
+    expect(onFloatingLayoutChange).toHaveBeenLastCalledWith(
+      expect.objectContaining({ orientation: 'horizontal' })
+    )
+
+    items = menuItems()
+    expect(items[1].classList.contains('is-toggled')).toBe(true)
+    items[2].click()
+    expect(root.classList.contains('is-vertical')).toBe(true)
+    expect(toolbar.getFloatingLayout()).toBeUndefined()
+
+    menuItems()[1].click()
+    expect(root.classList.contains('is-horizontal')).toBe(true)
+
+    host
+      .querySelector('[data-toolbar-item-id="toolbar-grip"]')!
+      .dispatchEvent(new MouseEvent('dblclick', { bubbles: true }))
+    expect(root.classList.contains('is-vertical')).toBe(true)
+    expect(root.classList.contains('is-right')).toBe(true)
+    expect(toolbar.getFloatingLayout()).toBeUndefined()
+    expect(onFloatingLayoutChange).toHaveBeenLastCalledWith(undefined)
+    toolbar.destroy()
+  })
+
+  it('restores an initial floating layout', () => {
+    const { root, toolbar } = createMovableToolbar({
+      floatingLayout: { orientation: 'horizontal', x: 0.5, y: 0.2 }
+    })
+    expect(root.classList.contains('is-horizontal')).toBe(true)
+    // Upper half: sub-toolbars open below the bar.
+    expect(root.classList.contains('is-top')).toBe(true)
+    expect(root.classList.contains('is-floating')).toBe(true)
+    toolbar.destroy()
+  })
+})

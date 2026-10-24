@@ -32,6 +32,13 @@ acontecem no cliente, então os desenhos nunca saem do dispositivo do usuário.
   atributo de bloco → propriedade do símbolo, espaço do modelo → tela, layout → página de impressão,
   hachura → preenchimento com padrão, referência externa → desenho vinculado, seleção rápida → selecionar por critérios etc.
   As dicas de ferramenta mantêm o termo CAD entre parênteses (todos os idiomas).
+- **Barra de ferramentas móvel** — arraste a alça (⠿) para movê-la para qualquer lugar; o menu ⋯ ao lado
+  alterna entre vertical e horizontal ou a devolve à posição inicial: a borda esquerda, ou a direita quando
+  o painel (camadas etc.) está à esquerda. Se o painel a cobrir, ela volta para lá sozinha. Os submenus
+  abrem em direção ao centro da tela e a posição é lembrada.
+- **Troca do modo de seleção** — um botão da barra de status alterna entre o estilo CAD
+  (cada clique adiciona) e substituir ao clicar (Shift + clique adiciona ou remove, clicar no vazio
+  limpa a seleção). Por enquanto o estilo CAD continua sendo o padrão.
 - **Importação de JWW (Jw_cad)** — o app de exemplo abre arquivos `.jww` com
   `@mlightcad/cad-jww-converter` (MIT; analisador [ezjww](https://github.com/monozukuri-ai/ezjww),
   Rust → WebAssembly, em um Web Worker). As coordenadas passam de milímetros de papel para

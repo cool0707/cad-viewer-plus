@@ -412,6 +412,16 @@ export default {
     }
   },
   verticalToolbar: {
+    chrome: {
+      collapse: 'Sbalit panel nástrojů',
+      expand: 'Rozbalit panel nástrojů',
+      moreOverflow: 'Další nástroje',
+      move: 'Přetažením přesunete (dvojklikem obnovíte)',
+      layoutMenu: 'Rozložení panelu nástrojů',
+      vertical: 'Svisle',
+      horizontal: 'Vodorovně',
+      resetPosition: 'Obnovit polohu'
+    },
     measure: {
       text: 'Měření',
       description: 'Nástroje pro měření'
@@ -458,12 +468,16 @@ export default {
       description: 'Exportuje měření do sidecar JSON souboru'
     },
     annotation: {
-      text: 'Poznámky',
+      text: 'Revize',
       description: 'Nástroje kontroly'
     },
     layer: {
       text: 'Hladiny',
       description: 'Spravuje hladiny'
+    },
+    text: {
+      text: 'Text (MText)',
+      description: 'Vytvoří ve výkresu víceřádkovou textovou poznámku'
     },
     pan: {
       text: 'Posun',
@@ -625,6 +639,11 @@ export default {
     lineWidth: {
       on: 'Skrýt tloušťky čar',
       off: 'Zobrazit tloušťky čar'
+    },
+    selectionStyle: {
+      simple:
+        'Kliknutí nahradí výběr (Shift+kliknutí přidá nebo odebere). Kliknutím přepnete na styl CAD',
+      cad: 'Styl CAD: každé kliknutí přidá do výběru. Kliknutím přepnete na nahrazení kliknutím'
     },
     orthoMode: {
       on: 'Vypnout režim ortho',

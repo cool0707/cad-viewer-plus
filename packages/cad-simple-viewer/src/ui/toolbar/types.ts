@@ -10,6 +10,25 @@ import type { AcEdOpenMode } from '../../editor/view/AcEdOpenMode'
 /** Toolbar edge placement relative to the viewer host element. */
 export type AcUiToolbarPlacement = 'top' | 'bottom' | 'left' | 'right'
 
+/** Layout axis of a toolbar that floats freely inside its host. */
+export type AcUiToolbarOrientation = 'vertical' | 'horizontal'
+
+/**
+ * Position chosen by the user for a movable toolbar
+ * ({@link AcUiToolbarMountOptions.movable}).
+ *
+ * `x` / `y` are ratios (0..1) of the free space left after subtracting the
+ * toolbar size and edge offsets, so a bar dragged against an edge stays there
+ * when the host is resized.
+ */
+export interface AcUiToolbarFloatingLayout {
+  orientation: AcUiToolbarOrientation
+  /** 0 = against the left edge, 1 = against the right edge. */
+  x: number
+  /** 0 = against the top edge, 1 = against the bottom edge. */
+  y: number
+}
+
 /**
  * Overflow behavior when toolbar buttons exceed the host bounds.
  *

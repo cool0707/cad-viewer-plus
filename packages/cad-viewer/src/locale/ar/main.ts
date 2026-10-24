@@ -585,6 +585,16 @@ export default {
 },
   verticalToolbar: {
     ...enMain.verticalToolbar,
+    chrome: {
+      collapse: 'طي شريط الأدوات',
+      expand: 'توسيع شريط الأدوات',
+      moreOverflow: 'المزيد من الأدوات',
+      move: 'اسحب للنقل (انقر نقرًا مزدوجًا للاستعادة)',
+      layoutMenu: 'تخطيط شريط الأدوات',
+      vertical: 'عمودي',
+      horizontal: 'أفقي',
+      resetPosition: 'إعادة الموضع'
+    },
 
     measure: {
       ...enMain.verticalToolbar.measure,
@@ -654,7 +664,7 @@ export default {
 
     annotation: {
       ...enMain.verticalToolbar.annotation,
-      text: 'تعليقات',
+      text: 'مراجعة',
       description: 'أدوات المراجعة'
     },
 
@@ -664,6 +674,11 @@ export default {
       description: 'إدارة الطبقات'
     },
 
+
+    text: {
+      text: 'نص (MText)',
+      description: 'إنشاء تعليق نصي متعدد الأسطر في الرسم'
+    },
     pan: {
       ...enMain.verticalToolbar.pan,
       text: 'تحريك',
@@ -886,6 +901,11 @@ export default {
       off: 'إظهار سماكات الخطوط'
     },
 
+    selectionStyle: {
+      simple:
+        'النقر يستبدل التحديد (Shift+نقر للإضافة أو الإزالة). انقر للتبديل إلى نمط CAD',
+      cad: 'نمط CAD: كل نقرة تضيف إلى التحديد. انقر للتبديل إلى الاستبدال بالنقر'
+    },
     orthoMode: {
       ...enMain.statusBar.orthoMode,
       on: 'إيقاف الوضع المتعامد',

@@ -4,7 +4,8 @@ import '../style/index.scss'
 
 import {
   AcApDocManager,
-  AcApDocManagerOptions
+  AcApDocManagerOptions,
+  AcApSettingManager
 } from '@mlightcad/cad-simple-viewer'
 
 import { registerCadViewerNotificationCenter } from './cadViewerNotificationCenter'
@@ -50,6 +51,13 @@ export const initializeCadViewer = (
 ) => {
   const { htmlViewerRuntimeUrl, onedrive, googledrive, ...docOptions } =
     options
+  // Undo / redo live in the ribbon header and erase in the toolbar, and the
+  // ribbon switches to Review / Measurement for markup and measurement styles,
+  // so the floating shortcut bar is not needed. Session-only: not persisted.
+  AcApSettingManager.instance.apply(
+    { isShowShortCutToolbar: false },
+    { persist: false }
+  )
   AcApDocManager.createInstance({
     ...docOptions,
     // Keep the shared event bridge; Vue panel replaces the built-in DOM UI.

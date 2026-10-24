@@ -402,6 +402,16 @@ export default {
     }
   },
   verticalToolbar: {
+    chrome: {
+      collapse: 'ツールバーを折りたたむ',
+      expand: 'ツールバーを展開',
+      moreOverflow: 'その他のツール',
+      move: 'ドラッグで移動 (ダブルクリックで元の位置に戻す)',
+      layoutMenu: 'ツールバーの配置',
+      vertical: '縦置き',
+      horizontal: '横置き',
+      resetPosition: '元の位置に戻す'
+    },
     measure: {
       text: '計測',
       description: '計測ツール'
@@ -448,12 +458,16 @@ export default {
       description: '計測をサイドカー JSON ファイルに書き出します'
     },
     annotation: {
-      text: '注釈',
+      text: 'レビュー',
       description: 'レビューツール'
     },
     layer: {
       text: 'レイヤー',
       description: 'レイヤー (画層) を管理します'
+    },
+    text: {
+      text: '文字 (マルチテキスト)',
+      description: '図面に文字の注釈を作成します'
     },
     pan: {
       text: '画面移動',
@@ -619,6 +633,11 @@ export default {
     lineWidth: {
       on: '線の太さを非表示',
       off: '線の太さを表示'
+    },
+    selectionStyle: {
+      simple:
+        'クリックで選択を置き換えます (Shift+クリックで追加・解除)。押すと CAD 式に切り替え',
+      cad: 'CAD 式: クリックするたびに選択に追加します。押すと「クリックで置き換え」に切り替え'
     },
     orthoMode: {
       on: '直交モードをオフにする',

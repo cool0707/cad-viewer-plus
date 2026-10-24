@@ -21,7 +21,7 @@ import {
   acedShouldHideDesktopCommandLine,
   acedSubscribeUiLayout
 } from '../../global/AcEdUiLayout'
-import type { AcEdBaseView } from '../../view'
+import type { AcEdBaseView, AcEdSelectionAction } from '../../view'
 import { AcEdInputModifiers } from '../AcEdInputModifiers'
 import { AcEdInputToggles } from '../AcEdInputToggles'
 import type { AcEditor } from '../AcEditor'
@@ -1490,7 +1490,7 @@ export class AcEdInputManager {
           const updateSelectionPreview = (
             clientX: number,
             clientY: number,
-            action: 'add' | 'replace' | 'remove' = 'add'
+            action: AcEdSelectionAction = 'add'
           ) => {
             if (!startWcs || !previewEl || !startCanvas) return
 
@@ -1617,7 +1617,7 @@ export class AcEdInputManager {
           const applySelectionAt = (
             endCanvas: AcGePoint2dLike,
             endWcs: AcGePoint2dLike,
-            action: 'add' | 'replace' | 'remove',
+            action: AcEdSelectionAction,
             isClick: boolean
           ) => {
             if (isClick) {

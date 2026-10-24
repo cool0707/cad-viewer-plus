@@ -58,6 +58,10 @@ const SHELL_CSS = `
     color: var(--ml-ui-text, #303133);
     pointer-events: auto;
   }
+  .ml-ui-shortcut-toolbar-shell.is-left {
+    left: 12px;
+    right: auto;
+  }
   .ml-ui-shortcut-toolbar-shell[hidden] {
     display: none !important;
   }
@@ -172,6 +176,9 @@ function ensureShellStyles(): void {
   document.head.appendChild(style)
 }
 
+/** Canvas edge the shortcut toolbar is anchored to (top-left or top-right). */
+export type AcUiShortCutToolbarSide = 'left' | 'right'
+
 /** Session provider id for {@link AcUiShortCutToolbar}. */
 export const ACED_SHORTCUT_TOOLBAR_PROVIDER_ID = 'shortcut-toolbar'
 
@@ -245,6 +252,7 @@ export class AcUiShortCutToolbar {
   private readonly forceVisible: boolean
   private readonly collapsible: boolean
   private collapsed: boolean
+  private side: AcUiShortCutToolbarSide = 'right'
   private readonly onSettingsModified: (
     args: AcApSettingManagerEventArgs
   ) => void
@@ -409,6 +417,24 @@ export class AcUiShortCutToolbar {
     this.setCollapsed(!this.collapsed)
   }
 
+  /** Canvas edge the shell is anchored to. */
+  get anchorSide(): AcUiShortCutToolbarSide {
+    return this.side
+  }
+
+  /**
+   * Anchors the shell to the top-left or top-right of the container, e.g. to
+   * get out from under a palette docked on the right.
+   *
+   * @param side - Target edge. Default placement is `'right'`.
+   */
+  setSide(side: AcUiShortCutToolbarSide): void {
+    if (this.side === side) return
+    this.side = side
+    this.shell.classList.toggle('is-left', side === 'left')
+    this.syncCollapseToggleButton()
+  }
+
   /**
    * Updates the shell top offset (e.g. when a status bar appears).
    *
@@ -497,7 +523,12 @@ export class AcUiShortCutToolbar {
         AcApI18n.t('main.shortCutToolbar.collapse'))
     // Right-anchored bar: expanded → chevron points right (collapse that way);
     // collapsed → chevron points left (expand back into the canvas).
-    const icon = this.collapsed ? ICON_CHEVRON_LEFT : ICON_CHEVRON_RIGHT
+    // A left-anchored bar mirrors this.
+    const towardEdge =
+      this.side === 'left' ? ICON_CHEVRON_LEFT : ICON_CHEVRON_RIGHT
+    const awayFromEdge =
+      this.side === 'left' ? ICON_CHEVRON_RIGHT : ICON_CHEVRON_LEFT
+    const icon = this.collapsed ? awayFromEdge : towardEdge
     this.collapseButton.replaceChildren(createIconElement(icon))
     this.collapseButton.title = label
     this.collapseButton.setAttribute('aria-label', label)

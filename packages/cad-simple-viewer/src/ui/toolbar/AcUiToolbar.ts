@@ -15,7 +15,10 @@ import {
   ICON_CHEVRON_LEFT,
   ICON_CHEVRON_RIGHT,
   ICON_CHEVRON_UP,
-  ICON_MORE
+  ICON_DRAG_HANDLE,
+  ICON_MORE,
+  ICON_PLACEMENT_LEFT,
+  ICON_PLACEMENT_TOP
 } from '../icons'
 import { AcUiDropdownMenu } from './AcUiDropdownMenu'
 import { AcUiSubToolbar } from './AcUiSubToolbar'
@@ -37,8 +40,10 @@ import {
 import type {
   AcUiSubToolbarOptions,
   AcUiToolbarDocState,
+  AcUiToolbarFloatingLayout,
   AcUiToolbarI18n,
   AcUiToolbarItem,
+  AcUiToolbarOrientation,
   AcUiToolbarOverflow,
   AcUiToolbarPlacement,
   AcUiToolbarSize
@@ -118,6 +123,22 @@ export interface AcUiToolbarMountOptions {
    * {@link acapBindToolbarDocState} after construction.
    */
   docState?: Partial<AcUiToolbarDocState>
+  /**
+   * When true, prepend a drag grip so users can move the toolbar anywhere
+   * inside the host, with a ⋯ menu to switch it between vertical and
+   * horizontal or put it back. While floating, the edge used for sub-toolbars follows the side
+   * of the host centre the bar sits on (vertical: left/right, horizontal:
+   * top/bottom). Double-clicking the grip docks it back at {@link placement}.
+   * Ignored with {@link inCanvasParent} or `size: 'stretch'`. @default false
+   */
+  movable?: boolean
+  /** Initial user layout for a {@link movable} toolbar; omit to start docked. */
+  floatingLayout?: AcUiToolbarFloatingLayout
+  /**
+   * Called after the user drags the toolbar, switches its orientation, or
+   * docks it back (`undefined`), e.g. to persist the layout.
+   */
+  onFloatingLayoutChange?: (layout: AcUiToolbarFloatingLayout | undefined) => void
 }
 
 export class AcUiToolbar {
@@ -180,10 +201,37 @@ export class AcUiToolbar {
   private readonly overflowButton: HTMLButtonElement
   /** Dropdown listing items that did not fit in the toolbar. */
   private overflowDropdown?: AcUiDropdownMenu
+  /** ⋯ menu beside the grip (orientation / reset position). */
+  private layoutMenu?: AcUiDropdownMenu
   /** Items currently hidden behind the overflow menu. */
   private overflowItems: AcUiToolbarItem[] = []
   /** Whether menu overflow is showing the ⋯ button (used for vertical positioning). */
   private overflowMenuActive = false
+  /** Placement restored when a floating toolbar is docked back. */
+  private dockedPlacement: AcUiToolbarPlacement
+  /** User layout while a {@link AcUiToolbarMountOptions.movable} toolbar floats. */
+  private floating?: AcUiToolbarFloatingLayout
+  /** Active grip drag: pointer id and toolbar / pointer start positions. */
+  private drag?: {
+    pointerId: number
+    startX: number
+    startY: number
+    startLeft: number
+    startTop: number
+  }
+  private readonly handleDragMove = (event: PointerEvent) => {
+    const drag = this.drag
+    if (!drag || event.pointerId !== drag.pointerId) return
+    this.moveFloatingTo(
+      drag.startLeft + event.clientX - drag.startX,
+      drag.startTop + event.clientY - drag.startY
+    )
+  }
+  private readonly handleDragEnd = (event: PointerEvent) => {
+    if (!this.drag || event.pointerId !== this.drag.pointerId) return
+    this.stopDrag()
+    this.emitFloatingLayout()
+  }
   /** Toolbar item nodes rendered in the last {@link renderButtons} pass. */
   private renderedEntries: Array<{
     item: AcUiToolbarItem
@@ -206,6 +254,11 @@ export class AcUiToolbar {
     this.showChildrenIndicator = options.showChildrenIndicator ?? true
     this.inCanvasParent = options.inCanvasParent === true
     this.items = options.items
+    this.dockedPlacement = options.placement
+    if (options.movable && options.floatingLayout) {
+      this.floating = { ...options.floatingLayout }
+      this.options.placement = this.resolveFloatingPlacement()
+    }
     this.collapsed =
       Boolean(options.collapsible) && Boolean(options.defaultCollapsed)
     if (options.overflow === undefined) {
@@ -309,6 +362,8 @@ export class AcUiToolbar {
     >
   ) {
     if (view.placement !== undefined) {
+      this.dockedPlacement = view.placement
+      this.floating = undefined
       this.options.placement = view.placement
     }
     if (view.edgeOffset !== undefined) {
@@ -374,6 +429,7 @@ export class AcUiToolbar {
   /** Updates button labels and tooltips after locale change. */
   refreshLocale() {
     this.syncOverflowButtonLabels()
+    this.syncMoveControlLabels()
     this.syncCollapseToggleButton()
     for (const { item, element, isSeparator } of this.renderedEntries) {
       if (isSeparator) continue
@@ -425,6 +481,8 @@ export class AcUiToolbar {
    * @param placement - Target edge placement.
    */
   setPlacement(placement: AcUiToolbarPlacement) {
+    this.dockedPlacement = placement
+    this.floating = undefined
     if (this.options.placement === placement) return
     this.options.placement = placement
     this.selectedChildByParent.set(
@@ -433,6 +491,27 @@ export class AcUiToolbar {
     )
     this.syncRootClasses()
     this.ensureInParentLayout()
+    this.renderButtons()
+  }
+
+  /** Current user layout of a movable toolbar, or `undefined` when docked. */
+  getFloatingLayout(): AcUiToolbarFloatingLayout | undefined {
+    return this.floating ? { ...this.floating } : undefined
+  }
+
+  /**
+   * Floats a movable toolbar at `layout`, or docks it back at its original
+   * placement when `layout` is `undefined`. Does not fire
+   * {@link AcUiToolbarMountOptions.onFloatingLayoutChange}.
+   *
+   * @param layout - Target layout.
+   */
+  setFloatingLayout(layout: AcUiToolbarFloatingLayout | undefined) {
+    this.floating = layout ? { ...layout } : undefined
+    this.options.placement = this.floating
+      ? this.resolveFloatingPlacement()
+      : this.dockedPlacement
+    this.syncRootClasses()
     this.renderButtons()
   }
 
@@ -621,6 +700,7 @@ export class AcUiToolbar {
     }
     this.resizeObserver?.disconnect()
     this.resizeObserver = undefined
+    this.stopDrag()
     this.closeChildrenUi()
     this.releaseInParentLayout({ keepRoot: false })
     this.root.remove()
@@ -655,6 +735,9 @@ export class AcUiToolbar {
     if (this.options.showLabels) classes.push('has-labels')
     if (this.options.size === 'stretch') classes.push('is-stretch')
     if (this.inCanvasParent) classes.push('is-in-parent')
+    if (this.isMovable()) classes.push('is-movable')
+    if (this.floating) classes.push('is-floating')
+    if (this.drag) classes.push('is-dragging')
     if (this.options.overflow === 'wrap') classes.push('is-overflow-wrap')
     if (this.options.overflow === 'menu') classes.push('is-overflow-menu')
     if (!this.showBorder) classes.push('no-border')
@@ -684,6 +767,275 @@ export class AcUiToolbar {
       label.className = 'ml-ex-ui-toolbar-btn-label'
       label.textContent = this.options.i18n.t(effective.label)
       button.appendChild(label)
+    }
+  }
+
+  /** Whether the grip / orientation toggle apply to the current layout. */
+  private isMovable(): boolean {
+    return (
+      this.options.movable === true &&
+      !this.inCanvasParent &&
+      !this.isStretchSize()
+    )
+  }
+
+  /**
+   * Edge used for sub-toolbars while floating: the side of the host centre the
+   * bar's centre lies on. Ratio 0.5 maps exactly to the host centre.
+   */
+  private resolveFloatingPlacement(): AcUiToolbarPlacement {
+    const floating = this.floating
+    if (!floating) return this.dockedPlacement
+    if (floating.orientation === 'vertical') {
+      return floating.x < 0.5 ? 'left' : 'right'
+    }
+    return floating.y < 0.5 ? 'top' : 'bottom'
+  }
+
+  /** Converts a left/top in px to a {@link AcUiToolbarFloatingLayout} ratio. */
+  private toFloatingRatio(position: number, size: number, hostSize: number) {
+    const range = hostSize - size - this.edgeOffset * 2
+    if (range <= 0) return 0
+    return Math.min(1, Math.max(0, (position - this.edgeOffset) / range))
+  }
+
+  /** Converts a {@link AcUiToolbarFloatingLayout} ratio to a left/top in px. */
+  private fromFloatingRatio(ratio: number, size: number, hostSize: number) {
+    const range = Math.max(0, hostSize - size - this.edgeOffset * 2)
+    return this.edgeOffset + ratio * range
+  }
+
+  /**
+   * Moves sub-toolbars to the other side when a floating bar crosses the host
+   * centre. Sticky strips are reopened so they keep showing.
+   */
+  private applyFloatingPlacement() {
+    const placement = this.resolveFloatingPlacement()
+    if (placement === this.options.placement) return
+    this.options.placement = placement
+    this.syncRootClasses()
+    const stickyId = this.stickyParentId
+    this.closeChildrenUi()
+    if (stickyId) {
+      this.openStickyChildrenByParentId(stickyId)
+    }
+  }
+
+  /** Floats the toolbar with its top-left corner at host-relative px. */
+  private moveFloatingTo(left: number, top: number) {
+    if (!this.floating) return
+    this.floating.x = this.toFloatingRatio(
+      left,
+      this.root.offsetWidth,
+      this.mountHost.clientWidth
+    )
+    this.floating.y = this.toFloatingRatio(
+      top,
+      this.root.offsetHeight,
+      this.mountHost.clientHeight
+    )
+    this.applyFloatingPlacement()
+    this.syncPosition()
+    this.openSubToolbar?.syncPosition()
+    this.openNestedSubToolbar?.syncPosition()
+  }
+
+  /** Returns the toolbar box relative to the mount host. */
+  private getRootHostRect() {
+    const hostRect = this.mountHost.getBoundingClientRect()
+    const rect = this.root.getBoundingClientRect()
+    return {
+      left: rect.left - hostRect.left - this.mountHost.clientLeft,
+      top: rect.top - hostRect.top - this.mountHost.clientTop,
+      width: rect.width,
+      height: rect.height
+    }
+  }
+
+  private emitFloatingLayout() {
+    this.options.onFloatingLayoutChange?.(this.getFloatingLayout())
+  }
+
+  /** Starts dragging the toolbar from its grip. */
+  private startDrag(event: PointerEvent) {
+    if (event.button !== 0 || this.drag) return
+    event.preventDefault()
+    event.stopPropagation()
+    // Dropdowns close on outside mousedown, which preventDefault suppresses.
+    if (!this.openSubToolbar?.sticky) {
+      this.closeChildrenUi()
+    }
+    this.closeOverflowMenu()
+
+    const rect = this.getRootHostRect()
+    if (!this.floating) {
+      this.floating = { orientation: this.getOrientationClass(), x: 0, y: 0 }
+    }
+    this.drag = {
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      startY: event.clientY,
+      startLeft: rect.left,
+      startTop: rect.top
+    }
+    // Listen on window: an item refresh mid-drag may replace the grip node.
+    window.addEventListener('pointermove', this.handleDragMove)
+    window.addEventListener('pointerup', this.handleDragEnd)
+    window.addEventListener('pointercancel', this.handleDragEnd)
+    this.syncRootClasses()
+    this.moveFloatingTo(rect.left, rect.top)
+  }
+
+  private stopDrag() {
+    window.removeEventListener('pointermove', this.handleDragMove)
+    window.removeEventListener('pointerup', this.handleDragEnd)
+    window.removeEventListener('pointercancel', this.handleDragEnd)
+    if (!this.drag) return
+    this.drag = undefined
+    this.syncRootClasses()
+  }
+
+  /** Switches between vertical and horizontal, keeping the bar's centre. */
+  private setOrientation(orientation: AcUiToolbarOrientation) {
+    if (orientation === this.getOrientationClass()) return
+    const rect = this.getRootHostRect()
+    const centerX = rect.left + rect.width / 2
+    const centerY = rect.top + rect.height / 2
+    this.floating = { orientation, x: 0.5, y: 0.5 }
+    this.options.placement = this.resolveFloatingPlacement()
+    this.syncRootClasses()
+    this.renderButtons()
+    // Lay out once in the new orientation so the size is measurable.
+    this.syncPosition()
+    const width = this.root.offsetWidth
+    const height = this.root.offsetHeight
+    this.floating.x = this.toFloatingRatio(
+      centerX - width / 2,
+      width,
+      this.mountHost.clientWidth
+    )
+    this.floating.y = this.toFloatingRatio(
+      centerY - height / 2,
+      height,
+      this.mountHost.clientHeight
+    )
+    this.applyFloatingPlacement()
+    this.syncPosition()
+    this.emitFloatingLayout()
+  }
+
+  /** Docks a floating toolbar back at its original placement. */
+  private dockBack() {
+    if (!this.floating) return
+    this.setFloatingLayout(undefined)
+    this.emitFloatingLayout()
+  }
+
+  /**
+   * Prepends the handle of a movable toolbar: the drag grip with a ⋯ button at
+   * its end that opens the layout menu.
+   */
+  private appendMoveControls() {
+    if (!this.isMovable()) return
+
+    const handle = document.createElement('div')
+    handle.className = 'ml-ex-ui-toolbar-handle'
+
+    const grip = document.createElement('div')
+    grip.className = 'ml-ex-ui-toolbar-grip'
+    grip.dataset.toolbarItemId = 'toolbar-grip'
+    grip.appendChild(createIconElement(ICON_DRAG_HANDLE))
+    grip.addEventListener('pointerdown', event => this.startDrag(event))
+    grip.addEventListener('dblclick', event => {
+      event.stopPropagation()
+      this.dockBack()
+    })
+    handle.appendChild(grip)
+
+    const button = document.createElement('button')
+    button.type = 'button'
+    button.className = 'ml-ex-ui-toolbar-layout-btn'
+    button.dataset.toolbarItemId = 'toolbar-layout'
+    button.setAttribute('aria-haspopup', 'menu')
+    button.appendChild(createIconElement(ICON_MORE))
+    button.addEventListener('click', event => {
+      event.stopPropagation()
+      this.toggleLayoutMenu(button)
+    })
+    handle.appendChild(button)
+
+    this.root.appendChild(handle)
+    this.syncMoveControlLabels()
+  }
+
+  /** Opens or closes the ⋯ layout menu (vertical / horizontal / reset). */
+  private toggleLayoutMenu(anchor: HTMLElement) {
+    if (this.layoutMenu) {
+      this.closeLayoutMenu()
+      return
+    }
+    this.closeChildrenUi()
+    const vertical = this.getOrientationClass() === 'vertical'
+    const items: AcUiToolbarItem[] = [
+      {
+        id: 'toolbar-layout-vertical',
+        label: 'toolbar.vertical',
+        icon: ICON_PLACEMENT_LEFT,
+        toggle: { getValue: () => vertical, on: {}, off: {} }
+      },
+      {
+        id: 'toolbar-layout-horizontal',
+        label: 'toolbar.horizontal',
+        icon: ICON_PLACEMENT_TOP,
+        toggle: { getValue: () => !vertical, on: {}, off: {} }
+      },
+      { id: 'toolbar-layout-separator', type: 'separator' },
+      { id: 'toolbar-layout-reset', label: 'toolbar.resetPosition' }
+    ]
+    const menu = new AcUiDropdownMenu(
+      this.options.i18n,
+      items,
+      anchor,
+      this.themeHost
+    )
+    menu.setOnSelect(item => {
+      if (item.id === 'toolbar-layout-vertical') {
+        this.setOrientation('vertical')
+      } else if (item.id === 'toolbar-layout-horizontal') {
+        this.setOrientation('horizontal')
+      } else if (item.id === 'toolbar-layout-reset') {
+        this.dockBack()
+      }
+    })
+    menu.setOnClose(() => {
+      if (this.layoutMenu === menu) {
+        this.layoutMenu = undefined
+        anchor.setAttribute('aria-expanded', 'false')
+      }
+    })
+    anchor.setAttribute('aria-expanded', 'true')
+    this.layoutMenu = menu
+  }
+
+  private closeLayoutMenu() {
+    this.layoutMenu?.close()
+    this.layoutMenu = undefined
+  }
+
+  /** Updates grip / layout menu tooltips after locale change. */
+  private syncMoveControlLabels() {
+    const grip = this.root.querySelector<HTMLElement>(
+      '[data-toolbar-item-id="toolbar-grip"]'
+    )
+    if (grip) {
+      grip.title = this.options.i18n.t('toolbar.move')
+    }
+    const button = this.root.querySelector<HTMLButtonElement>(
+      '[data-toolbar-item-id="toolbar-layout"]'
+    )
+    if (button) {
+      button.title = this.options.i18n.t('toolbar.layoutMenu')
+      button.setAttribute('aria-label', button.title)
     }
   }
 
@@ -751,6 +1103,7 @@ export class AcUiToolbar {
     this.root.replaceChildren()
     this.renderedEntries = []
     this.overflowItems = []
+    this.appendMoveControls()
 
     const visibleItems = acuiFilterVisibleToolbarItems(
       this.items,
@@ -1376,6 +1729,19 @@ export class AcUiToolbar {
     const placement = this.options.placement
     const stretch = this.isStretchSize()
 
+    if (this.floating && this.isMovable()) {
+      const left = this.fromFloatingRatio(
+        this.floating.x,
+        toolbarWidth,
+        hostWidth
+      )
+      const top = this.fromFloatingRatio(this.floating.y, toolbarHeight, hostHeight)
+      this.root.style.left = `${left}px`
+      this.root.style.top = `${top}px`
+      this.root.style.maxWidth = `${Math.max(0, hostWidth - offset * 2)}px`
+      return
+    }
+
     if (placement === 'top' || placement === 'bottom') {
       if (stretch) {
         this.root.style.left = '0'
@@ -1482,6 +1848,7 @@ export class AcUiToolbar {
   /** Closes any open dropdown or sub-toolbar and clears parent expanded state. */
   private closeChildrenUi() {
     this.closeOverflowMenu()
+    this.closeLayoutMenu()
     this.closeNestedSubToolbar()
     this.openDropdown?.close()
     this.openDropdown = undefined

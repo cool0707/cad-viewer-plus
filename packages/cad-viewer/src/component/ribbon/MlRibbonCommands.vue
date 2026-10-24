@@ -7,7 +7,6 @@ import {
   Delete,
   DocumentCopy,
   Hide,
-  RefreshLeft,
   RefreshRight,
   Right,
   Stamp,
@@ -50,6 +49,8 @@ import {
   getMarkupTextHeightMode,
   getMeasurementSnapshot,
   getSelectedMeasurementId,
+  ICON_REDO,
+  ICON_UNDO,
   isMarkupVisible,
   isMeasurementVisible,
   markupColorToCss,
@@ -80,7 +81,15 @@ import {
   RibbonTabModel
 } from '@mlightcad/ribbon'
 import { ElButton, ElTooltip } from 'element-plus'
-import { computed, onMounted, onUnmounted, ref, shallowRef, watch } from 'vue'
+import {
+  computed,
+  h,
+  onMounted,
+  onUnmounted,
+  ref,
+  shallowRef,
+  watch
+} from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { store } from '../../app'
@@ -2792,6 +2801,10 @@ const runLazyCommand = async (command: string) => {
   AcApDocManager.instance.sendStringToExecute(command)
 }
 
+/** Header undo / redo glyphs: the same arrows the toolbars use. */
+const HeaderUndoIcon = () => h('span', { class: 'ml-ribbon-tabs-after__icon', innerHTML: ICON_UNDO })
+const HeaderRedoIcon = () => h('span', { class: 'ml-ribbon-tabs-after__icon', innerHTML: ICON_REDO })
+
 const handleHeaderUndo = () => {
   if (isRibbonDisabled.value || !canUndo.value) return
   AcApDocManager.instance.sendStringToExecute('undo')
@@ -2877,7 +2890,7 @@ const handleFileMenuSelect = async (command: string) => {
             <el-button
               class="ml-ribbon-tabs-after__button"
               :disabled="disabled || !canUndo"
-              :icon="RefreshLeft"
+              :icon="HeaderUndoIcon"
               @click="handleHeaderUndo"
             />
           </el-tooltip>
@@ -2889,7 +2902,7 @@ const handleFileMenuSelect = async (command: string) => {
             <el-button
               class="ml-ribbon-tabs-after__button"
               :disabled="disabled || !canRedo"
-              :icon="RefreshRight"
+              :icon="HeaderRedoIcon"
               @click="handleHeaderRedo"
             />
           </el-tooltip>
@@ -2933,6 +2946,15 @@ const handleFileMenuSelect = async (command: string) => {
   width: 24px;
   min-width: 24px;
   padding: 0;
+}
+
+.ml-ribbon-tabs-after__icon {
+  display: inline-flex;
+}
+
+.ml-ribbon-tabs-after__icon svg {
+  width: 15px;
+  height: 15px;
 }
 
 .ml-ribbon-toolbar-container

@@ -418,6 +418,16 @@ export default {
     }
   },
   verticalToolbar: {
+    chrome: {
+      collapse: 'Collapse toolbar',
+      expand: 'Expand toolbar',
+      moreOverflow: 'More tools',
+      move: 'Drag to move (double-click to reset)',
+      layoutMenu: 'Tool bar layout',
+      vertical: 'Vertical',
+      horizontal: 'Horizontal',
+      resetPosition: 'Reset position'
+    },
     measure: {
       text: 'Measure',
       description: 'Measurement tools'
@@ -465,12 +475,16 @@ export default {
       description: 'Export measurements to a sidecar JSON file'
     },
     annotation: {
-      text: 'Annotation',
+      text: 'Review',
       description: 'Review tools'
     },
     layer: {
       text: 'Layer',
       description: 'Manages layers'
+    },
+    text: {
+      text: 'Text (MText)',
+      description: 'Create a multiline text annotation in the drawing'
     },
     pan: {
       text: 'Pan',
@@ -638,6 +652,11 @@ export default {
     lineWidth: {
       on: 'Hide line widths',
       off: 'Show line widths'
+    },
+    selectionStyle: {
+      simple:
+        'Click replaces the selection (Shift+click adds or removes). Click to switch to CAD style',
+      cad: 'CAD style: every click adds to the selection. Click to switch to replace on click'
     },
     orthoMode: {
       on: 'Turn off ortho mode',
