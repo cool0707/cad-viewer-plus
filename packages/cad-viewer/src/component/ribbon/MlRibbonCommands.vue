@@ -2295,7 +2295,7 @@ const buildBaseTabs = (
                     componentProps: {
                       modelValue: ribbonColor.value,
                       displayColor: ribbonColorDisplay.value,
-                      placeholder: t('main.ribbon.property.color'),
+                      placeholder: t('main.ribbon.property.lineColor'),
                       'onUpdate:modelValue': handleRibbonColorChange
                     }
                   }

@@ -228,6 +228,7 @@ export default {
     },
     property: {
       color: '色',
+      lineColor: '線の色',
       lineType: '線の種類',
       lineWeight: '線の太さ'
     },
@@ -671,7 +672,34 @@ export default {
         noEntitySelected: 'オブジェクトが選択されていません。',
         multipleEntitySelected: '{count} 個のオブジェクトを選択中',
         propValCopied: 'プロパティの値をコピーしました',
-        failedToCopyPropVal: 'プロパティの値をコピーできませんでした。'
+        failedToCopyPropVal: 'プロパティの値をコピーできませんでした。',
+        selection: '選択範囲',
+        mixed: '複数の値',
+        x: 'X',
+        y: 'Y',
+        width: '幅',
+        height: '高さ',
+        keepAspectHint: '縦横比を保ったまま拡大・縮小します',
+        referencePoint: '基準点',
+        anchor: {
+          topLeft: '左上',
+          top: '上',
+          topRight: '右上',
+          left: '左',
+          center: '中心',
+          right: '右',
+          bottomLeft: '左下',
+          bottom: '下',
+          bottomRight: '右下'
+        },
+        selectOnlyType: '{type}だけを選択',
+        totalLength: '長さの合計',
+        totalArea: '面積の合計',
+        itemCount: '({count} 個)',
+        invisibleAttribute: '非表示の項目',
+        constantAttribute: '固定値 (変更できません)',
+        allLocked: 'ロックされたレイヤーの図形なので変更できません',
+        someLocked: 'ロックされたレイヤーの図形は変更されません'
       }
     },
     layerManager: {

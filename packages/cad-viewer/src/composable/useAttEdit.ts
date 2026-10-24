@@ -7,6 +7,7 @@ import {
   AcDbAttribute,
   AcDbAttributeDefinition,
   AcDbBlockReference,
+  AcDbDatabase,
   AcDbEntity,
   AcDbObjectId
 } from '@mlightcad/data-model'
@@ -117,6 +118,43 @@ export function listBlockAttributes(
   blockRef: AcDbBlockReference
 ): AcDbAttribute[] {
   return blockRef.attributeIterator().toArray()
+}
+
+/**
+ * Opens an attribute of a block reference for write (inside an undo mark).
+ *
+ * Attributes live on the INSERT map; a failed earlier sync can leave them out
+ * of the handle registry so open-for-write throws. In that case the INSERT's
+ * attributes are re-synced and the open is retried.
+ */
+export function openAttributeForWrite(
+  db: AcDbDatabase,
+  blockRef: AcDbBlockReference,
+  attr: AcDbAttribute
+): AcDbAttribute | undefined {
+  const tryOpen = () => {
+    const opened = db.openEntityForWrite(attr)
+    return isAttributeEntity(opened) ? opened : undefined
+  }
+
+  try {
+    const opened = tryOpen()
+    if (opened) return opened
+  } catch {
+    // Fall through to re-sync and retry.
+  }
+
+  const sync = (blockRef as { syncAttributeDatabases?: () => void })
+    .syncAttributeDatabases
+  if (typeof sync === 'function') {
+    sync.call(blockRef)
+  }
+
+  try {
+    return tryOpen()
+  } catch {
+    return isAttributeEntity(attr) ? attr : undefined
+  }
 }
 
 /**

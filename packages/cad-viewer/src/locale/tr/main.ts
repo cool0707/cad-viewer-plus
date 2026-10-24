@@ -230,6 +230,7 @@ export default {
     },
     property: {
       color: 'Renk',
+      lineColor: 'Çizgi rengi',
       lineType: 'Çizgi Türü',
       lineWeight: 'Çizgi Kalınlığı'
     },
@@ -690,7 +691,34 @@ export default {
         noEntitySelected: 'Hiçbir varlık seçilmedi!',
         multipleEntitySelected: '{count} varlık seçildi',
         propValCopied: 'Özellik değeri kopyalandı',
-        failedToCopyPropVal: 'Özellik değeri kopyalanamadı!'
+        failedToCopyPropVal: 'Özellik değeri kopyalanamadı!',
+        selection: 'Seçim',
+        mixed: 'Karışık',
+        x: 'X',
+        y: 'Y',
+        width: 'Gen',
+        height: 'Yük',
+        keepAspectHint: 'Seçimi oranlarını koruyarak ölçekler',
+        referencePoint: 'Referans noktası',
+        anchor: {
+          topLeft: 'Sol üst',
+          top: 'Üst',
+          topRight: 'Sağ üst',
+          left: 'Sol',
+          center: 'Merkez',
+          right: 'Sağ',
+          bottomLeft: 'Sol alt',
+          bottom: 'Alt',
+          bottomRight: 'Sağ alt'
+        },
+        selectOnlyType: 'Yalnızca {type} seç',
+        totalLength: 'Toplam uzunluk',
+        totalArea: 'Toplam alan',
+        itemCount: '({count} öğe)',
+        invisibleAttribute: 'Gizli alan',
+        constantAttribute: 'Sabit (değiştirilemez)',
+        allLocked: 'Bu nesneler kilitli katmanlarda ve değiştirilemez',
+        someLocked: 'Kilitli katmanlardaki nesneler değiştirilmez'
       }
     },
     layerManager: {

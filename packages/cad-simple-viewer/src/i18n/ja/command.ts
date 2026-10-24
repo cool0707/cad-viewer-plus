@@ -45,7 +45,7 @@ export default {
       description: '新しく作成するオブジェクトの既定の色を設定します'
     },
     celtscale: {
-      description: '新しく作成するオブジェクトの線の種類の尺度を設定します'
+      description: '新しく作成するオブジェクトの線の間隔スケールを設定します'
     },
     celtype: {
       description: '新しく作成するオブジェクトの線の種類を設定します'
@@ -261,7 +261,7 @@ export default {
       description: 'デバッグ情報をコンソールに出力します'
     },
     ltscale: {
-      description: '図面の線の種類の尺度を設定します'
+      description: '図面全体の線の間隔スケールを設定します'
     },
     lunits: {
       description: '座標と距離の表示形式を設定します'

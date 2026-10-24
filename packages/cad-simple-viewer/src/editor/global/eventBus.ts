@@ -98,6 +98,18 @@ export type AcEdEvents = {
    * undo can interleave DB edits with Design Review markup history.
    */
   'session-db-edit-committed': {}
+  /**
+   * Emitted instead of opening the attribute editor when a symbol with
+   * attributes is double-clicked in the simple selection style, so the UI can
+   * focus the symbol property in its property inspector. Only emitted when a
+   * listener is registered.
+   */
+  'focus-symbol-property': {
+    /** Object id of the symbol (block reference) */
+    objectId: string
+    /** Tag of the double-clicked attribute, if one was hit */
+    tag?: string
+  }
   /** Emitted when the application busy indicator is shown or hidden */
   'busy-indicator': AcEdBusyIndicatorEventArgs
 }

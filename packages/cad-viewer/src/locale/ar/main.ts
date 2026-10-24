@@ -50,6 +50,7 @@ export default {
     property: {
       ...enMain.ribbon.property,
       color: 'اللون',
+      lineColor: 'لون الخط',
       lineType: 'نوع الخط',
       lineWeight: 'سُمك الخط'
     },
@@ -958,7 +959,34 @@ export default {
         noEntitySelected: 'لم يتم تحديد أي عنصر!',
         multipleEntitySelected: 'تم تحديد {count} عنصر',
         propValCopied: 'تم نسخ قيمة الخاصية',
-        failedToCopyPropVal: 'فشل نسخ قيمة الخاصية!'
+        failedToCopyPropVal: 'فشل نسخ قيمة الخاصية!',
+        selection: 'التحديد',
+        mixed: 'مختلط',
+        x: 'X',
+        y: 'Y',
+        width: 'العرض',
+        height: 'الارتفاع',
+        keepAspectHint: 'يغيّر حجم التحديد مع الحفاظ على التناسب',
+        referencePoint: 'النقطة المرجعية',
+        anchor: {
+          topLeft: 'أعلى اليسار',
+          top: 'أعلى',
+          topRight: 'أعلى اليمين',
+          left: 'يسار',
+          center: 'المركز',
+          right: 'يمين',
+          bottomLeft: 'أسفل اليسار',
+          bottom: 'أسفل',
+          bottomRight: 'أسفل اليمين'
+        },
+        selectOnlyType: 'تحديد {type} فقط',
+        totalLength: 'الطول الإجمالي',
+        totalArea: 'المساحة الإجمالية',
+        itemCount: '(العدد: {count})',
+        invisibleAttribute: 'حقل مخفي',
+        constantAttribute: 'ثابت (لا يمكن تغييره)',
+        allLocked: 'هذه العناصر على طبقات مقفلة ولا يمكن تغييرها',
+        someLocked: 'لن تتغير العناصر الموجودة على طبقات مقفلة'
       }
     },
 

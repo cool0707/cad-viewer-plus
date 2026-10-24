@@ -2037,6 +2037,18 @@ export class AcTrView2d extends AcEdBaseView {
       e.preventDefault()
       this.selectionSet.clear()
       this.selectionSet.add(attributedBlock.objectId)
+      // Simple selection style: edit the symbol properties in the property
+      // inspector (when the UI provides one) instead of the dialog.
+      if (
+        AcApSettingManager.instance.selectionStyle === 'simple' &&
+        eventBus.all.get('focus-symbol-property')?.length
+      ) {
+        eventBus.emit('focus-symbol-property', {
+          objectId: attributedBlock.objectId,
+          tag: entity !== attributedBlock ? (entity as AcDbAttribute).tag : undefined
+        })
+        return
+      }
       AcApDocManager.instance.sendStringToExecute('attedit')
       return
     }
