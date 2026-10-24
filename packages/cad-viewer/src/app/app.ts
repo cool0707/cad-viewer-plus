@@ -3,10 +3,10 @@ import '../style/style.css'
 import '../style/index.scss'
 
 import {
-  acedApplyBrandTheme,
   AcApDocManager,
   AcApDocManagerOptions,
-  AcApSettingManager
+  AcApSettingManager,
+  acedApplyBrandTheme
 } from '@mlightcad/cad-simple-viewer'
 
 import { registerCadViewerNotificationCenter } from './cadViewerNotificationCenter'
@@ -50,8 +50,7 @@ export type InitializeCadViewerOptions = AcApDocManagerOptions & {
 export const initializeCadViewer = (
   options: InitializeCadViewerOptions = {}
 ) => {
-  const { htmlViewerRuntimeUrl, onedrive, googledrive, ...docOptions } =
-    options
+  const { htmlViewerRuntimeUrl, onedrive, googledrive, ...docOptions } = options
   acedApplyBrandTheme()
   // Undo / redo live in the ribbon header and erase in the toolbar, and the
   // ribbon switches to Review / Measurement for markup and measurement styles,
