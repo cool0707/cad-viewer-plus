@@ -418,6 +418,16 @@ export default {
     }
   },
   verticalToolbar: {
+    chrome: {
+      collapse: 'Collapse toolbar',
+      expand: 'Expand toolbar',
+      moreOverflow: 'More tools',
+      move: 'Drag to move (double-click to reset)',
+      layoutMenu: 'Tool bar layout',
+      vertical: 'Vertical',
+      horizontal: 'Horizontal',
+      resetPosition: 'Reset position'
+    },
     measure: {
       text: 'Measure',
       description: 'Measurement tools'
@@ -465,12 +475,16 @@ export default {
       description: 'Export measurements to a sidecar JSON file'
     },
     annotation: {
-      text: 'Annotation',
+      text: 'Review',
       description: 'Review tools'
     },
     layer: {
       text: 'Layer',
       description: 'Manages layers'
+    },
+    text: {
+      text: 'Text (MText)',
+      description: 'Create a multiline text annotation in the drawing'
     },
     pan: {
       text: 'Pan',

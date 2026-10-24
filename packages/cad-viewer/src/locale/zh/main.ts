@@ -384,6 +384,16 @@ export default {
     }
   },
   verticalToolbar: {
+    chrome: {
+      collapse: '收起工具栏',
+      expand: '展开工具栏',
+      moreOverflow: '更多工具',
+      move: '拖动以移动（双击恢复原位）',
+      layoutMenu: '工具栏布局',
+      vertical: '竖排',
+      horizontal: '横排',
+      resetPosition: '恢复原位'
+    },
     measure: {
       text: '测量',
       description: '测量工具'
@@ -429,12 +439,16 @@ export default {
       description: '将测量标注导出为 sidecar JSON 文件'
     },
     annotation: {
-      text: '批注',
+      text: '审阅',
       description: '审阅工具'
     },
     layer: {
       text: '图层',
       description: '管理图层'
+    },
+    text: {
+      text: '文字 (多行文字)',
+      description: '在图纸中创建多行文字注释'
     },
     pan: {
       text: '移动',

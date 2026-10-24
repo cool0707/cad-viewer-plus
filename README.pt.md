@@ -32,6 +32,9 @@ acontecem no cliente, então os desenhos nunca saem do dispositivo do usuário.
   atributo de bloco → propriedade do símbolo, espaço do modelo → tela, layout → página de impressão,
   hachura → preenchimento com padrão, referência externa → desenho vinculado, seleção rápida → selecionar por critérios etc.
   As dicas de ferramenta mantêm o termo CAD entre parênteses (todos os idiomas).
+- **Barra de ferramentas móvel** — arraste a alça (⠿) para movê-la para qualquer lugar; o menu ⋯ ao lado
+  alterna entre vertical e horizontal ou a devolve à borda esquerda. Os submenus abrem em direção ao
+  centro da tela e a posição é lembrada.
 - **Troca do modo de seleção** — um botão da barra de status alterna entre o estilo CAD
   (cada clique adiciona) e substituir ao clicar (Shift + clique adiciona ou remove, clicar no vazio
   limpa a seleção). Por enquanto o estilo CAD continua sendo o padrão.

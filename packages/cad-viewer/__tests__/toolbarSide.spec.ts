@@ -1,4 +1,7 @@
-import { resolveToolbarSide } from '../src/composable/toolbarSide'
+import {
+  isToolbarCovered,
+  resolveToolbarSide
+} from '../src/composable/toolbarSide'
 
 /** Canvas 0..1000 x 0..600, toolbar 40 px wide hugging the right edge. */
 const container = { left: 0, top: 0, right: 1000, bottom: 600 }
@@ -37,5 +40,46 @@ describe('resolveToolbarSide', () => {
   test('stays right when both edges are covered (palette docked to the top)', () => {
     const palette = { left: 0, top: 0, right: 1000, bottom: 300 }
     expect(resolveToolbarSide(container, toolbarOnRight, palette)).toBe('right')
+  })
+})
+
+describe('resolveToolbarSide with a left preference', () => {
+  test('stays on the left while the palette is closed or docked right', () => {
+    const palette = { left: 700, top: 0, right: 1000, bottom: 600 }
+    expect(resolveToolbarSide(container, toolbarOnLeft, null, 12, 'left')).toBe(
+      'left'
+    )
+    expect(
+      resolveToolbarSide(container, toolbarOnLeft, palette, 12, 'left')
+    ).toBe('left')
+  })
+
+  test('moves right while the palette is docked left', () => {
+    const palette = { left: 0, top: 0, right: 300, bottom: 600 }
+    expect(
+      resolveToolbarSide(container, toolbarOnLeft, palette, 12, 'left')
+    ).toBe('right')
+    expect(
+      resolveToolbarSide(container, toolbarOnRight, palette, 12, 'left')
+    ).toBe('right')
+  })
+})
+
+describe('isToolbarCovered', () => {
+  const toolbar = { left: 500, top: 150, right: 540, bottom: 450 }
+
+  test('detects a palette over or right next to the toolbar', () => {
+    expect(
+      isToolbarCovered(toolbar, { left: 520, top: 0, right: 900, bottom: 600 })
+    ).toBe(true)
+    expect(
+      isToolbarCovered(toolbar, { left: 542, top: 0, right: 900, bottom: 600 })
+    ).toBe(true)
+  })
+
+  test('ignores a palette clear of the toolbar', () => {
+    expect(
+      isToolbarCovered(toolbar, { left: 600, top: 0, right: 900, bottom: 600 })
+    ).toBe(false)
   })
 })

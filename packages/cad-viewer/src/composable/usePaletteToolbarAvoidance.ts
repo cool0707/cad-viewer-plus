@@ -6,7 +6,12 @@ import {
 import { nextTick, onMounted, onUnmounted, type Ref, watch } from 'vue'
 
 import { store } from '../app'
-import { resolveToolbarSide } from './toolbarSide'
+import {
+  isToolbarCovered,
+  ML_TOOLBAR_EDGE_OFFSET,
+  type MlToolbarSide,
+  resolveToolbarSide
+} from './toolbarSide'
 
 /** The tool palette rendered by `MlPaletteManager`. */
 const PALETTE_SELECTOR = '.ml-layer-manager'
@@ -14,19 +19,37 @@ const PALETTE_SELECTOR = '.ml-layer-manager'
 const hasBox = (el: Element | null | undefined): el is HTMLElement =>
   !!el && el.isConnected && el.getClientRects().length > 0
 
+/** Options for {@link usePaletteToolbarAvoidance}. */
+export interface MlPaletteToolbarAvoidanceOptions {
+  /** Edge of the vertical toolbar while the palette is not in the way. */
+  preferredSide?: MlToolbarSide
+  /**
+   * Called after a toolbar the user dragged was put back on its edge because
+   * the palette covered it (e.g. to forget the stored position).
+   */
+  onFloatingReset?: () => void
+}
+
 /**
  * Moves the vertical toolbar and the shortcut toolbar (undo / redo / erase)
- * to the left edge of the canvas while the tool palette would cover them on
- * the right, and back when it no longer does. Follows docking, dragging,
- * resizing and collapsing of the palette.
+ * to the other edge of the canvas while the tool palette would cover them on
+ * their preferred edge, and back when it no longer does. Follows docking,
+ * dragging, resizing and collapsing of the palette.
+ *
+ * A vertical toolbar the user dragged somewhere is left alone unless the
+ * palette covers it; then it is docked again (on a free edge) so it cannot get
+ * lost behind the palette. Nothing happens while the bar itself is dragged.
  *
  * @param host - Host element of the vertical toolbar (fills the canvas area).
  * @param getToolbar - Returns the vertical toolbar, if created.
+ * @param options - Preferred edge and floating-reset callback.
  */
 export function usePaletteToolbarAvoidance(
   host: Ref<HTMLElement | null>,
-  getToolbar: () => AcUiToolbar | undefined
+  getToolbar: () => AcUiToolbar | undefined,
+  options: MlPaletteToolbarAvoidanceOptions = {}
 ) {
+  const preferredSide = options.preferredSide ?? 'right'
   let palette: HTMLElement | null = null
   let frame = 0
   const observed = new Set<Element>()
@@ -39,13 +62,27 @@ export function usePaletteToolbarAvoidance(
     const root = hostEl?.querySelector(':scope > .ml-ex-ui-toolbar')
     if (hostEl && toolbar && hasBox(root)) {
       observe(root)
-      toolbar.setPlacement(
-        resolveToolbarSide(
-          hostEl.getBoundingClientRect(),
-          root.getBoundingClientRect(),
-          obstacle
+      const rect = root.getBoundingClientRect()
+      if (!toolbar.getFloatingLayout()) {
+        toolbar.setPlacement(
+          resolveToolbarSide(
+            hostEl.getBoundingClientRect(),
+            rect,
+            obstacle,
+            ML_TOOLBAR_EDGE_OFFSET,
+            preferredSide
+          )
         )
-      )
+      } else if (
+        obstacle &&
+        !root.classList.contains('is-dragging') &&
+        isToolbarCovered(rect, obstacle)
+      ) {
+        toolbar.setFloatingLayout(undefined)
+        options.onFloatingReset?.()
+        // Pick the free edge once the docked bar has been laid out.
+        schedule()
+      }
     }
 
     const view = AcApDocManager.instance.curView

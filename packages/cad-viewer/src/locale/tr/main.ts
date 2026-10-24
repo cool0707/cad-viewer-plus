@@ -422,6 +422,16 @@ export default {
     }
   },
   verticalToolbar: {
+    chrome: {
+      collapse: 'Araç çubuğunu daralt',
+      expand: 'Araç çubuğunu genişlet',
+      moreOverflow: 'Diğer araçlar',
+      move: 'Taşımak için sürükleyin (sıfırlamak için çift tıklayın)',
+      layoutMenu: 'Araç çubuğu yerleşimi',
+      vertical: 'Dikey',
+      horizontal: 'Yatay',
+      resetPosition: 'Konumu sıfırla'
+    },
     measure: {
       text: 'Ölç',
       description: 'Ölçüm araçları'
@@ -468,12 +478,16 @@ export default {
       description: 'Ölçümleri sidecar JSON dosyasına dışa aktarır'
     },
     annotation: {
-      text: 'Açıklama',
+      text: 'İnceleme',
       description: 'İnceleme araçları'
     },
     layer: {
       text: 'Katman',
       description: 'Katmanları yönetir'
+    },
+    text: {
+      text: 'Metin (MText)',
+      description: 'Çizimde çok satırlı bir metin notu oluşturur'
     },
     pan: {
       text: 'Kaydır',

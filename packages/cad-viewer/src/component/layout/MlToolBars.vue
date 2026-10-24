@@ -8,6 +8,7 @@ import {
   AcApI18n,
   AcEdOpenMode,
   AcUiToolbar,
+  type AcUiToolbarFloatingLayout,
   type AcUiToolbarItem,
   ICON_ANNOTATION,
   ICON_ANNOTATION_HIDE,
@@ -37,6 +38,7 @@ import {
   ICON_REV_RECT,
   ICON_SELECT,
   ICON_SWITCH_BG,
+  ICON_TEXT,
   ICON_ZOOM_EXTENT,
   ICON_ZOOM_ORIGINAL,
   ICON_ZOOM_SMART,
@@ -55,6 +57,22 @@ import {
 import { useDocument, useSettings } from '../../composable'
 import { ML_TOOLBAR_EDGE_OFFSET } from '../../composable/toolbarSide'
 import { usePaletteToolbarAvoidance } from '../../composable/usePaletteToolbarAvoidance'
+// Raw markup: AcUiToolbar takes SVG strings. (Rendering Vue icon components
+// while it builds buttons would flush pending watchers and re-enter it.)
+import arcThreePointsSvg from '../../svg/arc/arcThreePoints.svg?raw'
+import attachDwgSvg from '../../svg/attachDwg.svg?raw'
+import attachImageSvg from '../../svg/attachImage.svg?raw'
+import circleCenterRadiusSvg from '../../svg/circle/circleCenterRadius.svg?raw'
+import defineAttributeSvg from '../../svg/defineAttribute.svg?raw'
+import editAttributeSvg from '../../svg/editAttribute.svg?raw'
+import ellipseCenterSvg from '../../svg/ellipse/ellipseCenter.svg?raw'
+import hatchSvg from '../../svg/hatch/hatch.svg?raw'
+import insertBlockSvg from '../../svg/insertBlock.svg?raw'
+import lineSvg from '../../svg/line.svg?raw'
+import moveSvg from '../../svg/move.svg?raw'
+import offsetSvg from '../../svg/offset.svg?raw'
+import polylineSvg from '../../svg/polyline.svg?raw'
+import rectSvg from '../../svg/rect.svg?raw'
 
 const features = useSettings()
 const { isDocumentOpening, openMode: docOpenMode } = useDocument()
@@ -63,10 +81,15 @@ const hostRef = ref<HTMLElement | null>(null)
 let toolbar: AcUiToolbar | undefined
 let unbindDoc: (() => void) | undefined
 
-// Flip to the left edge while the tool palette would cover the toolbar.
+// Keep the bar on the left, or on the right while the palette covers the left.
 const { refresh: refreshToolbarSide } = usePaletteToolbarAvoidance(
   hostRef,
-  () => toolbar
+  () => toolbar,
+  {
+    preferredSide: 'left',
+    // A dragged bar the palette covers goes back to its edge; forget the spot.
+    onFloatingReset: () => saveFloatingLayout(undefined)
+  }
 )
 
 const markupVisible = ref(isMarkupVisible())
@@ -89,16 +112,102 @@ const syncReadingMode = () => {
   }
 }
 
-/** Prefer AcApI18n; keys are resolved at runtime by AcUiToolbar. */
+/**
+ * Prefer AcApI18n; keys are resolved at runtime by AcUiToolbar. Its own chrome
+ * keys (`toolbar.collapse`, `toolbar.move`, …) live under
+ * `main.verticalToolbar.chrome`.
+ */
 const i18n = {
-  // eslint-disable-next-line @intlify/vue-i18n/no-dynamic-keys -- toolbar label keys are data-driven
-  t: (key: string) => AcApI18n.t(key)
+  t: (key: string) =>
+    // eslint-disable-next-line @intlify/vue-i18n/no-dynamic-keys -- toolbar label keys are data-driven
+    AcApI18n.t(
+      key.startsWith('toolbar.')
+        ? `main.verticalToolbar.chrome.${key.slice('toolbar.'.length)}`
+        : key
+    )
+      // Ribbon labels wrap with "\n" (e.g. "DWG\nアタッチ"); tooltips are one line.
+      .replace(/([\u3000-\u9fff\uff00-\uffef])\n(?=[\u3000-\u9fff\uff00-\uffef])/g, '$1')
+      .replace(/\s*\n\s*/g, ' ')
+}
+
+/** Where the user dragged the toolbar to (and its orientation). */
+const FLOATING_LAYOUT_STORAGE_KEY = 'ml-cad-viewer.toolbarLayout'
+
+const loadFloatingLayout = (): AcUiToolbarFloatingLayout | undefined => {
+  try {
+    const raw = localStorage.getItem(FLOATING_LAYOUT_STORAGE_KEY)
+    if (!raw) return undefined
+    const value = JSON.parse(raw) as Partial<AcUiToolbarFloatingLayout>
+    if (
+      (value.orientation === 'vertical' ||
+        value.orientation === 'horizontal') &&
+      typeof value.x === 'number' &&
+      typeof value.y === 'number'
+    ) {
+      return { orientation: value.orientation, x: value.x, y: value.y }
+    }
+  } catch {
+    // Storage blocked or corrupt: start docked.
+  }
+  return undefined
+}
+
+const saveFloatingLayout = (layout: AcUiToolbarFloatingLayout | undefined) => {
+  try {
+    if (layout) {
+      localStorage.setItem(FLOATING_LAYOUT_STORAGE_KEY, JSON.stringify(layout))
+    } else {
+      localStorage.removeItem(FLOATING_LAYOUT_STORAGE_KEY)
+    }
+  } catch {
+    // Storage blocked: the layout just is not remembered.
+  }
 }
 
 const handleLocaleChanged = () => {
   // vue-i18n is synced first (listener registered in locale/i18n.ts at module load).
   toolbar?.refreshLocale()
 }
+
+/**
+ * Ribbon SVGs leave most shapes without a fill (the ribbon colours them via
+ * CSS), which would render black here; default them to the text colour.
+ */
+const tinted = (svg: string) =>
+  /^<svg\b[^>]*\sfill=/.test(svg)
+    ? svg
+    : svg.replace('<svg ', '<svg fill="currentColor" ')
+
+const attachDwg = tinted(attachDwgSvg)
+const attachImage = tinted(attachImageSvg)
+const defineAttribute = tinted(defineAttributeSvg)
+const editAttribute = tinted(editAttributeSvg)
+const insertBlock = tinted(insertBlockSvg)
+
+const arcThreePoints = tinted(arcThreePointsSvg)
+const circleCenterRadius = tinted(circleCenterRadiusSvg)
+const ellipseCenter = tinted(ellipseCenterSvg)
+const hatch = tinted(hatchSvg)
+const line = tinted(lineSvg)
+const move = tinted(moveSvg)
+const offset = tinted(offsetSvg)
+const polyline = tinted(polylineSvg)
+const rect = tinted(rectSvg)
+
+/** Element Plus glyph (1024 viewBox) as markup, matching the ribbon icons. */
+const epIcon = (d: string) =>
+  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024"><path fill="currentColor" d="${d}"/></svg>`
+
+/** Element Plus RefreshRight / DocumentCopy / Delete, as used by the ribbon. */
+const ICON_ROTATE = epIcon(
+  'M784.512 230.272v-50.56a32 32 0 1 1 64 0v149.056a32 32 0 0 1-32 32H667.52a32 32 0 1 1 0-64h92.992A320 320 0 1 0 524.8 833.152a320 320 0 0 0 320-320h64a384 384 0 0 1-384 384 384 384 0 0 1-384-384 384 384 0 0 1 643.712-282.88'
+)
+const ICON_COPY = epIcon(
+  'M128 320v576h576V320zm-32-64h640a32 32 0 0 1 32 32v640a32 32 0 0 1-32 32H96a32 32 0 0 1-32-32V288a32 32 0 0 1 32-32M960 96v704a32 32 0 0 1-32 32h-96v-64h64V128H384v64h-64V96a32 32 0 0 1 32-32h576a32 32 0 0 1 32 32M256 672h320v64H256zm0-192h320v64H256z'
+)
+const ICON_DELETE = epIcon(
+  'M160 256H96a32 32 0 0 1 0-64h256V95.936a32 32 0 0 1 32-32h256a32 32 0 0 1 32 32V192h256a32 32 0 1 1 0 64h-64v672a32 32 0 0 1-32 32H192a32 32 0 0 1-32-32zm448-64v-64H416v64zM224 896h576V256H224zm192-128a32 32 0 0 1-32-32V416a32 32 0 0 1 64 0v320a32 32 0 0 1-32 32m192 0a32 32 0 0 1-32-32V416a32 32 0 0 1 64 0v320a32 32 0 0 1-32 32'
+)
 
 const toolbarSeparator = (): AcUiToolbarItem => ({
   id: `separator-${Math.random().toString(36).slice(2, 8)}`,
@@ -119,6 +228,143 @@ const buildItems = (): AcUiToolbarItem[] => {
       label: 'main.verticalToolbar.pan.text',
       icon: ICON_PAN,
       command: 'pan'
+    },
+    {
+      id: 'draw',
+      label: 'main.ribbon.group.draw',
+      icon: line,
+      childrenUi: 'toolbar',
+      minOpenMode: AcEdOpenMode.Write,
+      children: [
+        {
+          id: 'draw-line',
+          label: 'main.ribbon.command.line',
+          icon: line,
+          command: 'line'
+        },
+        {
+          id: 'draw-polyline',
+          label: 'main.ribbon.command.polyline',
+          icon: polyline,
+          command: 'pline'
+        },
+        {
+          id: 'draw-circle',
+          label: 'main.ribbon.command.circle',
+          icon: circleCenterRadius,
+          command: 'circle'
+        },
+        {
+          id: 'draw-arc',
+          label: 'main.ribbon.command.arc',
+          icon: arcThreePoints,
+          command: 'arc'
+        },
+        {
+          id: 'draw-rect',
+          label: 'main.ribbon.command.rect',
+          icon: rect,
+          command: 'rectang'
+        },
+        {
+          id: 'draw-ellipse',
+          label: 'main.ribbon.command.ellipse',
+          icon: ellipseCenter,
+          command: 'ellipse'
+        },
+        {
+          id: 'draw-hatch',
+          label: 'main.ribbon.command.hatch',
+          icon: hatch,
+          command: 'hatch'
+        }
+      ]
+    },
+    {
+      id: 'insert',
+      label: 'main.ribbon.tab.insert',
+      icon: insertBlock,
+      childrenUi: 'toolbar',
+      minOpenMode: AcEdOpenMode.Write,
+      children: [
+        {
+          id: 'insert-block',
+          label: 'main.ribbon.command.insert',
+          icon: insertBlock,
+          command: 'insert'
+        },
+        {
+          id: 'insert-attdef',
+          label: 'main.ribbon.command.defineAttribute',
+          icon: defineAttribute,
+          command: 'attdef'
+        },
+        {
+          id: 'insert-attedit',
+          label: 'main.ribbon.command.editAttributes',
+          icon: editAttribute,
+          command: 'attedit'
+        },
+        toolbarSeparator(),
+        {
+          id: 'insert-xattach',
+          label: 'main.ribbon.command.attachDwg',
+          icon: attachDwg,
+          command: 'xattach'
+        },
+        {
+          id: 'insert-imageattach',
+          label: 'main.ribbon.command.attachImage',
+          icon: attachImage,
+          command: 'imageattach'
+        }
+      ]
+    },
+    {
+      id: 'modify',
+      label: 'main.ribbon.group.modify',
+      icon: move,
+      childrenUi: 'toolbar',
+      minOpenMode: AcEdOpenMode.Write,
+      children: [
+        {
+          id: 'modify-move',
+          label: 'main.ribbon.command.move',
+          icon: move,
+          command: 'move'
+        },
+        {
+          id: 'modify-rotate',
+          label: 'main.ribbon.command.rotate',
+          icon: ICON_ROTATE,
+          command: 'rotate'
+        },
+        {
+          id: 'modify-copy',
+          label: 'main.ribbon.command.copy',
+          icon: ICON_COPY,
+          command: 'copy'
+        },
+        {
+          id: 'modify-erase',
+          label: 'main.ribbon.command.erase',
+          icon: ICON_DELETE,
+          command: 'erase'
+        },
+        {
+          id: 'modify-offset',
+          label: 'main.ribbon.command.offset',
+          icon: offset,
+          command: 'offset'
+        }
+      ]
+    },
+    {
+      id: 'text',
+      label: 'main.verticalToolbar.text.text',
+      icon: ICON_TEXT,
+      command: 'mtext',
+      minOpenMode: AcEdOpenMode.Write
     },
     {
       id: 'zoom',
@@ -376,12 +622,19 @@ const ensureToolbar = () => {
   if (!host || toolbar) return
   toolbar = new AcUiToolbar({
     host,
-    placement: 'right',
-    // Match AcUiShortCutToolbar shell `right: 12px`.
+    placement: 'left',
     edgeOffset: ML_TOOLBAR_EDGE_OFFSET,
     items: buildItems(),
     i18n,
     collapsible: true,
+    // Drag the grip to move; sub-toolbars open toward the host centre.
+    movable: true,
+    floatingLayout: loadFloatingLayout(),
+    onFloatingLayoutChange: layout => {
+      saveFloatingLayout(layout)
+      // A bar dropped onto the palette is put back on a free edge.
+      refreshToolbarSide()
+    },
     onCommand: command => {
       if (isDocumentOpening.value || !command) return
       if (command === 'switchbg' && readingModeEnabled.value) return
@@ -473,7 +726,7 @@ watch(isDocumentOpening, opening => {
 <style>
 /*
  * Keep the overlay host filling the canvas main area so syncPosition can
- * vertically center the bar on the right edge.
+ * vertically center the bar on the left edge (or place a dragged bar).
  */
 .ml-vertical-toolbar-host,
 .ml-vertical-toolbar-host.ml-ex-ui-toolbar-host {
