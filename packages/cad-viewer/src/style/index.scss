@@ -1,31 +1,9 @@
 // import dark theme
 @use "element-plus/theme-chalk/src/dark/css-vars.scss" as *;
-@use "sass:color";
 
-// RemixCAD brand colour. Single-colour accents use $ml-brand; gradients use
-// $ml-brand-gradient (also exposed as --ml-brand-gradient).
-$ml-brand: #af61da;
-$ml-brand-gradient: linear-gradient(90deg, #ea60d4 0%, #9c62dc 100%);
-
-// Element Plus primary palette, computed the same way theme-chalk does
-// (light-N = mix with the background, dark-2 = mix with black / white).
-@mixin ml-primary-palette($mix-light, $mix-dark) {
-  --el-color-primary: #{$ml-brand};
-  @each $i in (3, 5, 7, 8, 9) {
-    --el-color-primary-light-#{$i}: #{color.mix($mix-light, $ml-brand, $i * 10%)};
-  }
-  --el-color-primary-dark-2: #{color.mix($mix-dark, $ml-brand, 20%)};
-}
-
-:root {
-  @include ml-primary-palette(#ffffff, #000000);
-  --ml-brand: #{$ml-brand};
-  --ml-brand-gradient: #{$ml-brand-gradient};
-}
-
-html.dark {
-  @include ml-primary-palette(#141414, #ffffff);
-}
+// Brand colours (--ml-brand, --ml-brand-gradient, --el-color-primary*) are
+// written at runtime by acedApplyBrandTheme() from
+// cad-simple-viewer/src/theme/theme.config.ts.
 
 :root {
   --ml-status-bar-height: 30px;

@@ -118,7 +118,7 @@ const SHELL_CSS = `
     box-sizing: border-box;
   }
   .ml-ui-shortcut-collapse-btn:hover {
-    background: var(--ml-ui-accent-soft, rgba(175, 97, 218, 0.12));
+    background: var(--ml-ui-accent-soft, var(--ml-brand-soft));
     border-color: var(--ml-ui-border, #dcdfe6);
   }
   .ml-ui-shortcut-collapse-btn .ml-ex-ui-icon,
@@ -158,7 +158,7 @@ const SHELL_CSS = `
   }
   .ml-ui-shortcut-accessory .ml-draw-style-toolbar__swatch:hover,
   .ml-ui-shortcut-accessory .ml-draw-style-toolbar__text-height:hover {
-    background: var(--ml-ui-accent-soft, rgba(175, 97, 218, 0.12));
+    background: var(--ml-ui-accent-soft, var(--ml-brand-soft));
     border-color: var(--ml-ui-border, #dcdfe6);
   }
   .ml-ui-shortcut-accessory .ml-draw-style-toolbar__swatch-fill {

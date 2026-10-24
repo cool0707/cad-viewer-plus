@@ -3,6 +3,7 @@ import '../style/style.css'
 import '../style/index.scss'
 
 import {
+  acedApplyBrandTheme,
   AcApDocManager,
   AcApDocManagerOptions,
   AcApSettingManager
@@ -51,6 +52,7 @@ export const initializeCadViewer = (
 ) => {
   const { htmlViewerRuntimeUrl, onedrive, googledrive, ...docOptions } =
     options
+  acedApplyBrandTheme()
   // Undo / redo live in the ribbon header and erase in the toolbar, and the
   // ribbon switches to Review / Measurement for markup and measurement styles,
   // so the floating shortcut bar is not needed. Session-only: not persisted.

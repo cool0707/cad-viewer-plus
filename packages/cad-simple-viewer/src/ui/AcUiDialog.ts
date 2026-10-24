@@ -420,8 +420,8 @@ export class AcUiDialog {
   min-width: 72px;
   padding: 6px 14px;
   border-radius: 4px;
-  border: 1px solid var(--ml-ui-accent, #af61da);
-  background: var(--ml-ui-accent, #af61da);
+  border: 1px solid var(--ml-ui-accent, var(--ml-brand));
+  background: var(--ml-ui-accent, var(--ml-brand));
   color: #fff;
   cursor: pointer;
   font-size: 12px;

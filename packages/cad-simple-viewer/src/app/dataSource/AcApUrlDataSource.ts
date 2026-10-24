@@ -130,7 +130,7 @@ class AcApUrlOpenDialog extends AcUiDialog {
   font-size: 14px;
 }
 .ml-ui-url-open-input:focus {
-  outline: 2px solid var(--ml-ui-accent, #af61da);
+  outline: 2px solid var(--ml-ui-accent, var(--ml-brand));
   outline-offset: 1px;
 }
 `

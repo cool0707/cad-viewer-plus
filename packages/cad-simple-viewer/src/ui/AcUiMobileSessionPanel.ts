@@ -1333,7 +1333,7 @@ const MOBILE_CMD_CSS = `
     background: #5c6370;
   }
   .ml-mobile-cmd-confirm {
-    background: var(--ml-ui-accent, #af61da);
+    background: var(--ml-ui-accent, var(--ml-brand));
   }
   .ml-mobile-cmd-confirm:disabled {
     opacity: 0.35;

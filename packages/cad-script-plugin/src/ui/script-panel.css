@@ -45,12 +45,12 @@
 }
 
 .cad-script-btn--primary {
-  background: #af61da;
-  border-color: #c07fe2;
+  background: var(--ml-brand);
+  border-color: color-mix(in srgb, var(--ml-brand) 80%, #ffffff);
 }
 
 .cad-script-btn--primary:hover:not(:disabled) {
-  background: #c07fe2;
+  background: color-mix(in srgb, var(--ml-brand) 80%, #ffffff);
 }
 
 .cad-script-help {
@@ -144,7 +144,7 @@
 .cad-script-splitter:hover,
 .cad-script-splitter:focus-visible,
 .cad-script-splitter.is-dragging {
-  background: #5b2f75;
+  background: color-mix(in srgb, var(--ml-brand) 45%, #000000);
   outline: none;
 }
 
@@ -211,8 +211,8 @@
 }
 
 .cad-script-btn.is-active {
-  background: #5b2f75;
-  border-color: #c07fe2;
+  background: color-mix(in srgb, var(--ml-brand) 45%, #000000);
+  border-color: color-mix(in srgb, var(--ml-brand) 80%, #ffffff);
 }
 
 .cad-script-examples {
@@ -253,7 +253,7 @@
 }
 
 .cad-script-examples-search:focus-visible {
-  outline: 1px solid #c07fe2;
+  outline: 1px solid color-mix(in srgb, var(--ml-brand) 80%, #ffffff);
   outline-offset: 1px;
 }
 
@@ -290,7 +290,7 @@
 
 .cad-script-examples-item:hover,
 .cad-script-examples-item.is-active {
-  background: #5b2f75;
+  background: color-mix(in srgb, var(--ml-brand) 45%, #000000);
 }
 
 .cad-script-examples-item-title {

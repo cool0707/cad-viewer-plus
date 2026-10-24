@@ -662,7 +662,7 @@ const handleUnloadXref = (row: ExternalRefRow) => {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  color: var(--el-color-primary, #af61da);
+  color: var(--el-color-primary, var(--ml-brand));
   cursor: pointer;
   vertical-align: middle;
 }

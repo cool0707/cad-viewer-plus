@@ -289,7 +289,7 @@ export function useHatchContextualRibbon({
       title: t('main.ribbon.tab.hatchContext'),
       contextual: true,
       contextualMode: isCommandActive.value ? 'exclusive' : 'selection',
-      contextualColor: '#af61da',
+      contextualColor: 'var(--ml-brand)',
       visible: isVisible.value,
       groups: [
         {

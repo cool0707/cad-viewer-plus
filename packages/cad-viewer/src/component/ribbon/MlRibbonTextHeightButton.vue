@@ -105,8 +105,8 @@ const formattedWcs = computed(() => {
 }
 
 .ml-ribbon-text-height-button:hover:not(:disabled) {
-  border-color: var(--el-color-primary, #af61da);
-  color: var(--el-color-primary, #af61da);
+  border-color: var(--el-color-primary, var(--ml-brand));
+  color: var(--el-color-primary, var(--ml-brand));
 }
 
 .ml-ribbon-text-height-button:disabled {

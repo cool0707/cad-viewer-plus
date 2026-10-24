@@ -54,7 +54,9 @@ pnpm patch-commit /tmp/dm-edit
 - 図面フォントは CDN を使わない。BIZ UD を同梱、他言語は Google Fonts (`fonts.json` の絶対 URL)。UI フォントは Noto Sans JP。
 - LibreDWG (GPL) を本体パッケージに取り込まない。DWG は example 側で opt-in 登録している。JWW / SXF も同じく **MIT 互換のライブラリか自前実装** にする。
 - `main` と `ja-localization` は現在同一。今後は `main` から作業ブランチを切ればよい。
-- UI のアクセント色は **#AF61DA** (一色) / **`linear-gradient(90deg, #EA60D4, #9C62DC)`** (グラデーション) に統一する。
-  青 (`#409eff` など) を新しく足さない。cad-viewer では `--el-color-primary` / `--ml-brand` / `--ml-brand-gradient`
-  (`packages/cad-viewer/src/style/index.scss`)、cad-simple-viewer では `--ml-ui-accent` を使う。
+- テーマカラーは **`packages/cad-simple-viewer/src/theme/theme.config.ts`** の 1 か所で決める
+  (現在: 一色 `#AF61DA`、グラデーション `#EA60D4 → #9C62DC`)。書き換えて `pnpm build` すれば全 UI に反映される。
+  色を直書きせず、CSS 変数 `--ml-brand` / `--ml-brand-gradient` / `--ml-brand-soft` / `--el-color-primary*` /
+  `--ml-ui-accent` を使う (`acedApplyBrandTheme()` が実行時に定義、example の HTML には Vite プラグイン
+  `packages/vite-config/pluginBrandTheme.ts`、デモのトップページには `tools/build-demo.mjs` が書き込む)。
 - README は 8 言語 (`README*.md`) あるので、機能追加を書くときは全部更新する。

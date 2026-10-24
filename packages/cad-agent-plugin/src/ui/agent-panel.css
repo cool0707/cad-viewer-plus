@@ -124,8 +124,8 @@
 }
 
 .cad-agent-icon-btn.is-active {
-  background: #5b2f75;
-  border-color: #af61da;
+  background: color-mix(in srgb, var(--ml-brand) 45%, #000000);
+  border-color: var(--ml-brand);
   color: #ffffff;
 }
 
@@ -157,7 +157,7 @@
 }
 
 .cad-agent-msg.user {
-  background: #5b2f75;
+  background: color-mix(in srgb, var(--ml-brand) 45%, #000000);
   align-self: flex-end;
   max-width: 92%;
 }
@@ -514,7 +514,7 @@
 }
 
 .cad-agent-msg--verification {
-  border-left: 3px solid #af61da;
+  border-left: 3px solid var(--ml-brand);
   padding-left: 10px;
 }
 
@@ -589,15 +589,15 @@
 }
 
 .cad-agent-panel-btn--primary {
-  background: #af61da;
-  border-color: #c07fe2;
+  background: var(--ml-brand);
+  border-color: color-mix(in srgb, var(--ml-brand) 80%, #ffffff);
 }
 
 .cad-agent-panel-btn--primary:hover:not(:disabled) {
-  background: #c07fe2;
+  background: color-mix(in srgb, var(--ml-brand) 80%, #ffffff);
 }
 
 .cad-agent-panel-btn.is-active {
-  background: #5b2f75;
-  border-color: #af61da;
+  background: color-mix(in srgb, var(--ml-brand) 45%, #000000);
+  border-color: var(--ml-brand);
 }

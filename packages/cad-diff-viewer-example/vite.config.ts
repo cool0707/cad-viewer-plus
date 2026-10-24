@@ -3,6 +3,7 @@ import { dirname, resolve } from 'path'
 import { fileURLToPath } from 'url'
 import { defineConfig } from 'vite'
 import { viteStaticCopy } from 'vite-plugin-static-copy'
+import { brandThemeHtml } from '../vite-config/pluginBrandTheme'
 import { exampleRollupOutput } from '../vite-config/pluginRollupOutput'
 import {
   LIBREDWG_CONVERTER_PACKAGE,
@@ -43,6 +44,7 @@ export default defineConfig({
     }
   },
   plugins: [
+    brandThemeHtml(),
     viteStaticCopy({
       targets: [
         {

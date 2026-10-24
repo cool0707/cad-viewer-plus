@@ -11,8 +11,8 @@
         --text: #1d2330;
         --muted: #5b6475;
         --line: #e2e5eb;
-        --accent: #af61da;
-        --accent-soft: #f7effb;
+        --accent: var(--ml-brand);
+        --accent-soft: color-mix(in srgb, var(--ml-brand) 10%, var(--card));
         color-scheme: light;
       }
       @media (prefers-color-scheme: dark) {
@@ -22,8 +22,8 @@
           --text: #e8ebf0;
           --muted: #9aa3b2;
           --line: #2c323c;
-          --accent: #af61da;
-          --accent-soft: #2e2238;
+          --accent: var(--ml-brand);
+          --accent-soft: color-mix(in srgb, var(--ml-brand) 18%, var(--card));
           color-scheme: dark;
         }
       }

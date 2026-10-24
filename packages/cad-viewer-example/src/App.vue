@@ -460,7 +460,7 @@ const handleNewDrawing = (
   justify-content: center;
   align-items: safe center;
   overflow-y: auto;
-  background: linear-gradient(90deg, #ea60d4 0%, #9c62dc 100%);
+  background: var(--ml-brand-gradient);
   margin: 0;
   padding: 16px;
   box-sizing: border-box;

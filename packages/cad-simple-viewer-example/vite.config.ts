@@ -4,6 +4,7 @@ import { fileURLToPath } from 'url'
 import vue from '@vitejs/plugin-vue'
 import { defineConfig } from 'vite'
 import { viteStaticCopy } from 'vite-plugin-static-copy'
+import { brandThemeHtml } from '../vite-config/pluginBrandTheme'
 import { examplePeerPackageAliases, exampleRollupOutput } from '../vite-config/pluginRollupOutput'
 import {
   LIBREDWG_CONVERTER_PACKAGE,
@@ -65,6 +66,7 @@ export default defineConfig(() => {
     },
     plugins: [
       vue(),
+      brandThemeHtml(),
       viteStaticCopy({
         targets: [
           {

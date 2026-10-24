@@ -103,7 +103,7 @@ const TOOLBAR_CSS = `
     box-sizing: border-box;
   }
   .ml-ui-simple-toolbar__btn:hover:not(:disabled) {
-    background: var(--ml-ui-accent-soft, rgba(175, 97, 218, 0.12));
+    background: var(--ml-ui-accent-soft, var(--ml-brand-soft));
     border-color: var(--ml-ui-border, #dcdfe6);
   }
   .ml-ui-simple-toolbar__btn:disabled {
@@ -160,7 +160,7 @@ const TOOLBAR_CSS = `
     box-sizing: border-box;
   }
   .ml-ui-simple-toolbar__menu-item:hover:not(:disabled) {
-    background: var(--ml-ui-accent-soft, rgba(175, 97, 218, 0.12));
+    background: var(--ml-ui-accent-soft, var(--ml-brand-soft));
   }
   .ml-ui-simple-toolbar__menu-item:disabled {
     opacity: 0.45;

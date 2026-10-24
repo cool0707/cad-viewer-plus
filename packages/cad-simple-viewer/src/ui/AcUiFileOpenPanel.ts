@@ -778,7 +778,7 @@ export class AcUiFileOpenPanel {
   padding: 10px 14px;
   border: none;
   border-radius: 10px;
-  background: var(--ml-ui-accent, #af61da);
+  background: var(--ml-ui-accent, var(--ml-brand));
   color: #fff;
   font-size: 13px;
   font-weight: 700;
@@ -790,7 +790,7 @@ export class AcUiFileOpenPanel {
   padding: 8px 14px;
   border: none;
   border-radius: 8px;
-  background: var(--ml-ui-accent, #af61da);
+  background: var(--ml-ui-accent, var(--ml-brand));
   color: #fff;
   font-size: 13px;
   font-weight: 600;
@@ -855,8 +855,8 @@ export class AcUiFileOpenPanel {
 .ml-ui-file-open-dropzone:hover,
 .ml-ui-file-open-dropzone:focus-visible,
 .ml-ui-file-open-dropzone.is-dragover {
-  border-color: var(--ml-ui-accent, #af61da);
-  background: color-mix(in srgb, var(--ml-ui-accent, #af61da) 8%, transparent);
+  border-color: var(--ml-ui-accent, var(--ml-brand));
+  background: color-mix(in srgb, var(--ml-ui-accent, var(--ml-brand)) 8%, transparent);
 }
 .ml-ui-file-open-drop-title {
   margin: 0;
@@ -865,7 +865,7 @@ export class AcUiFileOpenPanel {
   color: var(--ml-ui-text-muted, #606266);
 }
 .ml-ui-file-open-drop-link {
-  color: var(--ml-ui-accent, #af61da);
+  color: var(--ml-ui-accent, var(--ml-brand));
   font-weight: 600;
 }
 .ml-ui-file-open-tags { display: flex; gap: 6px; }
@@ -897,7 +897,7 @@ export class AcUiFileOpenPanel {
   box-sizing: border-box;
 }
 .ml-ui-file-open-url-input:focus {
-  outline: 2px solid var(--ml-ui-accent, #af61da);
+  outline: 2px solid var(--ml-ui-accent, var(--ml-brand));
   outline-offset: 1px;
 }
 .ml-ui-file-open-sources {
@@ -932,7 +932,7 @@ export class AcUiFileOpenPanel {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: color-mix(in srgb, var(--ml-ui-accent, #af61da) 22%, transparent);
+  background: color-mix(in srgb, var(--ml-ui-accent, var(--ml-brand)) 22%, transparent);
   border: 1px solid var(--ml-ui-border, #dcdfe6);
 }
 .ml-ui-file-open-avatar-img {
@@ -944,7 +944,7 @@ export class AcUiFileOpenPanel {
 .ml-ui-file-open-avatar-initials {
   font-size: 12px;
   font-weight: 700;
-  color: var(--ml-ui-accent, #af61da);
+  color: var(--ml-ui-accent, var(--ml-brand));
   line-height: 1;
 }
 .ml-ui-file-open-account-text {
@@ -984,14 +984,14 @@ export class AcUiFileOpenPanel {
 }
 .ml-ui-file-open-source-btn--primary {
   border: none;
-  background: var(--ml-ui-accent, #af61da);
+  background: var(--ml-ui-accent, var(--ml-brand));
   color: #fff;
   font-weight: 600;
 }
 .ml-ui-file-open-source-btn--primary:hover:not(:disabled) { filter: brightness(1.05); }
 .ml-ui-file-open-source-btn--muted:hover {
-  border-color: var(--ml-ui-accent, #af61da);
-  color: var(--ml-ui-accent, #af61da);
+  border-color: var(--ml-ui-accent, var(--ml-brand));
+  color: var(--ml-ui-accent, var(--ml-brand));
 }
 .ml-ui-file-open-footer {
   flex: 0 0 auto;
@@ -1016,7 +1016,7 @@ export class AcUiFileOpenPanel {
 }
 .ml-ui-file-open-footer-btn:hover:not(:disabled),
 .ml-ui-file-open-footer-btn.is-open {
-  background: color-mix(in srgb, var(--ml-ui-accent, #af61da) 10%, transparent);
+  background: color-mix(in srgb, var(--ml-ui-accent, var(--ml-brand)) 10%, transparent);
 }
 .ml-ui-file-open-footer-btn:disabled,
 .ml-ui-file-open-footer-btn.is-single {
@@ -1065,10 +1065,10 @@ export class AcUiFileOpenPanel {
   cursor: pointer;
 }
 .ml-ui-file-open-menu-item:hover {
-  background: color-mix(in srgb, var(--ml-ui-accent, #af61da) 12%, transparent);
+  background: color-mix(in srgb, var(--ml-ui-accent, var(--ml-brand)) 12%, transparent);
 }
 .ml-ui-file-open-menu-item.is-active {
-  color: var(--ml-ui-accent, #af61da);
+  color: var(--ml-ui-accent, var(--ml-brand));
   font-weight: 600;
 }
 `

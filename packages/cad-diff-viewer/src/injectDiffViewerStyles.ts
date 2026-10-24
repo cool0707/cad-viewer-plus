@@ -9,7 +9,7 @@ const CSS = `
   --ml-diff-border: var(--ml-ui-border, #4c4d4f);
   --ml-diff-text: var(--ml-ui-text, #e5eaf3);
   --ml-diff-muted: var(--ml-ui-text-muted, #cfd3dc);
-  --ml-diff-focus: var(--ml-ui-accent, #af61da);
+  --ml-diff-focus: var(--ml-ui-accent, var(--ml-brand));
   --ml-diff-hover: color-mix(in srgb, var(--ml-diff-text) 10%, transparent);
   --ml-diff-added: #22c55e;
   --ml-diff-deleted: #e11d48;
